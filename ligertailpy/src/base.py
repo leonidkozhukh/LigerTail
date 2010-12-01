@@ -39,18 +39,21 @@ class BaseHandler(webapp.RequestHandler):
   
   def initFromRequest(self, req):
     self.common_response.reset()
-    logging.info(req.path_url)
     session = Session()
-    self.viewer = model.getViewer(session.sid)
+    sessionKey = str(session.session.session_key)
+    logging.info("%s %s", req.path_url, sessionKey)
+    self.viewer = model.getViewer(sessionKey)
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
           
-  def updateItem(self, itemId = None, item = None, bNew=False, statType=None):
-      #TODO: postpone operation by putting it into item-hashed buckets
+  def updateItem(self, itemId=None, item=None, bNew=False, statType=None):
       if not item:
-          logging.info('updateItems %d', itemId)
-          item = model.Item.get_by_id(itemId)
-      logging.info('updating item %s: statType: %d', item.url, statType)
-      item.update(statType)
+        logging.info('updateItems %d', itemId)
+        item = model.Item.get_by_id(itemId)
+      if statType:
+        logging.info('updating item %s: statType: %d', item.url, statType)
+        item.update(statType)
+      #TODO: postpone operation by putting it into item-hashed buckets
+      item.put()
  
   def getOrderedItems(self, publisherUrl, filter):
       logging.info('getOrderedItems')
@@ -76,13 +79,9 @@ class BaseHandler(webapp.RequestHandler):
 
   def updateFilter(self, duration=None, popularity=None, recency=None):
       self.viewer.filter = model.Filter()
-      if duration:
-          self.viewer.filter.duration = int(duration)
-      if popularity:
-          self.viewer.filter.popularity = int(popularity)
-      if recency:
-          self.viewer.filter.recency = int(recency)    
-      self.viewer.put()    
+      self.viewer.filter.update(duration, popularity, recency)
+      if not self.viewer.filter.default:
+        self.viewer.put()    
           
   def sendConfirmationEmail(self, item):
       logging.info('sendConfirmationEmail %s', item.email)

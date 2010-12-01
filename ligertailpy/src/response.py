@@ -31,12 +31,13 @@ class ResponseItem(json.JSONEncoder):
         self.description = item.description
         self.itemInfo = itemInfo
         self.price = item.price
-        #TODO: add other stats
+        self.stats = item.stats
         #publisherUrl
         #email
         #sessionId
         #sessionId
         #pickled_stats
+
 
     def default(self, o):
       if isinstance(o, ResponseItem):
@@ -47,9 +48,11 @@ class ResponseItem(json.JSONEncoder):
               }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
-          #TODO: add stats for itemInfo = full
+          if o.itemInfo == ItemInfo.FULL:
+              ret['stats'] = o.stats
           return ret
       return json.JSONEncoder.default(self, o)
+
 
 class ResponseFilter(json.JSONEncoder):
     def initFrom(self, filter):
@@ -103,3 +106,4 @@ class CommonResponse(json.JSONEncoder):
     self.filter = ResponseFilter()
     self.filter.initFrom(filter)
     
+

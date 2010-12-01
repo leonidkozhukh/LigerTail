@@ -45,10 +45,24 @@ class StatData(object):
           self[duration] = StatDataForTimePeriod()
           
 class Filter(db.Model):
-  recency = db.IntegerProperty(default = 50)
-  popularity = db.IntegerProperty(default = 50)
-  timeliness = db.IntegerProperty(default = Duration.ETERNITY)
+  recency = db.IntegerProperty(default=50)
+  popularity = db.IntegerProperty(default=50)
+  timeliness = db.IntegerProperty(default=Duration.ETERNITY)
   default = False
+
+  def update(self, duration, popularity, recency):
+    ''' Assumption: 0 is not a valid value for 
+        duration, popularity and recency
+    '''
+    if duration and duration != self.duration:
+      self.duration = int(duration)
+      self.default = False
+    if popularity and popularity != self.popularity:
+      self.popularity = int(popularity)
+      self.default = False
+    if recency and recency != self.recency:
+      self.recency = int(recency)    
+      self.default = False
 
 
 class Item(db.Model):
@@ -58,9 +72,10 @@ class Item(db.Model):
   description = db.TextProperty()
   email = db.EmailProperty()
   publisherUrl = db.StringProperty()
-  price = db.IntegerProperty(default = 0)
+  price = db.IntegerProperty(default=0)
   sessionId = db.StringProperty()
   pickled_stats = db.BlobProperty(required=False)
+  stats = {}
   
   def __init__(self, *args, **kwargs):
     super(Item, self).__init__(*args, **kwargs)
@@ -70,13 +85,12 @@ class Item(db.Model):
       self.stats = {}
   
   def put(self):
-       '''Stores the object, making the derived fields consistent.'''
-       # Pickle data
-       self.pickled_stats = pickle.dumps((self.stats), 2)
-       db.Model.put(self)
+    '''Stores the object, making the derived fields consistent.'''
+    # Pickle data
+    self.pickled_stats = pickle.dumps((self.stats), 2)
+    db.Model.put(self)
  
   def update(self, statType):
-      #TODO: update
       if not self.stats.has_key(statType):
           self.stats[statType] = 1
       else:
@@ -88,9 +102,23 @@ class Viewer(db.Model):
     sessionId = db.StringProperty()
     likes = db.ListProperty(int)
     closes = db.ListProperty(int)
-    filter = None #db.UnindexedProperty(Filter)
-    #TODO: persist filter
-
+    pickled_filter = db.BlobProperty(required = False)
+    filter = {}
+  
+    def __init__(self, *args, **kwargs):
+      super(Viewer, self).__init__(*args, **kwargs)
+      if self.pickled_filter:
+        (self.filter) = pickle.loads(self.pickled_filter)
+      else: 
+        self.filter = getDefaultFilter()
+  
+    def put(self):
+      if not self.filter.default:
+        '''Stores the object, making the derived fields consistent.'''
+        # Pickle data
+        self.pickled_filter = pickle.dumps((self.filter), 2)
+        db.Model.put(self)
+     
 class Singleton(object):
      """ A Pythonic Singleton """
      def __new__(cls, *args, **kwargs):

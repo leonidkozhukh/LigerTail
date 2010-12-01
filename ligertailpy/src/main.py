@@ -34,7 +34,7 @@ class SubmitItemHandler(BaseHandler):
         item.sessionId = self.viewer.sessionId
         item.price = 0
         item.put()
-        BaseHandler.updateItem(self, item = item, bNew = True)
+        BaseHandler.updateItem(self, item=item, bNew=True)
         BaseHandler.sendConfirmationEmail(self, item)
         BaseHandler.writeResponse(self)
     
@@ -51,7 +51,7 @@ class SubmitPaidItemHandler(BaseHandler):
         item.sessionId = self.viewer.sessionId
         if self._verifyTransaction(self.request, item):                             
             item.put()
-            BaseHandler.updateItem(self, item = item, bNew = True)
+            BaseHandler.updateItem(self, item=item, bNew=True)
             BaseHandler.sendConfirmationEmail(self, item)
         else:
             self.common_response.set_error('Unauthorized paid item submission ')
@@ -73,7 +73,7 @@ class GetOrderedItemsHandler(BaseHandler):
         for item in orderedItems:
             if numViewed >= self.client.numViewableItems:
                 break
-            BaseHandler.updateItem(self, item = item, statType = model.StatType.VIEWS)
+            BaseHandler.updateItem(self, item=item, statType=model.StatType.VIEWS)
             #if self.viewer.isNew:
             #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
         BaseHandler.writeResponse(self)
@@ -101,11 +101,11 @@ class SubmitUserInteractionHandler(BaseHandler):
             itemId = int(itemWithUpdate[0])
             statType = int(itemWithUpdate[1])
             if statType == model.StatType.LIKES or statType == model.StatType.CLOSES:
-              BaseHandler.updateViewer(self, statType = statType, itemId = itemId)
+              BaseHandler.updateViewer(self, statType=statType, itemId=itemId)
               #TODO: handle uniques. This may be challenging since in order to know if the
               # impression is unique we need to have a map itemId->all viewers                    
           
-            BaseHandler.updateItem(self, itemId = itemId, statType = statType)
+            BaseHandler.updateItem(self, itemId=itemId, statType=statType)
             
         # Let client take care of immediate update
         # orderedItems = BaseHandler.getOrderedItems(self,
@@ -126,9 +126,9 @@ class SubmitFilterHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         BaseHandler.updateFilter(self,
-                                 duration = self.request.get('filter.duration'),
-                                 popularity = self.request.get('filter.popularity'),
-                                 recency = self.request.get('filter.recency'))
+                                 duration=self.request.get('filter.duration'),
+                                 popularity=self.request.get('filter.popularity'),
+                                 recency=self.request.get('filter.recency'))
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.request.get('publisherUrl'),
                                                    self.viewer.filter)

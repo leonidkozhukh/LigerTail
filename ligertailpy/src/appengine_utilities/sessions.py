@@ -131,7 +131,7 @@ class _AppEngineUtilities_Session(ROTModel):
         results = query.fetch(1000)
         return results
 
-    def get_item(self, keyname = None):
+    def get_item(self, keyname=None):
         """
         Returns a single session data item from the memcache or datastore
 
@@ -791,7 +791,7 @@ class Session(object):
             v.append(self[k])
         return v
 
-    def get(self, keyname, default = None):
+    def get(self, keyname, default=None):
         """
         Returns either the value for the keyname or a default value
         passed.
@@ -809,7 +809,7 @@ class Session(object):
                 return default
             return None
 
-    def setdefault(self, keyname, default = None):
+    def setdefault(self, keyname, default=None):
         """
         Returns either the value for the keyname or a default value
         passed. If keyname lookup is a miss, the keyname is set with
@@ -955,7 +955,7 @@ class Session(object):
             keyname: The keyname of the object to delete.
         """
         bad_key = False
-        sessdata = self._get(keyname = keyname)
+        sessdata = self._get(keyname=keyname)
         if sessdata is None:
             bad_key = True
         else:
