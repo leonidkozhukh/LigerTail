@@ -66,7 +66,7 @@ class Filter(db.Model):
 
 
 class Item(db.Model):
-  creationTime = db.DateTimeProperty()
+  creationTime = db.DateTimeProperty(auto_now_add=True)
   url = db.StringProperty()
   title = db.StringProperty()
   description = db.TextProperty()
@@ -81,8 +81,25 @@ class Item(db.Model):
     super(Item, self).__init__(*args, **kwargs)
     if self.pickled_stats:
       (self.stats) = pickle.loads(self.pickled_stats)
+      if not self.stats.has_key(StatType.CLICKS):
+        self.stats[StatType.CLICKS] = 0
+      if not self.stats.has_key(StatType.CLOSES):
+        self.stats[StatType.CLOSES] = 0
+      if not self.stats.has_key(StatType.LIKES):
+        self.stats[StatType.LIKES] = 0
+      if not self.stats.has_key(StatType.UNIQUES):
+        self.stats[StatType.UNIQUES] = 0
+      if not self.stats.has_key(StatType.VIEWS):
+        self.stats[StatType.VIEWS] = 0
+      
     else: 
-      self.stats = {}
+      self.stats = {
+                    StatType.CLICKS : 0,
+                    StatType.CLOSES : 0,
+                    StatType.LIKES : 0,
+                    StatType.UNIQUES : 0,
+                    StatType.VIEWS : 0
+                  }
   
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -98,7 +115,7 @@ class Item(db.Model):
 
 class Viewer(db.Model):
     isNew = False
-    creationTime = db.DateTimeProperty()
+    creationTime = db.DateTimeProperty(auto_now_add=True)
     sessionId = db.StringProperty()
     likes = db.ListProperty(int)
     closes = db.ListProperty(int)
@@ -130,8 +147,7 @@ def getItems(publisherUrl):
     return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).fetch(1000);
 
 def getPaidItems(publisherUrl):
-    #TODO: Descending, only price non-null
-    return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 ORDER BY price', publisherUrl).fetch(1000);
+    return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).fetch(1000);
 
   
 def getViewer(sessionId):
