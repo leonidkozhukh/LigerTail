@@ -68,7 +68,7 @@ class GetOrderedItemsHandler(BaseHandler):
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.request.get('publisherUrl'),
                                                    self.viewer.filter)
-        self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
+        self.common_response.setItems(orderedItems, response.ItemInfo.FULL)
         numViewed = 0
         for item in orderedItems:
             if numViewed >= self.client.numViewableItems:
@@ -83,8 +83,6 @@ class GetPaidItemsHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         paidItems = BaseHandler.getPaidItems(self, self.request.get('publisherUrl'))                                            
-        #TODO: remove - query should return descending
-        paidItems.reverse()
         self.common_response.setItems(paidItems, response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
 

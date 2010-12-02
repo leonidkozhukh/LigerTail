@@ -14,3 +14,9 @@ indexes:
   properties:
   - name: publisherUrl
   - name: price
+
+- kind: Item
+  properties:
+  - name: publisherUrl
+  - name: price
+    direction: desc

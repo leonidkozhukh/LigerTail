@@ -157,7 +157,7 @@ public class LoadTester {
     
    /* for (int i = 0; i < 10; i++) {
       loadTester.submitItem(publisherUrl);
-    }*/ 
+    } 
     JSONObject json = loadTester.getItems(publisherUrl);
     //loadTester.getItemStats(publisherUrl, "23");
     JSONArray items = json.getJSONArray("items");
@@ -180,6 +180,12 @@ public class LoadTester {
       
     }
     
+    for (int i = 0; i < 10; i++) {
+      loadTester.submitPaidItem(publisherUrl);
+      loadTester.submitItem(publisherUrl);
+    }*/
+    //loadTester.submitFilter(publisherUrl);
+    loadTester.getItems(publisherUrl);
   } 
 }
  
