@@ -1,0 +1,63 @@
+body {
+  font-family: Verdana, Helvetica, sans-serif;
+  background-color: #ffffff;
+}
+
+#meerror {overflow:hidden; width:300px; height:250px; border: 1px solid black;}
+#meerror .submit {display:none;}
+#url {margin: 0 10px; height:25px; overflow:hidden;}
+#url form {margin-bottom:0px;}
+#url input {font-size:10pt; width:280px;}
+#meerror .content {display:none; font-size:10pt; margin-left:5px; margin-bottom: 5px;}
+#meerror .content img {float:left; width:40px; height:40px; vertical-align:text-top;}
+#meerror .content iframe {float:right; margin-right:5px;}
+#meerror .content .thumb {margin-right:5px;}
+#meerror .content .description {display:inline-block; width:145px; height:40px; margin-right:5px; overflow:hidden;}
+
+#meerror2 {display:block; overflow:hidden; width:600px; border: 1px solid black;}
+#meerror2 .submit {display:none;}
+#meerror2 #url {margin: 0 10px; height:40px; overflow:hidden;}
+#meerror2 #url form {margin-bottom:0px;}
+#meerror2 #url input {font-size:14pt; width:580px;}
+//#meerror2 .content {font-size:10pt; margin-left:15px; margin-bottom: 10px;}
+//#meerror2 .content img #close {float:left; width:40px; height:40px; vertical-align:top;}
+//#meerror2 .content img #thumb {float:left; width:200px; height:100px; vertical-align:text-top;}
+#meerror2 .content iframe {float:right; margin-right:15px;}
+//#meerror2 .content .thumb {margin-right:15px;}
+#meerror2 .content .description {display:inline-block; max-width:280px; width:auto; margin-right:5px; overflow:hidden;}
+
+
+
+
+#submission {display:block; width:604px; overflow:hidden; border:1px solid black;}
+#parameters {float:left; width:300px; overflow:hidden; border:1px solid black; height:250px;}
+#parameters input, textarea {width:280px; margin: 5 10px;}
+#submission #meerror {display: block; float:right;}
+#submission #meerror .content {display:block;}
+
+#meerror2 .content img {
+float:left;
+}
+#meerror2 .content img #thumb {
+border:1px solid #DADADA;
+max-height:145px;
+max-width:258px;
+margin-right: 10px;
+}
+#meerror2 {
+clear:both;
+margin-top:25px;
+position:relative;
+}
+#meerror2 .content {
+clear:both;
+min-height:145px;
+}
+
+.amChartInner {border: 1px solid black;}
+.amChartTitle {font-size: 10pt; border: 1px solid black;}
+
+#graphs_top {display:block; }
+#graphs_bottom {clear: both; display: block;}
+.graphs_left {float: left;}
+.graphs_right {float: right;}

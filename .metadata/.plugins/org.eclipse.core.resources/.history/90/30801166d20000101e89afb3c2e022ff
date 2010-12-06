@@ -1,0 +1,144 @@
+
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<title>Application - Ligertail</title> 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+function ValidateURL(str){
+	var text = str.replace(/<\/?[^>]+(>|$)/g, "");
+	var exp = /(\bhttp:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	var url = text.match(exp);
+	
+	if(url != null && url.length > 1){
+     		return false;
+    	}
+	else if(url != null){
+		return url[0];
+	}
+	else 
+		return false;
+}
+
+function ValidateEmail(str) { alert(str);
+	var reg = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	if(reg.test(str) == false) {
+		alert('Invalid Email Address');
+		return false;
+	}
+	else return str;  
+}
+
+jQuery(document).ready(function($){
+
+	//SETUP FORM FOR SUBMITTING ITEM +/- PAYMENT
+	// url, title, description, mail, publisherUrl, price
+	
+	var form = '<form><input type="textbox" value="http://www.me.com" id="url"><br><input type="textbox" value="My Content" id="title"><br><input type="textbox" value="about my content long form info blah blah blaaaahhh" id="description"><br><input type="textbox" value="len@ligertail.com" id="mail"><br><input type="textbox" value="http://www.publisher.com" id="publisherUrl"><br>$<input type="textbox" value="0" id="price"><br><input type="submit" value="submit" id="submit"></form>';
+	$("#test").append(form);
+
+	$("#url").blur(function(){ 
+		if(!ValidateURL($(this).val()))
+			$("#url").css("color", "red");
+		else if($("#url").css("color") == "red")
+			$("#url").css("color", "black");
+	});
+
+	$("#title").blur(function(){ 
+		if($(this).val().length < 3 || $(this).val().length > 100)
+			$("#title").css("color", "red");
+		else if($("#title").css("color") == "red")
+			$("#title").css("color", "black");
+	});
+
+	$("#description").blur(function(){
+		if($(this).val().length > 512)
+			$("#description").css("color", "red");
+		else if($("#description").css("color") == "red")
+			$("#description").css("color", "black");
+	});
+
+	$("#publisherUrl").blur(function(){ 
+		if(!ValidateURL($(this).val()))
+			$("#publisherUrl").css("color", "red");
+		else if($("#publisherUrl").css("color") == "red")
+			$("#publisherUrl").css("color", "black");
+	});
+
+	$("#mail").blur(function(){ 
+		if(!ValidateEmail($(this).val()))
+			$("#mail").css("color", "red");
+		else if($("#mail").css("color") == "red")
+			$("#mail").css("color", "black");
+	});
+
+	$("#price").blur(function(){ 
+		if($(this).val() < 0)
+			$("#title").css("color", "red");
+		else if($("#title").css("color") == "red")
+			$("#title").css("color", "black");
+	});
+
+	$("#test #submit").click(function(){
+		event.preventDefault(); 
+		var submit_url = $("#url").val();
+		var submit_title = $("#title").val();
+		var submit_description = $("#description").val();
+		var submit_publisherUrl = $("#publisherUrl").val();
+		var submit_email = $("#mail").val();
+		var submit_price = $("#price").val();
+		
+		if(ValidateURL(submit_url) && submit_title.length > 3 && submit_title.length < 100 && submit_description.length < 512 && ValidateURL(submit_publisherUrl) && ValidateEmail(submit_email) && submit_price >= 0){
+			
+			$.ajax({
+				type: "POST",
+				url: "http://localhost:8080/submit_item",
+				data: {url: submit_url, title: submit_title, description: submit_description, mail: submit_email, publisherUrl: submit_publisherUrl, price: submit_price},
+				dataType: "json",
+				success: function(data){ 
+					alert(data);
+				},
+				error: function(e){ alert("error: " + e);}		
+			});
+		}
+		else{
+			alert("Your submission could not be validated. Please try again.");
+		}
+	});
+		
+
+
+
+
+	//SETUP FORM FOR SUBMITTING USER INTERACTIONS
+	// publisherUrl, interactions (string with id:interaction_type)
+
+	//SETUP FORM FOR SUBMITTING USER FILTER
+	// publisherUrl, filter.popularity, filter. recency
+
+	//SETUP FORM FOR GETTING ORDERED ITEMS
+	// publisherUrl
+
+	//SETUP FORM FOR GETTING PAID ITEMS
+	// publisherUrl
+	
+	//SETUP FORM FOR GETTING USER FILTERS
+	// publisherUrl (only based on own sessionid)
+
+	//SETUP FOR FOR GETTING ITEM STATISTICS
+	// publisherUrl, itemId
+
+	$("#test").click(function(){ 
+		
+	});	
+
+});
+</script>
+</head> 
+<body>  
+<div id="test"></div>
+
+
+</body> 
+</html> 
