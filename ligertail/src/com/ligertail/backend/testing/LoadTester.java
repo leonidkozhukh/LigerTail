@@ -65,16 +65,9 @@ public class LoadTester {
     
   }
   
-  public JSONObject submitImpressions(String publisherUrl, int id) {
-    Map<String, String> keyval = new HashMap<String, String>();
-    keyval.put("publisherUrl", publisherUrl);
-    keyval.put("itemIds", String.valueOf(id));
-    return post(keyval, "submit_impressions");    
-  }
-  
   public JSONObject submitUserInteraction(String publisherUrl, String interactions) {
     Map<String, String> keyval = new HashMap<String, String>();
-    //keyval.put("publisherUrl", publisherUrl);
+    keyval.put("publisherUrl", publisherUrl);
     keyval.put("interactions", interactions);
     return post(keyval, "submit_user_interaction");    
   }
@@ -153,15 +146,15 @@ public class LoadTester {
       System.exit(2);
     }
     LoadTester loadTester = new LoadTester(argMap.get("domain"));
-    String publisherUrl = "www.nytimes.com";
+    String publisherUrl = "www.nytimes3.com";
     
    /* for (int i = 0; i < 10; i++) {
       loadTester.submitItem(publisherUrl);
-    } 
+    }
     JSONObject json = loadTester.getItems(publisherUrl);
     //loadTester.getItemStats(publisherUrl, "23");
     JSONArray items = json.getJSONArray("items");
-    JSONObject item = new JSONObject((String)items.get(0));
+ 3   JSONObject item = new JSONObject((String)items.get(0));
     
     String itemId = item.getString("id");
     loadTester.submitUserInteraction(publisherUrl, 
@@ -184,7 +177,22 @@ public class LoadTester {
       loadTester.submitPaidItem(publisherUrl);
       loadTester.submitItem(publisherUrl);
     }*/
-    //loadTester.submitFilter(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    loadTester.submitPaidItem(publisherUrl);
+    
+    loadTester.submitItem(publisherUrl);
+    loadTester.getItems(publisherUrl);
+    loadTester.getPaidItems(publisherUrl);
+    loadTester.submitUserInteraction(publisherUrl, "23:4, 32:1");
+    loadTester.getFilter(publisherUrl);
+
+    loadTester.submitFilter(publisherUrl);
     loadTester.getItems(publisherUrl);
   } 
 }
