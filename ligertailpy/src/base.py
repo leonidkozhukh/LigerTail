@@ -3,9 +3,11 @@ import os
 import urllib
 import logging
 import model
+from itemlist import itemList
 import re
 import response
 import datetime
+import filterstrategy
 #import simplejson as json
 from django.utils import simplejson as json
 
@@ -14,7 +16,6 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
-from google.appengine.api import memcache
 from appengine_utilities.sessions import Session
 
 # Set the debug level
@@ -46,34 +47,17 @@ class BaseHandler(webapp.RequestHandler):
     self.viewer = model.getViewer(sessionKey)
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
           
-  def updateItem(self, itemId=None, item=None, bNew=False, statType=None):
-      if not item:
-        logging.info('updateItems %d', itemId)
-        item = model.Item.get_by_id(itemId)
-      if statType:
-        logging.info('updating item %s: statType: %d', item.url, statType)
-        item.update(statType)
-      #TODO: postpone operation by putting it into item-hashed buckets
-      item.put()
+  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None):
+    itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
  
   def getOrderedItems(self, publisherUrl, filter):
-      logging.info('getOrderedItems')
-      defaultOrderedItems = memcache.get(publisherUrl)
-      if defaultOrderedItems is not None and filter.default:
-        logging.info('return default from memcache for %s', publisherUrl)
-        return defaultOrderedItems
-      elif defaultOrderedItems is not None:
-        logging.info('memcache found, but filter is not default for %s', publisherUrl)
-        return self.applyFilter(defaultOrderedItems, filter)
-      else:
-        items = model.getItems(publisherUrl)
-        defaultOrderedItems = self.applyFilter(items, model.getDefaultFilter())
-        logging.info('repopulating memache for %s', publisherUrl)
-        memcache.add(publisherUrl, defaultOrderedItems)
-        if not filter.default:
-          return self.applyFilter(defaultOrderedItems, filter)
-        return defaultOrderedItems
-  
+    defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
+    if filter.default:
+      logging.info('return default from memcache for %s', publisherUrl)
+      return defaultOrderedItems
+    logging.info('filter is not default for %s', publisherUrl)
+    return filterstrategy.applyFilter(defaultOrderedItems, filter)
+      
   def getPaidItems(self, publisherUrl):
       logging.info('getPaidItems')
       items = model.getPaidItems(publisherUrl)
@@ -94,46 +78,7 @@ class BaseHandler(webapp.RequestHandler):
       self.viewer.filter = model.Filter()
       self.viewer.filter.update(duration, popularity, recency)
       if not self.viewer.filter.default:
-        self.viewer.put()    
-          
-  def applyFilter(self, items, filter):
-    LIKES_RATE_K = 500.0
-    CLICKS_RATE_K = 100.0
-    CLOSES_RATE_K = -20.0
-    TOTAL_LIKES_K = 1.0
-    TOTAL_CLICKS_K = 1.0
-    TOTAL_CLOSES_K = -1.0
-    TOTAL_VIEWS_K = -0.2
-    
-    RECENCY_K = 1000.0
-    PRICE_K = 1000.0
-    today = datetime.datetime.today()
-    for item in items:
-      likes = float(item.stats[model.StatType.LIKES])
-      closes = float(item.stats[model.StatType.CLOSES])
-      views = float(item.stats[model.StatType.VIEWS])
-      clicks = float(item.stats[model.StatType.CLICKS])
-      likesRate = 0.0
-      clicksRate = 0.0
-      closesRate = 0.0
-      if views:
-        likesRate = likes/views
-        closesRate = closes/views
-        clicksRate = clicks/views
-      popularity = likesRate * LIKES_RATE_K + \
-          clicksRate * CLICKS_RATE_K + \
-          closesRate * CLOSES_RATE_K + \
-          likes * TOTAL_LIKES_K + \
-          clicks * TOTAL_CLICKS_K + \
-          closes * TOTAL_CLOSES_K
-      seconds = float((today - item.creationTime).seconds)
-      recency = RECENCY_K / (seconds+1) 
-      item.v = popularity * filter.popularity + \
-          recency * filter.recency + \
-          views * TOTAL_VIEWS_K + \
-          float(item.price) / seconds * PRICE_K
-    orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
-    return orderedItems  
+        self.viewer.put()          
       
   def sendConfirmationEmail(self, item):
       logging.info('sendConfirmationEmail %s', item.email)

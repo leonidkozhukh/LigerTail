@@ -112,6 +112,35 @@ class Item(db.Model):
           self.stats[statType] = 1
       else:
           self.stats[statType] += 1
+          
+class ItemUpdateEntity(object):  
+  itemId = None
+  bNew = False
+  statType = None
+  
+  def __init__(self, itemId, bNew, statType):
+    self.itemId = itemId
+    self.bNew = bNew
+    self.statType = statType
+
+
+class Bucket(db.Model):
+  pickled_entities = db.BlobProperty()
+  bucketId = db.StringProperty()
+  entities = []
+  
+  def __init__(self, *args, **kwargs):
+    super(Bucket, self).__init__(*args, **kwargs)
+    if self.pickled_entities:
+      (self.entities) = pickle.loads(self.pickled_entities)
+    else: 
+      self.entities = []
+
+  def put(self):
+    # Pickle data
+    self.pickled_entities = pickle.dumps((self.entities), 2)
+    db.Model.put(self)
+
 
 class Viewer(db.Model):
     isNew = False
@@ -136,13 +165,6 @@ class Viewer(db.Model):
         self.pickled_filter = pickle.dumps((self.filter), 2)
         db.Model.put(self)
      
-class Singleton(object):
-     """ A Pythonic Singleton """
-     def __new__(cls, *args, **kwargs):
-         if '_inst' not in vars(cls):
-             cls._inst = object.__new__(cls, *args, **kwargs)
-         return cls._inst
-
 def getItems(publisherUrl):
     return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).fetch(1000);
 
@@ -163,6 +185,14 @@ def getViewer(sessionId):
         viewer.put()
         viewer.filter = getDefaultFilter()
     return viewer
+
+def getBucket(bucketId):
+  bucket = db.GqlQuery('SELECT * FROM Bucket WHERE bucketId=:1', bucketId).get()
+  if not bucket:
+    bucket = Bucket()
+    bucket.bucketId = bucketId
+    bucket.put()
+  return bucket
 
 DEFAULT_FILTER_ = Filter()
 DEFAULT_FILTER_.default = True
