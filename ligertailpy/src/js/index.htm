@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+  <head>
+<script src = "../js/postrequest.js">
+</script>
+<script src = "../js/jquery-1.4.4.js">
+</script>
+<script src = "../js/json2.js">
+</script>
+<script src = "../js/apiproxy.js">
+</script>
+<script src = "../js/apihandler.js">
+</script>
+ 
+<script>
+var initialized = false;
+$(document).ready(function(){
+  init();
+});
+ 
+function init() {
+  var apiHandler = new ApiHandler();
+  var domain = document.getElementById("domain").value;
+  if (!domain) {
+	  domain = "http://" + window.document.location.hostname;
+	  if (window.document.location.port) {
+	    domain += ":" + window.document.location.port;
+	  }
+  }
+  window.api = new Api();
+  api.init(domain, apiHandler);
+  window.publisherUrl = document.getElementById("publisherUrl").value;
+}
+
+function submitItem() {
+	var item = {};
+  item.publisherUrl = publisherUrl;
+  item.url = "www.blah.com";
+  item.title = "blah";
+  item.description = "blahblah";
+  item.email = "email@emal.com";
+  api.submitItem(item);	  
+}
+
+function getOrderedItems() {
+    api.getOrderedItems(publisherUrl);     
+}
+
+
+function getPaidItems() {
+    api.getPaidItems(publisherUrl);     
+}
+
+function getItemStats() {
+	var itemId = document.getElementById("itemid").value - 0;
+	api.getItemStats(publisherUrl, itemId);
+}
+
+function getFilter() {
+	api.getFilter(publisherUrl);
+}
+
+function submitFilter() {
+	filter = {};
+	filter.durationId = Duration.MONTHLY;
+	filter.popularity = 70;
+	filter.recency = 20;
+	api.submitFilter(publisherUrl, filter);
+}
+
+function submitUserInteraction() {
+	interactions = [];
+	var itemId = document.getElementById("itemid").value - 0;
+	interactions.push({itemId: itemId , statType: StatType.VIEWS});
+	interactions.push({itemId: itemId , statType: StatType.VIEWS});
+	interactions.push({itemId: itemId , statType: StatType.VIEWS});
+	interactions.push({itemId:itemId, statType: StatType.CLOSES});
+	interactions.push({itemId:itemId, statType: StatType.CLICKS});
+	interactions.push({itemId:itemId, statType: StatType.CLICKS});
+	api.submitUserInteraction(publisherUrl, interactions);
+}
+
+function updatePrice() {
+    var itemId = document.getElementById("itemid").value - 0;
+    var price = document.getElementById("price").value - 0;
+    api.updatePrice(publisherUrl, itemId, price);
+}
+
+
+</script>
+</head>
+</HTML>
+<BODY>
+<div>Backend </div><INPUT TYPE="text"  ID="domain" VALUE=""><P>
+<div>PublisherUrl </div><INPUT TYPE="text" ID="publisherUrl" VALUE="www.nytimes3.com"><P>
+
+<A href="#" onMouseDown="init()"><div>init api</div></A>
+<A href="#" onMouseDown="submitItem()" ><div> submit item</div></A>
+<A href="#" onMouseDown="getOrderedItems()" ><div> get ordered items</div></A>
+<A href="#" onMouseDown="getPaidItems()" ><div> get paid items</div></A>
+<A href="#" onMouseDown="getFilter()" ><div> get filter</div></A>
+<A href="#" onMouseDown="submitFilter()" ><div> submit filter</div></A>
+<div>Item id: </div><INPUT TYPE="text"  ID="itemid" VALUE=""><P>
+
+<A href="#" onMouseDown="submitUserInteraction()" ><div> submit user interaction</div></A>
+<A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
+<div>Price (cents): </div><INPUT TYPE="text" ID="price" VALUE="100"><P>
+<A href="#" onMouseDown="updatePrice()" ><div> update price</div></A>
+
+</BODY>

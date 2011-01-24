@@ -102,7 +102,7 @@ class ItemList(Singleton):
           item = items[entity.itemId]
         if entity.statType and item:
           logging.info('updating item %s: statType: %d', item.url, entity.statType)
-          item.update(entity.statType)
+          item.update(entity.creationTime, entity.statType)
       for item in items.values():
         item.put()
     #TODO: write updates into timed log

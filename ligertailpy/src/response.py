@@ -1,19 +1,8 @@
-import cgi
-import os
-import urllib
-import logging
-import model
-import re
-#import simplejson as json
-from django.utils import simplejson as json
-
-from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from google.appengine.api import memcache
 from appengine_utilities.sessions import Session
+from django.utils import simplejson as json
+from google.appengine.api import memcache, users
+import datetime
+import model
 
 # Set the debug level
 _DEBUG = True
@@ -27,11 +16,13 @@ class ResponseItem(json.JSONEncoder):
     def initFrom(self, item, itemInfo):
         self.id = item.key().id()
         self.url = item.url
+        self.thumbnailUrl = item.thumbnailUrl
         self.title = item.title
         self.description = item.description
         self.itemInfo = itemInfo
         self.price = item.price
         self.stats = item.stats
+        self.timedStats = item.timedStats
         #publisherUrl
         #email
         #sessionId
@@ -44,25 +35,42 @@ class ResponseItem(json.JSONEncoder):
           ret = {'url' : o.url,
               'title' : o.title,
               'description' : o.description,
-              'id' : o.id
+              'id' : o.id,
+              'thumbnailUrl' : o.thumbnailUrl
               }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
           if o.itemInfo == ItemInfo.FULL:
-              ret['stats'] = o.stats
+              total = {}
+              for i in range (model.StatType.BEGIN, model.StatType.END):
+                total[i] = o.stats[i]
+              ret['totalStats'] = total
+              ret['timedStats'] = o.timedStats.update()
+              d = o.timedStats.updateTime
+              ret['updateTime'] = {'year' : d.year,
+                                   'month' : d.month,
+                                   'day' : d.day,
+                                   'hour' : d.hour,
+                                   'minute' : d.minute }
+              ret['durationInfo'] = {'eternity' : model.ETERNITY.o,
+                                     'monthly' : model.MONTHLY.o,
+                                     'weekly' : model.WEEKLY.o,
+                                     'daily' : model.DAILY.o,
+                                     'hourly' : model.HOURLY.o,
+                                     'minutely' : model.MINUTELY.o}
           return ret
       return json.JSONEncoder.default(self, o)
 
 
 class ResponseFilter(json.JSONEncoder):
     def initFrom(self, filter):
-        self.timeliness = filter.timeliness
+        self.durationId = filter.durationId
         self.recency = filter.recency
         self.popularity = filter.popularity
         
     def default(self, o):
       if isinstance(o, ResponseFilter):
-          ret = {'timeliness' : o.timeliness,
+          ret = {'durationId' : o.durationId,
               'recency' : o.recency,
               'popularity' : o.popularity,
               }

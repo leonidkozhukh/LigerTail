@@ -1,22 +1,14 @@
-import cgi
-import os
-import urllib
-import logging
-import model
-from itemlist import itemList
-import re
-import response
-import datetime
-import filterstrategy
-#import simplejson as json
+from appengine_utilities.sessions import Session
 from django.utils import simplejson as json
-
 from google.appengine.api import users
 from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from appengine_utilities.sessions import Session
+from itemlist import itemList
+import filterstrategy
+import logging
+import model
+import re
+import response
+
 
 # Set the debug level
 _DEBUG = True
@@ -38,6 +30,7 @@ class BaseHandler(webapp.RequestHandler):
   common_response = response.CommonResponse()
   viewer = None
   client = {}
+  jsonp_callback = None
   
   def initFromRequest(self, req):
     self.common_response.reset()
@@ -46,7 +39,8 @@ class BaseHandler(webapp.RequestHandler):
     logging.info("%s %s", req.path_url, sessionKey)
     self.viewer = model.getViewer(sessionKey)
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
-          
+    self.jsonp_callback = unicode(req.get('callback'))
+    
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None):
     itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
  
@@ -63,8 +57,7 @@ class BaseHandler(webapp.RequestHandler):
       items = model.getPaidItems(publisherUrl)
       return items
  
-  def getItemWithStats(self, publisherUrl, itemId):
-      #TODO: retrieve stats
+  def getItem(self, publisherUrl, itemId):
       return model.Item.get_by_id(int(itemId)) 
   
   def updateViewer(self, statType=None, itemId=None):
@@ -74,9 +67,9 @@ class BaseHandler(webapp.RequestHandler):
           elif statType == model.StatType.LIKES:
               self.viewer.likes.append(itemId)
 
-  def updateFilter(self, duration=None, popularity=None, recency=None):
+  def updateFilter(self, durationId=None, popularity=None, recency=None):
       self.viewer.filter = model.Filter()
-      self.viewer.filter.update(duration, popularity, recency)
+      self.viewer.filter.update(durationId, popularity, recency)
       if not self.viewer.filter.default:
         self.viewer.put()          
       
@@ -141,6 +134,7 @@ class BaseHandler(webapp.RequestHandler):
     logging.info("#### WRITING RESOPONSE #####")
     s = json.dumps(self.common_response, cls=response.CommonResponse) #, default=encode_response)
     logging.info(s)
-    self.response.out.write(s)
+    self.response.out.write('%s(%s);' % (self.jsonp_callback, s))
+    self.response.headers["Access-Control-Allow-Origin"] = '*'
 
 

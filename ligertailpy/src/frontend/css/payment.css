@@ -1,0 +1,140 @@
+@charset "utf-8";
+/* CSS Document */
+
+#payment {
+	width:1200px;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:12px;
+}
+
+.pricing {
+	float:left;
+	width: 50px;
+	text-align: center;
+	font-weight: bold;
+	padding: 5px;
+	background-color: #f8f8f8;
+	border: 1px solid #999;
+	font-size: 18px;
+	color: #d36317;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+
+#analytics .image {
+	float:left;
+	margin-right:6px;
+	padding-top: 5px;
+}
+
+#analytics .text {
+	float:left;
+	width:230px;
+	padding-top:0px;
+	padding-bottom:10px;
+}
+
+#analytics .text .source {
+	font-size:12px;
+	font-weight:bold;
+	text-transform:uppercase;
+	margin:0px 5px 0px 0px;
+	padding-right:5px;
+}
+
+#analytics .text p {
+	color:#666;
+	margin-top:4px;
+	margin-bottom:0px;
+}#analytics {
+	float: left;
+	width: 325px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+#analytics .entry {
+	clear: both;
+	background-image:url(../images/bg_entry.png);
+	background-repeat:repeat-x;
+	border: 1px solid #ccc;
+	height: 45px;
+	padding-top:5px;
+}
+
+#analytics .entry:hover {
+	background-color:#fff;
+	background-image:none;
+	border:1px solid #d36317;
+	
+}
+
+#credit_card {
+	float: left;
+	width: 230px;
+}
+#graphs {
+	float: left;
+	width: 480px;
+}
+#payment #stats {
+	float: left;
+	width: 200px;
+}
+
+.table_stats {
+	border:1px solid #ccc;
+	border-collapse:collapse;
+}
+
+.table_stats table {
+	margin-bottom:10px;
+}
+
+.table_stats th, .table_stats td {
+	padding:4px;
+	text-align:left;
+	border:1px solid #ccc;
+}
+.table_stats th {
+	background-color:#ccc;
+}
+
+#payment h3 {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #999;
+	background-color: #f8f8f8;
+	padding: 4px;
+	margin: 0px;
+}
+#payment .input_form {
+	border: 1px solid #ccc;
+	width: 180px;
+}
+#payment .input_form_short {
+	width: 80px;
+	border: 1px solid #ccc;
+}
+#payment .input_form_price {
+	width: 50px;
+	border: 1px solid #ccc;
+}
+
+#payment .close {
+	float:left;
+}
+#payment .share {
+	float:left;
+	margin-top: 5px;
+}
+#payment #payment_price {
+	padding-top: 8px;
+	border-bottom-width: 1px;
+	border-bottom-style: dotted;
+	border-bottom-color: #ccc;
+	height: 43px;
+	background-image:url(../images/bg_arrow.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}

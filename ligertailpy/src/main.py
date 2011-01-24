@@ -1,22 +1,15 @@
 #!/usr/bin/env python
 #
 
-import cgi
-import os
-import urllib
+from base import BaseHandler
+from google.appengine.api import memcache
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp import util
+from itemlist import itemList
 import logging
 import model
 import response
-from itemlist import itemList
-
-from base import BaseHandler
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from google.appengine.api import memcache
-from datetime import datetime, date, time, timedelta
+import payment
 
 
 class MainHandler(webapp.RequestHandler):
@@ -26,9 +19,11 @@ class MainHandler(webapp.RequestHandler):
 class SubmitItemHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
+        logging.info('email %s', self.request.get('email'))
         item = model.Item()
         item.publisherUrl = self.request.get('publisherUrl')
         item.url = self.request.get('url')
+        item.thumbnailUrl = self.request.get('thumbnailUrl')
         item.title = self.request.get('title')
         item.description = self.request.get('description')
         item.email = self.request.get('email')
@@ -39,37 +34,38 @@ class SubmitItemHandler(BaseHandler):
         BaseHandler.sendConfirmationEmail(self, item)
         BaseHandler.writeResponse(self)
     
-class SubmitPaidItemHandler(BaseHandler):
+class UpdatePriceHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        item = model.Item()
-        item.publisherUrl = self.request.get('publisherUrl')
-        item.url = self.request.get('url')
-        item.title = self.request.get('title')
-        item.description = self.request.get('description')
-        item.email = self.request.get('email')
-        item.price = int(self.request.get('price'))
-        item.sessionId = self.viewer.sessionId
-        if self._verifyTransaction(self.request, item):                             
-            item.put()
-            BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
-            BaseHandler.sendConfirmationEmail(self, item)
-        else:
-            self.common_response.set_error('Unauthorized paid item submission ')
+        # TODO: assert https
+        item = BaseHandler.getItem(self, self.request.get('publisherUrl'),
+                                   self.request.get('itemId'))
+        if self._verifyTransaction(self.request, item):  
+          item.price = item.price + int(self.request.get('price'))                          
+          item.put()
+          BaseHandler.sendConfirmationEmail(self, item)
+          # TODO: initiate order recalculation since the price changed
+        self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
         
     def _verifyTransaction(self, request, item):
-        logging.info('verifyTransaction')
+        result = payment.test(item.key().id())
+        logging.info('verifyTransaction %s', str(result))
+        if result.code != u'1':
+          self.common_response.set_error(result.reason_text)
         #TODO: verify transaction is decrypted and contains correct item title/url/price
-        return True
+        return result.code == u'1'
 
 class GetOrderedItemsHandler(BaseHandler):
+     
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.request.get('publisherUrl'),
                                                    self.viewer.filter)
-        self.common_response.setItems(orderedItems, response.ItemInfo.FULL)
+        if self.client.numViewableItems * 2 < len(orderedItems):
+          orderedItems = orderedItems[0: self.client.numViewableItems * 2]
+        self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
         numViewed = 0
         for item in orderedItems:
             if numViewed >= self.client.numViewableItems:
@@ -126,7 +122,7 @@ class SubmitFilterHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         BaseHandler.updateFilter(self,
-                                 duration=self.request.get('filter.duration'),
+                                 durationId=self.request.get('filter.durationId'),
                                  popularity=self.request.get('filter.popularity'),
                                  recency=self.request.get('filter.recency'))
         orderedItems = BaseHandler.getOrderedItems(self,
@@ -137,9 +133,25 @@ class SubmitFilterHandler(BaseHandler):
         BaseHandler.writeResponse(self)
 
 class GetItemStatsHandler(BaseHandler):
+    """
+    returns an object
+    {  totalStats: map StatType->int - total number of each user interaction
+       timedStats: map duration.id -> Array[duration.num_deltas]<totalStats for the time period corresponding to a delta,
+         in the most recent order
+       updateTime - the time relative to which the recent stats are calculated.
+         timedStats[duration.id][0] represent total stats in the period [updateTime-duration.delta_sec, updateTime]
+         timedStats[duration.id][1] -> [updateTime - 2*duration.delta_sec, updateTime -duration.delta_sec]
+       durationdInfo: map duration name -> {
+         id: <duration id>
+         sec: <duration in sec>
+         delta_sec: <duration delta in sec>, e.g. for duration = MONTHLY delta may be 1 day, in sec
+         num_deltas: <length of array representing stats for each delta. e.g. for MONTHLY num_deltas = 30 
+       }
+     } 
+    """
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        itemWithStats = BaseHandler.getItemWithStats(self, self.request.get('publisherUrl'),
+        itemWithStats = BaseHandler.getItem(self, self.request.get('publisherUrl'),
                                                      self.request.get('itemId'))
         self.common_response.setItems([itemWithStats], response.ItemInfo.FULL)
         BaseHandler.writeResponse(self)
@@ -153,7 +165,7 @@ def main():
                                          [('/', MainHandler),
                                           # apis
                                           ('/submit_item', SubmitItemHandler),
-                                          ('/submit_paid_item', SubmitPaidItemHandler),
+                                          ('/update_price', UpdatePriceHandler),
                                           ('/get_ordered_items', GetOrderedItemsHandler),
                                           ('/get_paid_items', GetPaidItemsHandler),
                                           ('/submit_user_interaction', SubmitUserInteractionHandler),

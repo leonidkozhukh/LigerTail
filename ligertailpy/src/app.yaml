@@ -1,8 +1,18 @@
 application: ligertailbackend
-version: 2
+version: 5
 runtime: python
 api_version: 1
 
 handlers:
+- url: /js
+  static_dir: js
+  
+- url: /frontend
+  static_dir: frontend
+  
+- url: /payments
+  static_dir: payments
+  
 - url: .*
   script: main.py
+

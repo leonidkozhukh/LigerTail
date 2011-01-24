@@ -3,6 +3,7 @@ import logging
 import datetime
 
 def applyFilter(items, filter):
+  #TODO: support timeliness
   LIKES_RATE_K = 500.0
   CLICKS_RATE_K = 100.0
   CLOSES_RATE_K = -20.0
@@ -32,8 +33,8 @@ def applyFilter(items, filter):
         likes * TOTAL_LIKES_K + \
         clicks * TOTAL_CLICKS_K + \
         closes * TOTAL_CLOSES_K
-    seconds = float((today - item.creationTime).seconds)
-    recency = RECENCY_K / (seconds+1) 
+    seconds = float((today - item.creationTime).seconds) + 1
+    recency = RECENCY_K / seconds 
     item.v = popularity * filter.popularity + \
         recency * filter.recency + \
         views * TOTAL_VIEWS_K + \
