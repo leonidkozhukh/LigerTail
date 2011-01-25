@@ -33,7 +33,6 @@ a:link {
 	padding:5px;
 	float:left;
 	width: 590px;
-	display: none;
 }
 
 #widget_1 .close {
@@ -117,9 +116,7 @@ a:link {
 	width: 285px;
 	padding-top: 5px;
 	padding-right: 5px;
-	padding-bottom: 5px;
 	padding-left: 10px;
-	display: none;
 }
 
 #widget_2 .close {
@@ -139,7 +136,7 @@ a:link {
 	padding-top:4px;
 	padding-bottom:4px;
 	margin-right: 4px;
-
+	font-size: 12px;
 
 }
 
@@ -160,7 +157,7 @@ a:link {
 
 #widget_2 .share {
 	float:right;
-	margin-top: 5px;
+	margin-top: 0px;
 }
 
 #widget_2 .form_2 {

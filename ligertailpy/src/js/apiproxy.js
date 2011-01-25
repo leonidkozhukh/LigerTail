@@ -32,11 +32,6 @@ Api.prototype.submitItem = function(item) {
 	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
 };
 
-Api.prototype.updatePrice = function(publisherUrl, itemId, price) {
-	assert(publisherUrl && itemId && price > 0);
-	var data = this.serialize({"publisherUrl":publisherUrl, "itemId":itemId, "price":price});
-	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
-};
 
 Api.prototype.getOrderedItems = function(publisherUrl) {
 	assert(publisherUrl);
@@ -78,13 +73,13 @@ Api.prototype.getFilter= function(publisherUrl) {
 
 Api.prototype.submitFilter= function(publisherUrl, filter) {
 	assert(publisherUrl);
-	assert(filter.durationId >= Duration.ETERNITY && filter.durationId <= Duration.MINUTELY);
+	assert(filter.duration == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
 	assert(filter.popularity > 0 && filter.popularity <= 100);
 	
 	var data = this.serialize({
 		"publisherUrl": publisherUrl,
-		"filter.durationId": filter.durationId,
+		"filter.duration": filter.duration,
 		"filter.recency": filter.recency,
 		"filter.popularity": filter.popularity} );
 	postRequest(this.domain, 'submit_filter', 'POST', data, '_apiHandler.onFilterSubmitted');
