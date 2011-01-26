@@ -25,12 +25,39 @@ def verifySignature(data, signatureBase64, publicKeyBase64):
 import authorize
 from authorize import aim
 
-def test(itemId):
-  api = aim.Api(u"7Tgz75R5zP", u"79myB9H3S489h7Bj", delimiter=u"|", is_test=True)
+###
+#        paymentInfo = {'price': request.get('price'),
+#                      'first_name': request.get('first_name'),
+#                      'last_name': request.get('last_name'),
+#                      'itemId': request.get('itemId'),
+#                      'itemUrl'
+#                      'address': request.get('address'),
+#                      'city': request.get('city'),
+#                      'state': request.get('state'),
+#                      'zip': request.get('zip'),
+#                      'cc': request.get('cc'),
+#                      'expiration': request.get('expiration'),
+#                      'cvs': request.get('cvs') };
+###
+def verify(paymentInfo, is_test=True):
+  api = None
+  #TODO: store in DB
+  if is_test:
+    api = aim.Api(u"7Tgz75R5zP", u"79myB9H3S489h7Bj", delimiter=u"|", is_test=is_test)
+  else:
+    api = aim.Api(u"4xjE9pqUH3D", u"4hhn8VTA6x47ex38", delimiter=u"|", is_test=is_test)
   result_dict = api.transaction(
-                amount=10.00,
-                card_num=u"400700000027",
-                exp_date=u"2011-07",
-                extra_fields={u'itemId': unicode(str(itemId))}
+                amount=paymentInfo['price'],
+                card_num=paymentInfo['cc'],
+                exp_date=paymentInfo['expiration'],
+                extra_fields={u'itemId': unicode(paymentInfo['itemId'])},
+                x_first_name=paymentInfo['first_name'],
+                x_last_name=paymentInfo['last_name'],
+                x_card_code=paymentInfo['cvs'],
+                x_line_item=u'%s|%s|%s' %(paymentInfo['itemId'], 'LigerTail link', paymentInfo['itemUrl']),
+                x_address=paymentInfo['address'],
+                x_city=paymentInfo['city'],
+                x_state=paymentInfo['state'],
+                x_zip=paymentInfo['zip'],
             )
   return result_dict

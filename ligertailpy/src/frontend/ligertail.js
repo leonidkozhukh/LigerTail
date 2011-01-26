@@ -99,7 +99,7 @@ function OpenLightboxSubmission(url){
                 jQuery("#form_submission #url").val(url);
                 
                 //populate preview with data
-                jQuery("#preview .image img").attr("src", data.thumbnailUrl);
+                jQuery("#preview .image img").attr("src", data.thumbnail_url);
                 
             },
             error: function(e){ alert("error: " + e);}        
@@ -142,6 +142,7 @@ function OpenLightboxSubmission(url){
             
             
             jQuery("#form_submission").submit(function(){
+            	window.submitForFree = true;
                 event.preventDefault();
                 
                 var item = {}; 
@@ -171,7 +172,8 @@ function OpenLightboxSubmission(url){
                 }
             });
             
-            jQuery("#form_submission #button2").click(function(){                
+            jQuery("#form_submission #button_pay").click(function(){ 
+            	window.submitForFree = false;
                 event.preventDefault();
                 
                 var item = {}; 
@@ -199,14 +201,14 @@ function OpenLightboxSubmission(url){
                 else{
                         console.log(item);
                 }
-                
+                /*
                 //ultimately will open a new window with ligertail.com/payments.html loaded
                 jQuery("#facebox .content").empty().load("payment.html");
                 jQuery("#facebox").css({
                        top:    jQuery(window).height() / 10,
                     left:    150 
                   }).show();
-                
+                */
                 
                 
             });
@@ -224,7 +226,7 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  var domain = "http://5.latest.ligertailbackend.appspot.com";
+  var domain = "http://localhost:8080";//"http://5.latest.ligertailbackend.appspot.com";
   window.api = new Api();
   api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;

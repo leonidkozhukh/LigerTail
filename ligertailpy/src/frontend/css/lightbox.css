@@ -14,15 +14,12 @@
 	float:left;
 	width:350px;
 	padding:10px;
-	border-right-width: 1px;
-	border-right-style: solid;
-	border-right-color: #ccc;
 }
 
 #right_column {
 	width:305px;
 	padding:10px;
-	border-left:none;
+	border-left:1px solid #ccc;
 	float: left;
 }
 
@@ -34,7 +31,7 @@
 
 #lightbox_1 .close {
 	float:left;
-	padding-top: 5px;
+	padding-top: 0px;
 }
 
 #lightbox_1 .image {
@@ -74,8 +71,4 @@
 	background-repeat:repeat-x;
 	border: 1px solid #ccc;
 	padding-bottom: 4px;
-}
-
-.error {
-	color:#F00;
 }

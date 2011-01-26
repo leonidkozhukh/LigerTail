@@ -32,6 +32,7 @@ class SubmitItemHandler(BaseHandler):
         item.put()
         BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
         BaseHandler.sendConfirmationEmail(self, item)
+        self.common_response.setItems([item], response.ItemInfo.SHORT)
         BaseHandler.writeResponse(self)
     
 class UpdatePriceHandler(BaseHandler):
@@ -43,13 +44,28 @@ class UpdatePriceHandler(BaseHandler):
         if self._verifyTransaction(self.request, item):  
           item.price = item.price + int(self.request.get('price'))                          
           item.put()
-          BaseHandler.sendConfirmationEmail(self, item)
+          
+          BaseHandler.sendConfirmationEmail(self, 
+                                            item)
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
         
     def _verifyTransaction(self, request, item):
-        result = payment.test(item.key().id())
+        paymentInfo = {'price': request.get('price'),
+                       'first_name': request.get('first_name'),
+                       'last_name': request.get('last_name'),
+                       'itemId': request.get('itemId'),
+                       'itemUrl': item.url,
+                       'address': request.get('address'),
+                       'city': request.get('city'),
+                       'state': request.get('state'),
+                       'zip': request.get('zip'),
+                       'cc': request.get('cc'),
+                       'expiration': request.get('expiration'),
+                       'cvs': request.get('cvs') };
+                       
+        result = payment.verify(paymentInfo, False)
         logging.info('verifyTransaction %s', str(result))
         if result.code != u'1':
           self.common_response.set_error(result.reason_text)
