@@ -172,6 +172,7 @@ class GetItemStatsHandler(BaseHandler):
         self.common_response.setItems([itemWithStats], response.ItemInfo.FULL)
         BaseHandler.writeResponse(self)
 
+
 class ProcessUpdatesWorker(webapp.RequestHandler):
     def post(self):
       itemList.processUpdates(self.request.get('publisherUrl'))

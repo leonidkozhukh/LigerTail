@@ -28,7 +28,10 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
   // TODO: handle error case
   if (!window.submitForFree) {
 	var item = jQuery.parseJSON(response.items[0]);
-	document.location.href = "payment.html?itemId=" + item.id;
+	window.location = "https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
+		
+		//"payment.html?itemId=" + item.id; //"https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
+	
 	/*
 	jQuery("#facebox .content").empty().load("payment.html?itemId=" + item.id);
     jQuery("#facebox").css({

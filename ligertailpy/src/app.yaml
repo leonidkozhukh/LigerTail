@@ -6,13 +6,16 @@ api_version: 1
 handlers:
 - url: /js
   static_dir: js
+  secure: optional
+
+- url: /frontend/payment\.html
+  secure: always
+  static_dir: frontend
   
 - url: /frontend
   static_dir: frontend
-  
-- url: /payments
-  static_dir: payments
-  
+  secure: optional
+      
 - url: .*
   script: main.py
 
