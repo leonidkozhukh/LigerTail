@@ -226,7 +226,7 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  var domain = "http://5.latest.ligertailbackend.appspot.com";
+  var domain = "http://localhost:8080";//"http://5.latest.ligertailbackend.appspot.com";
   window.api = new Api();
   api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;

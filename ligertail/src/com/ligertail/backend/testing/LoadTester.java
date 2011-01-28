@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
+import org.mortbay.util.ajax.JSON;
+
 import com.google.appengine.repackaged.org.json.JSONArray;
 import com.google.appengine.repackaged.org.json.JSONException;
 import com.google.appengine.repackaged.org.json.JSONObject;
@@ -22,6 +24,7 @@ public class LoadTester {
   private static final Logger log = Logger.getLogger(LoadTester.class.getName());
   private final String domain;
   private static AtomicInteger submitId = new AtomicInteger(0);
+  private static final int NUM_VIEWABLE_ITEMS = 5;
   
   public LoadTester(String domain) {
     this.domain = domain;
@@ -96,6 +99,7 @@ public class LoadTester {
   private JSONObject post(Map<String, String> keyValues, String cmd) { 
     try {
       log.info("############### Posting data to " + cmd);
+      keyValues.put("client.numViewableItems", String.valueOf(this.NUM_VIEWABLE_ITEMS));
       // Construct data
       String data = "";
       boolean first = true;
@@ -154,7 +158,7 @@ public class LoadTester {
     JSONObject json = loadTester.getItems(publisherUrl);
     //loadTester.getItemStats(publisherUrl, "23");
     JSONArray items = json.getJSONArray("items");
- 3   JSONObject item = new JSONObject((String)items.get(0));
+    JSONObject item = new JSONObject((String)items.get(0));
     
     String itemId = item.getString("id");
     loadTester.submitUserInteraction(publisherUrl, 
@@ -177,6 +181,7 @@ public class LoadTester {
       loadTester.submitPaidItem(publisherUrl);
       loadTester.submitItem(publisherUrl);
     }*/
+    /*
     loadTester.submitPaidItem(publisherUrl);
     loadTester.submitPaidItem(publisherUrl);
     loadTester.submitPaidItem(publisherUrl);
@@ -189,11 +194,20 @@ public class LoadTester {
     loadTester.submitItem(publisherUrl);
     loadTester.getItems(publisherUrl);
     loadTester.getPaidItems(publisherUrl);
-    loadTester.submitUserInteraction(publisherUrl, "23:4, 32:1");
+    //loadTester.submitUserInteraction(publisherUrl, "23:4, 32:1");
     loadTester.getFilter(publisherUrl);
 
     loadTester.submitFilter(publisherUrl);
+    */
+    JSONObject json = loadTester.getItems(publisherUrl);
+    JSONArray items = json.getJSONArray("items");
+    for (int i = 0; i < items.length(); i++) {
+        JSONObject jsonItem = new JSONObject(items.get(i).toString());
+        
+        String d = jsonItem.getString("description");
+    }
     loadTester.getItems(publisherUrl);
+
   } 
 }
  

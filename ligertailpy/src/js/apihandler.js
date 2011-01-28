@@ -29,9 +29,6 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
   if (!window.submitForFree) {
 	var item = jQuery.parseJSON(response.items[0]);
 	window.location = "https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
-		
-		//"payment.html?itemId=" + item.id; //"https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
-	
 	/*
 	jQuery("#facebox .content").empty().load("payment.html?itemId=" + item.id);
     jQuery("#facebox").css({
