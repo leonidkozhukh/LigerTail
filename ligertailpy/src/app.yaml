@@ -15,6 +15,10 @@ handlers:
 - url: /frontend
   static_dir: frontend
   secure: optional
+  
+- url: /admin
+  script: admin/admin.py
+  login: admin
       
 - url: .*
   script: main.py
