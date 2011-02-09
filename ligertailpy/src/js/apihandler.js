@@ -10,18 +10,20 @@ function debug(myObj) {
 }
 
 function getDomain(url) {
-var urlpattern = new RegExp("(http|ftp|https)://(.*?)/.*$");
+/*var urlpattern = new RegExp("(http|ftp|https)://(.*?)/.*$");
 var parsedurl = url.match(urlpattern);
-if(parsedurl == null){
+if(parsedurl == null){ 
 	var urlexp = new RegExp("(.*?)/.*$");
 	parsedurl = url.match(urlexp);
 	if(parsedurl == null)
 		return url.replace("www.", "");
-	else
-		return parsedurl[1].replace("www.", "");
+	else{console.log(parsedurl);
+		return parsedurl[1].replace("www.", "");}
 }
 else
 	return parsedurl[2].replace("www.", "");
+*/
+return (url.match(/:\/\/(.[^/]+)/)[1]).replace('www.','');
 }
 
 ApiHandler.prototype.onItemSubmitted = function(response) {

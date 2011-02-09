@@ -1,5 +1,22 @@
-
-var initialized = false;
+//http://stackoverflow.com/questions/2170439/how-to-embed-javascript-widget-that-depends-on-jquery-into-an-unknown-environment
+(function(window, document, version, callback) {
+    var j, d;
+    var loaded = false;
+    if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js";
+        script.onload = script.onreadystatechange = function() {
+            if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
+                callback((j = window.jQuery).noConflict(1), loaded = true);
+                j(script).remove();
+            }
+        };
+        document.documentElement.childNodes[0].appendChild(script)
+    }
+})(window, document, "1.4", function($, jquery_loaded) {
+                                                        
+    var initialized = false;
 
 function LoadFile(filename, filetype){
     if (filetype == "js"){ //if filename is a external JavaScript file
@@ -17,19 +34,17 @@ function LoadFile(filename, filetype){
      if (typeof fileref != "undefined")
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
+    LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
+    LoadFile("../js/postrequest.js", "js");
+    LoadFile("../js/json2.js", "js");
+    LoadFile("../js/apiproxy.js", "js");
+    LoadFile("../js/apihandler.js", "js");
 
-//LoadFile("../js/jquery-1.4.4", "js");
-LoadFile("../js/postrequest.js", "js");
-LoadFile("../js/json2.js", "js");
-LoadFile("../js/apiproxy.js", "js");
-LoadFile("../js/apihandler.js", "js");
-//LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", "js");
-LoadFile("facebox/facebox.js", "js");
-LoadFile("facebox/facebox.css", "css");
-LoadFile("css/widget_1.css", "css");
-
-
-//LOAD PUBLISHER-SET PARAMETERS
+    LoadFile("facebox/facebox.js", "js");
+    LoadFile("facebox/facebox.css", "css");
+    LoadFile("css/widget_1.css", "css");
+    
+    //LOAD PUBLISHER-SET PARAMETERS
 
 function SetupParameters(){
     ///////////////////////////////
@@ -91,9 +106,9 @@ function OpenLightboxSubmission(url){
         // Call embedly
         jQuery.ajax({
             type: "GET",
-            url: "http://api.embed.ly/1/oembed?callback=?&format=json&url=" + url,
+            url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
             dataType: "json",
-            success: function(data){
+            success: function(data){ console.log(data);
                 jQuery("#form_submission #title").val(data.title);    
                 jQuery("#form_submission #description").val(data.description);
                 jQuery("#form_submission #url").val(url);
@@ -142,7 +157,7 @@ function OpenLightboxSubmission(url){
             
             
             jQuery("#form_submission").submit(function(){
-            	window.submitForFree = true;
+                window.submitForFree = true;
                 event.preventDefault();
                 
                 var item = {}; 
@@ -173,7 +188,7 @@ function OpenLightboxSubmission(url){
             });
             
             jQuery("#form_submission #button_pay").click(function(){ 
-            	window.submitForFree = false;
+                window.submitForFree = false;
                 event.preventDefault();
                 
                 var item = {}; 
@@ -226,7 +241,7 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  var domain = "http://localhost:8080";//"http://5.latest.ligertailbackend.appspot.com";
+  var domain = "http://5.latest.ligertailbackend.appspot.com";
   window.api = new Api();
   api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
@@ -333,17 +348,11 @@ function initAll(){
                    
                    
 }
+    
+    
+    $(document).ready(function(){
+          initAll();                   
+    });
 
-function tryToInit() {
-	try {
-	    var test = new ApiHandler();
-	    initAll();
-	} catch (e) {
-	    setTimeout("tryToInit()", 100);
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////
-jQuery(document).ready(function($){
-  tryToInit();
 });
+

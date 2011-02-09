@@ -17,6 +17,12 @@ var Duration  = {
 	MINUTELY: 5
 };
 
+var InfoType = {
+	    SHORT : 0,
+	    WITH_PRICE:  1,
+	    FULL: 2		
+};
+
 function Api() {
 }
 
@@ -30,6 +36,21 @@ Api.prototype.submitItem = function(item) {
 	item.price = 0;
 	var data = this.serialize(item);
 	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
+};
+
+Api.prototype.updatePrice = function(publisherUrl, itemId, price, item) {
+	assert(publisherUrl && itemId && price);
+	var data = this.serialize({
+		"url": item.url || "", 
+		"email": item.email || "", 
+		"title": item.title || "", 
+		"description": item.description || "",
+		"thumbnailUrl": item.thumbnailUrl  || "",
+		"publisherUrl":publisherUrl, 
+		"itemId":itemId, 
+		"price":price
+	});
+	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
 };
 
 
@@ -85,9 +106,9 @@ Api.prototype.submitFilter= function(publisherUrl, filter) {
 	postRequest(this.domain, 'submit_filter', 'POST', data, '_apiHandler.onFilterSubmitted');
 };
 
-Api.prototype.getItemStats= function(publisherUrl, itemId) {
+Api.prototype.getItemStats= function(publisherUrl, itemId, infoType) {
 	assert(publisherUrl && itemId > 0);
-	var data = this.serialize({"publisherUrl": publisherUrl, "itemId":itemId});
+	var data = this.serialize({"publisherUrl": publisherUrl, "itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, '_apiHandler.onGetItemStats');
 };
 

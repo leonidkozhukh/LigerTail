@@ -41,8 +41,19 @@ class UpdatePriceHandler(BaseHandler):
         # TODO: assert https
         item = BaseHandler.getItem(self, self.request.get('publisherUrl'),
                                    self.request.get('itemId'))
+        if len(self.request.get('url')) :
+          item.url = self.request.get('url')
+        if len(self.request.get('thumbnailUrl')):
+          item.thumbnailUrl = self.request.get('thumbnailUrl')
+        if len(self.request.get('title')):
+          item.title = self.request.get('title')
+        if len(self.request.get('description')):
+          item.description = self.request.get('description')
+        if len(self.request.get('email')):
+          item.email = self.request.get('email')
+
         if self._verifyTransaction(self.request, item):  
-          item.price = item.price + int(self.request.get('price'))                          
+          item.price = item.price + int(self.request.get('price'))                                    
           item.put()
           
           BaseHandler.sendConfirmationEmail(self, 
@@ -169,7 +180,11 @@ class GetItemStatsHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         itemWithStats = BaseHandler.getItem(self, self.request.get('publisherUrl'),
                                                      self.request.get('itemId'))
-        self.common_response.setItems([itemWithStats], response.ItemInfo.FULL)
+        itemInfoType = response.ItemInfo.FULL;
+        s = self.request.get('infoType');
+        if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 
+          itemInfoType = int(s)
+        self.common_response.setItems([itemWithStats], itemInfoType)
         BaseHandler.writeResponse(self)
 
 

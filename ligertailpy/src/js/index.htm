@@ -15,44 +15,31 @@
 <script>
 var initialized = false;
 $(document).ready(function(){
-  init('www.nytimes3.com');
+  init();
 });
  
-function init(publisherUrl) {
-  if (initialized) {
-    return;
-  }
-  var initialized = true;
+function init() {
   var apiHandler = new ApiHandler();
-  /*var domain = "http://" + window.document.location.hostname;
-  if (window.document.location.port) {
-	  domain += ":" + window.document.location.port;
-  }*/
-  var domain = "http://5.latest.ligertailbackend.appspot.com"
+  var domain = document.getElementById("domain").value;
+  if (!domain) {
+    domain = "http://" + window.document.location.hostname;
+    if (window.document.location.port) {
+      domain += ":" + window.document.location.port;
+    }
+  }
   window.api = new Api();
   api.init(domain, apiHandler);
-  window.publisherUrl = publisherUrl
+  window.publisherUrl = document.getElementById("publisherUrl").value;
 }
 
 function submitItem() {
-	var item = {};
+  var item = {};
   item.publisherUrl = publisherUrl;
   item.url = "www.blah.com";
   item.title = "blah";
   item.description = "blahblah";
   item.email = "email@emal.com";
-  api.submitItem(item);	  
-}
-
-function submitPaidItem() {
-	  var item = {};
-	  item.publisherUrl = publisherUrl;
-	  item.url = "www.blah.com";
-	  item.title = "blah";
-	  item.description = "blahblah";
-	  item.email = "email@emal.com";
-	  item.price = 50;
-	  api.submitItem(item);   	
+  api.submitItem(item);   
 }
 
 function getOrderedItems() {
@@ -65,42 +52,63 @@ function getPaidItems() {
 }
 
 function getItemStats() {
-	var itemId = 100;
-	api.getItemStats(publisherUrl, itemId);
+  var itemId = document.getElementById("itemid").value - 0;
+  api.getItemStats(publisherUrl, itemId, InfoType.FULL); // InfoType.SHORT
 }
 
 function getFilter() {
-	api.getFilter(publisherUrl);
+  api.getFilter(publisherUrl);
 }
 
 function submitFilter() {
-	filter = {};
-	filter.duration = Duration.ETERNITY;
-	filter.popularity = 50;
-	filter.recency = 50;
-	api.submitFilter(publisherUrl, filter);
+  filter = {};
+  filter.durationId = Duration.ETERNITY;
+  filter.popularity = 50;
+  filter.recency = 50;
+  api.submitFilter(publisherUrl, filter);
 }
 
 function submitUserInteraction() {
-	interactions = [];
-	interactions[0] = {itemId:100, statType: StatType.VIEWS};
-	interactions[1] = {itemId:101, statType: StatType.CLOSES};
-	api.submitUserInteraction(publisherUrl, interactions);
+  interactions = [];
+  var itemId = document.getElementById("itemid").value - 0;
+  interactions.push({itemId: itemId , statType: StatType.VIEWS});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS});
+  interactions.push({itemId:itemId, statType: StatType.CLOSES});
+  interactions.push({itemId:itemId, statType: StatType.CLICKS});
+  interactions.push({itemId:itemId, statType: StatType.CLICKS});
+  api.submitUserInteraction(publisherUrl, interactions);
 }
+
+function updatePrice() {
+    var itemId = document.getElementById("itemid").value - 0;
+    var price = document.getElementById("price").value - 0;
+    var item = {}
+    item.url = "www.blah1.com";
+    item.title = "blah1";
+    item.email = "email@emal1.com";
+    api.updatePrice(publisherUrl, itemId, price, item);
+}
+
 
 </script>
 </head>
 </HTML>
 <BODY>
+<div>Backend </div><INPUT TYPE="text"  ID="domain" VALUE=""><P>
+<div>PublisherUrl </div><INPUT TYPE="text" ID="publisherUrl" VALUE="www.nytimes3.com"><P>
 
-<A href="#" onMouseDown="init('www.nytimes3.com')"><div>init api</div></A>
+<A href="#" onMouseDown="init()"><div>init api</div></A>
 <A href="#" onMouseDown="submitItem()" ><div> submit item</div></A>
-<A href="#" onMouseDown="submitPaidItem()" ><div> submit paid item</div></A>
 <A href="#" onMouseDown="getOrderedItems()" ><div> get ordered items</div></A>
 <A href="#" onMouseDown="getPaidItems()" ><div> get paid items</div></A>
-<A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
 <A href="#" onMouseDown="getFilter()" ><div> get filter</div></A>
 <A href="#" onMouseDown="submitFilter()" ><div> submit filter</div></A>
+<div>Item id: </div><INPUT TYPE="text"  ID="itemid" VALUE=""><P>
+
 <A href="#" onMouseDown="submitUserInteraction()" ><div> submit user interaction</div></A>
+<A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
+<div>Price (cents): </div><INPUT TYPE="text" ID="price" VALUE="100"><P>
+<A href="#" onMouseDown="updatePrice()" ><div> update price</div></A>
 
 </BODY>
