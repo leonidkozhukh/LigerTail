@@ -57,9 +57,11 @@ class BaseHandler(webapp.RequestHandler):
       items = model.getPaidItems(publisherUrl)
       return items
  
-  def getItem(self, publisherUrl, itemId):
-      return model.Item.get_by_id(int(itemId)) 
-  
+  def getItem(self, itemId):
+      item = model.Item.get_by_id(int(itemId))
+      return item          
+      
+      
   def updateViewer(self, statType=None, itemId=None):
       if statType and itemId:
           if statType == model.StatType.CLOSES:

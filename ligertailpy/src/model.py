@@ -81,6 +81,19 @@ class Filter(db.Model):
       self.default = False
 
 
+class PaymentInfo:
+  creationTime = {}
+  email = ''
+  price = 0
+  
+  def __init__(self, creationTime, price, email):
+    self.email = email
+    self.price = price
+    self.creationTime = creationTime
+
+  def __str__(self):
+    return '%s $%d %s' %(self.creationTime, self.price, self.email)
+
 class Item(db.Model):
   creationTime = db.DateTimeProperty(auto_now_add=True)
   url = db.StringProperty()
@@ -93,8 +106,10 @@ class Item(db.Model):
   sessionId = db.StringProperty()
   pickled_stats = db.BlobProperty(required=False)
   pickled_timedstats = db.BlobProperty(required=False)
+  pickled_payments = db.BlobProperty(required=False)
   stats = {}
   timedStats = {}
+  payments = []
   
   def __init__(self, *args, **kwargs):
     super(Item, self).__init__(*args, **kwargs)
@@ -124,12 +139,15 @@ class Item(db.Model):
     else:
       self.timedStats = TimedStats()
     
+    if self.pickled_payments:
+      (self.payments) = pickle.loads(self.pickled_payments)
+    
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
     # Pickle data
     self.pickled_stats = pickle.dumps((self.stats), 2)
     self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
-    
+    self.pickled_payments = pickle.dumps((self.payments), 2)
     db.Model.put(self)
  
   def update(self, statType, creationTime):
@@ -139,7 +157,14 @@ class Item(db.Model):
       self.stats[statType] += 1
     self.timedStats.update(statType, creationTime)
           
+   
+  def updatePrice(self, price, email):
+    # TODO: check for price > 0 and email valid
+    paymentInfo = PaymentInfo(datetime.now(),
+                              price, email)
+    self.payments.append(paymentInfo)
     
+
 class TimedStats(object):
   def __init__(self):  
     self.durations = self.create_()

@@ -38,18 +38,8 @@ Api.prototype.submitItem = function(item) {
 	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
 };
 
-Api.prototype.updatePrice = function(publisherUrl, itemId, price, item) {
-	assert(publisherUrl && itemId && price);
-	var data = this.serialize({
-		"url": item.url || "", 
-		"email": item.email || "", 
-		"title": item.title || "", 
-		"description": item.description || "",
-		"thumbnailUrl": item.thumbnailUrl  || "",
-		"publisherUrl":publisherUrl, 
-		"itemId":itemId, 
-		"price":price
-	});
+Api.prototype.updatePrice = function(publisherUrl, itemId, ccinfo) {
+	var data = this.serialize(ccinfo);
 	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
 };
 

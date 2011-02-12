@@ -39,25 +39,14 @@ class UpdatePriceHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         # TODO: assert https
-        item = BaseHandler.getItem(self, self.request.get('publisherUrl'),
-                                   self.request.get('itemId'))
-        if len(self.request.get('url')) :
-          item.url = self.request.get('url')
-        if len(self.request.get('thumbnailUrl')):
-          item.thumbnailUrl = self.request.get('thumbnailUrl')
-        if len(self.request.get('title')):
-          item.title = self.request.get('title')
-        if len(self.request.get('description')):
-          item.description = self.request.get('description')
-        if len(self.request.get('email')):
-          item.email = self.request.get('email')
+        item = BaseHandler.getItem(self, self.request.get('itemId'))
 
         if self._verifyTransaction(self.request, item):  
-          item.price = item.price + int(self.request.get('price'))                                    
+          item.updatePrice(int(self.request.get('price')), self.request.get('email'))                                  
           item.put()
-          
-          BaseHandler.sendConfirmationEmail(self, 
-                                            item)
+          logging.info('Number of price updates : %d' % len(item.payments))
+          logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
+          BaseHandler.sendConfirmationEmail(self, item)
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
@@ -76,7 +65,7 @@ class UpdatePriceHandler(BaseHandler):
                        'expiration': request.get('expiration'),
                        'cvs': request.get('cvs') };
                        
-        result = payment.verify(paymentInfo, False)
+        result = payment.verify(paymentInfo) # False for real!, False)
         logging.info('verifyTransaction %s', str(result))
         if result.code != u'1':
           self.common_response.set_error(result.reason_text)
@@ -178,8 +167,7 @@ class GetItemStatsHandler(BaseHandler):
     """
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        itemWithStats = BaseHandler.getItem(self, self.request.get('publisherUrl'),
-                                                     self.request.get('itemId'))
+        itemWithStats = BaseHandler.getItem(self, self.request.get('itemId'))
         itemInfoType = response.ItemInfo.FULL;
         s = self.request.get('infoType');
         if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 

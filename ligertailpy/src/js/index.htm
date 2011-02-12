@@ -9,7 +9,7 @@
 </script>
 <script src = "../js/apiproxy.js">
 </script>
-<script src = "../js/apihandler.js">
+<script src = "../js/baseapihandler.js">
 </script>
  
 <script>
@@ -19,7 +19,7 @@ $(document).ready(function(){
 });
  
 function init() {
-  var apiHandler = new ApiHandler();
+  var apiHandler = new BaseApiHandler();
   var domain = document.getElementById("domain").value;
   if (!domain) {
     domain = "http://" + window.document.location.hostname;
@@ -83,11 +83,21 @@ function submitUserInteraction() {
 function updatePrice() {
     var itemId = document.getElementById("itemid").value - 0;
     var price = document.getElementById("price").value - 0;
-    var item = {}
-    item.url = "www.blah1.com";
-    item.title = "blah1";
-    item.email = "email@emal1.com";
-    api.updatePrice(publisherUrl, itemId, price, item);
+    ccinfo = {};
+    ccinfo.itemId = itemId;
+    ccinfo.price = price;
+    ccinfo.first_name = "John";
+    ccinfo.last_name = "Smith";
+    ccinfo.address = "23 main street";
+    ccinfo.city = "Nyork";
+    ccinfo.state = "NY";
+    ccinfo.zip = "10000";
+    ccinfo.cc = "4111111111111111";
+    ccinfo.expiration = "1/1/15";
+    ccinfo.cvs = "123";
+    
+    
+    api.updatePrice(publisherUrl, itemId, ccinfo);
 }
 
 

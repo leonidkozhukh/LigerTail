@@ -47,17 +47,17 @@ def verify(paymentInfo, is_test=True):
   else:
     api = aim.Api(u"4xjE9pqUH3D", u"4hhn8VTA6x47ex38", delimiter=u"|", is_test=is_test)
   result_dict = api.transaction(
-                amount=paymentInfo['price'],
-                card_num=paymentInfo['cc'],
-                exp_date=paymentInfo['expiration'],
+                amount=u'%s' % paymentInfo['price'],
+                card_num=u'%s' % paymentInfo['cc'],
+                exp_date=u'%s' % paymentInfo['expiration'],
                 extra_fields={u'itemId': unicode(paymentInfo['itemId'])},
-                x_first_name=paymentInfo['first_name'],
-                x_last_name=paymentInfo['last_name'],
-                x_card_code=paymentInfo['cvs'],
+                x_first_name=u'%s' % paymentInfo['first_name'],
+                x_last_name=u'%s' % paymentInfo['last_name'],
+                x_card_code=u'%s' % paymentInfo['cvs'],
                 x_line_item=u'%s|%s|%s' %(paymentInfo['itemId'], 'LigerTail link', paymentInfo['itemUrl']),
-                x_address=paymentInfo['address'],
-                x_city=paymentInfo['city'],
-                x_state=paymentInfo['state'],
-                x_zip=paymentInfo['zip'],
+                x_address=u'%s' % paymentInfo['address'],
+                x_city=u'%s' % paymentInfo['city'],
+                x_state=u'%s' % paymentInfo['state'],
+                x_zip=u'%s' % paymentInfo['zip']
             )
   return result_dict
