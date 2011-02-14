@@ -1,4 +1,6 @@
-//http://stackoverflow.com/questions/2170439/how-to-embed-javascript-widget-that-depends-on-jquery-into-an-unknown-environment
+//github is a pain
+
+
 (function(window, document, version, callback) {
     var j, d;
     var loaded = false;
@@ -19,7 +21,7 @@
     var initialized = false;
 
 function LoadFile(filename, filetype){
-    if (filetype == "js"){ //if filename is a external JavaScript file
+    if (filetype == "js"){ //if filename is an external JavaScript file
           var fileref = document.createElement('script');
           fileref.setAttribute("type", "text/javascript");
           fileref.setAttribute("src", filename);
@@ -38,7 +40,7 @@ function LoadFile(filename, filetype){
     LoadFile("../js/postrequest.js", "js");
     LoadFile("../js/json2.js", "js");
     LoadFile("../js/apiproxy.js", "js");
-    LoadFile("../js/apihandler.js", "js");
+    LoadFile("../frontend/apihandler.js", "js");
 
     LoadFile("facebox/facebox.js", "js");
     LoadFile("facebox/facebox.css", "css");
@@ -181,6 +183,7 @@ function OpenLightboxSubmission(url){
                     ValidateEmail(item.email)){
                     
                         api.submitItem(item);
+                        //redirect to submit confirmation
                 }
                 else{
                         console.log(item);
@@ -319,7 +322,17 @@ function initAll(){
         var content = '';
     }
     
+    for(var j = 0; j < window.numItems; j++){
+        if(window.parameter["width"] == 600){
+            content += '<div class="content"><div class="image"><img src="default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source">LigerTail.com</span><span class="title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
+        }
+        else{
+            content += '<div class="content"><div class="text"><span class="source">LigerTail.com</span><span class="title">Submit your content in the input box above!</span><p></p></div></div>';
+        }
+    }
+    
     $(".widget").append(header + content + footer);
+    $(".widget .content").show();
     
     //events...
     //input box hover

@@ -1,164 +1,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="//www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Untitled Document</title>
 <link href="css/payment.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-<script type="text/javascript" src="payment.js"></script>
 </head>
 
 <body>
 
 <div id="payment">
-<div id="credit_card">
-<h3>Payment Info	</h3>
-<div id="payment_price">
-<div class="pricing">$0</div>
-<input type="image" src="images/button_pay.png" name="button_pay" id="button_pay" value="Submit" />
-
-</div>
-
-<form id="payment_form" action="/update_price" method="post">
-  <input type="hidden" name="itemId" id="itemId" class="input_form" />
-  <input type="hidden" name="price" id="price" class="input_form" />
-  <table width="100%" border="0" align="left">
-    <tr>
-      <th align="left" scope="col">&nbsp;</th>
-      <th colspan="2" align="left" scope="col">First Name</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="first_name" id="first_name" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" class="error" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" class="error" scope="row">Last Name</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="last_name" id="last_name" class="input_form" /></th>
-    </tr>
-    
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">Address</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="address" id="address" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">City</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="city" id="city" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">State</th>
-      <th align="left" scope="row">Zip</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row"><select name="state" id="state">
-    <option value=""></option>
-    <option value="AK">AK</option>
-    <option value="AL">AL</option>
-    <option value="AR">AR</option>
-    <option value="AZ">AZ</option>
-    <option value="CA">CA</option>
-    <option value="CO">CO</option>
-    <option value="CT">CT</option>
-    <option value="DC">DC</option>
-    <option value="DE">DE</option>
-    <option value="FL">FL</option>
-    <option value="GA">GA</option>
-    <option value="HI">HI</option>
-    <option value="IA">IA</option>
-    <option value="ID">ID</option>
-    <option value="IL">IL</option>
-    <option value="IN">IN</option>
-    <option value="KS">KS</option>
-    <option value="KY">KY</option>
-    <option value="LA">LA</option>
-    <option value="MA">MA</option>
-    <option value="MD">MD</option>
-    <option value="ME">ME</option>
-    <option value="MI">MI</option>
-    <option value="MN">MN</option>
-    <option value="MO">MO</option>
-    <option value="MS">MS</option>
-    <option value="MT">MT</option>
-    <option value="NC">NC</option>
-    <option value="ND">ND</option>
-    <option value="NE">NE</option>
-    <option value="NH">NH</option>
-    <option value="NJ">NJ</option>
-    <option value="NM">NM</option>
-    <option value="NV">NV</option>
-    <option value="NY">NY</option>
-    <option value="OH">OH</option>
-    <option value="OK">OK</option>
-    <option value="OR">OR</option>
-    <option value="PA">PA</option>
-    <option value="RI">RI</option>
-    <option value="SC">SC</option>
-    <option value="SD">SD</option>
-    <option value="TN">TN</option>
-    <option value="TX">TX</option>
-    <option value="UT">UT</option>
-    <option value="VA">VA</option>
-    <option value="VT">VT</option>
-    <option value="WA">WA</option>
-    <option value="WI">WI</option>
-    <option value="WV">WV</option>
-    <option value="WY">WY</option>
-      </select></th>
-      <th align="left" scope="row"><input type="text" name="zip" id="zip" class="input_form_short" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">Credit Card #</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="cc" id="cc" class="input_form" /></th>
-    </tr>
-
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">Expiration</th>
-      <th align="left" scope="row">CVS</th>    
-    </tr>
-    
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row"><input type="text" name="expiration" id="expiration" class="input_form_short" /></th>
-      <th align="left" scope="row"><input type="text" name="cvs" id="cvs" class="input_form_short" /></th>
-    </tr>
-
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="image" src="images/button_pay.png" name="button_pay" id="button_pay" value="Submit" /></th>
-    </tr>
-  </table>
-  </form>
-</div>
-
-<div id="analytics">
-<h3>Promoted Content</h3>
+  <div id="analytics">
+  <h3>Promoted Content</h3>
 <div class="entry">
   <div class="pricing">
-    <input name="input_form_price" type="text" class="input_form_price" id="input_form_price" value="Price" />
+    <input name="textfield7" type="text" class="input_form_price" id="textfield3" value="Price" />
   </div>
-  <div class="text">
-    <span class="source">DOMAIN</span><span class="title">Your Content's Title</span>
+  <div class="text"><span class="source">YOUR CONTENT</span>
+    <p>Please be sure to input a description.</p>
   </div>
  <span class="close"><a href="#"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></a></span>
 <div class="share"><a href="#"><img src="images/button_share_2.png" alt="Share" width="16" height="16" border="0" /></a></div>
+</div>
+
+<div class="entry">
+  <div class="pricing">$248</div>
+  <div class="text"><span class="source">Nosaj Thing</span>
+    <p>Dj Set (Live on KEXP)</p>
+  </div>
+</div>
+
+<div class="entry">
+  <div class="pricing">$8</div>
+  <div class="text"><span class="source">Nosaj Thing</span>
+    <p>Dj Set (Live on KEXP)</p>
+  </div>
 </div>
 </div>
 

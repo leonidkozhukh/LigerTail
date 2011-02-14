@@ -10,20 +10,12 @@ function debug(myObj) {
 }
 
 function getDomain(url) {
-/*var urlpattern = new RegExp("(http|ftp|https)://(.*?)/.*$");
-var parsedurl = url.match(urlpattern);
-if(parsedurl == null){ 
-	var urlexp = new RegExp("(.*?)/.*$");
-	parsedurl = url.match(urlexp);
-	if(parsedurl == null)
-		return url.replace("www.", "");
-	else{console.log(parsedurl);
-		return parsedurl[1].replace("www.", "");}
-}
-else
-	return parsedurl[2].replace("www.", "");
-*/
-return (url.match(/:\/\/(.[^/]+)/)[1]).replace('www.','');
+  var clean_domain = url.match(/:\/\/(.[^/]+)/);
+  if(clean_domain == null){
+  	clean_domain = url.split('/');
+  	return clean_domain[0].replace('www.','');
+  }
+  return clean_domain[1].replace('www.',''); 	
 }
 
 ApiHandler.prototype.onItemSubmitted = function(response) {
@@ -31,18 +23,16 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
   if (!window.submitForFree) {
 	var item = jQuery.parseJSON(response.items[0]);
 	window.location = "https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
-	/*
-	jQuery("#facebox .content").empty().load("payment.html?itemId=" + item.id);
-    jQuery("#facebox").css({
-           top:    jQuery(window).height() / 10,
-        left:    150 
-      }).show();
-    */
+  }
+  else{
+	//sucks for the advertiser; will include payment url for item in submission email later on...
   }
 }
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
-	debug(response);
+	//debug(response);
+	//receipt shown/emailed
+	console.log(repsonse);
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
@@ -53,24 +43,18 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		var item_obj = jQuery.parseJSON(item);
 		//console.log(item_obj);
 		if(window.parameter["width"] == 600){
-			content += '<div class="content" id="' + item_obj.id + '"><div class="close"><img src="images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="image"><a href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source"><a href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div><div class="share"><a href="#"><img src="images/button_share.png" alt="Share" width="23" height="22" border="0" /></a></div></div>';
+			content += '<div class="content" id="' + item_obj.id + '"><div class="close"><img src="images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="image"><a href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source"><a href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div><!--div class="share"><a href="#"><img src="images/button_share.png" alt="Share" width="23" height="22" border="0" /></a></div---!></div>';
 		}
 		else{
-			content += '<div class="content" id="' + item_obj.id + '"><div class="close"></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p><a href="#"></a></p></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span><div class="share"><a href="#"><img src="images/button_share_2.png" alt="Share" width="16" height="16" border="0" /></a></div></div>';
+			content += '<div class="content" id="' + item_obj.id + '"><div class="close"></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p><a href="#"></a></p></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span><!--div class="share"><a href="#"><img src="images/button_share_2.png" alt="Share" width="16" height="16" border="0" /></a></div---!></div>';
 		}
 	});
 	
-	for(var j = 0; response.items.length + j < window.numItems; j++){
-		if(window.parameter["width"] == 600){
-			content += '<div class="content"><div class="close"><img src="images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="image"><img src="default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source">domain</span><span class="title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div><div class="share"><a href="#"><img src="images/button_share.png" alt="Share" width="23" height="22" border="0" /></a></div></div>';
-		}
-		else{
-			content += '<div class="content"><div class="close"></div><div class="text"><span class="source">DOMAIN</span><span class="title">Submit your content in the input box above!</span><p></p></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span><div class="share"><a href="#"><img src="images/button_share_2.png" alt="Share" width="16" height="16" border="0" /></a></div></div>';
-		}
-	}
-	
 	
 	jQuery(".widget #header").after(content);
+	
+	//add in spot #
+	//for text click: jQuery(this).parent().index();
 	
 	var interactions = [];
 	// add events to content
@@ -107,6 +91,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	});
 	
 	// show the right number of content items
+	jQuery(".widget .content:visible").hide();
 	jQuery(".widget .content:lt(" + window.numItems + ")").trigger("show");
 	
 }
@@ -139,11 +124,11 @@ ApiHandler.prototype.onUserInteractionSubmitted = function(response) {
 }
 
 ApiHandler.prototype.onGetFilter = function(response) {
-	debug(response);
+	//debug(response);
 }
 
 ApiHandler.prototype.onFilterSubmitted = function(response) {
-	debug(response);
+	//debug(response);
 }
 
 ApiHandler.prototype.onGetItemStats = function(response) {
