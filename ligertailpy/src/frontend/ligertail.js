@@ -110,7 +110,7 @@ function OpenLightboxSubmission(url){
             type: "GET",
             url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
             dataType: "json",
-            success: function(data){ console.log(data);
+            success: function(data){ //console.log(data);
                 jQuery("#form_submission #title").val(data.title);    
                 jQuery("#form_submission #description").val(data.description);
                 jQuery("#form_submission #url").val(url);
@@ -168,7 +168,7 @@ function OpenLightboxSubmission(url){
                 item.title = jQuery("#form_submission #title").val();
                 item.description = jQuery("#form_submission #description").val();
                 item.email = jQuery("#form_submission #email").val();
-                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); console.log(item.thumbnailUrl);
+                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); //console.log(item.thumbnailUrl);
 
                 //if url same as original, use embedly img
                 var img_src = "";
@@ -182,11 +182,11 @@ function OpenLightboxSubmission(url){
                     item.description.length > 0 && item.description.length < 512 &&
                     ValidateEmail(item.email)){
                     
-                        api.submitItem(item);
+                        lgapi.submitItem(item);
                         //redirect to submit confirmation
                 }
                 else{
-                        console.log(item);
+                        //console.log(item);
                 }
             });
             
@@ -200,7 +200,7 @@ function OpenLightboxSubmission(url){
                 item.title = jQuery("#form_submission #title").val();
                 item.description = jQuery("#form_submission #description").val();
                 item.email = jQuery("#form_submission #email").val();
-                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); console.log(item.thumbnailUrl);
+                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); //console.log(item.thumbnailUrl);
 
                 //if url same as original, use embedly img
                 var img_src = "";
@@ -214,10 +214,10 @@ function OpenLightboxSubmission(url){
                     item.description.length > 0 && item.description.length < 512 &&
                     ValidateEmail(item.email)){
                     
-                        api.submitItem(item);
+                        lgapi.submitItem(item);
                 }
                 else{
-                        console.log(item);
+                       // console.log(item);
                 }
                 /*
                 //ultimately will open a new window with ligertail.com/payments.html loaded
@@ -245,8 +245,8 @@ function init(publisherUrl) {
   var initialized = true;
   var apiHandler = new ApiHandler();
   var domain = "http://5.latest.ligertailbackend.appspot.com";
-  window.api = new Api();
-  api.init(domain, apiHandler);
+  lgapi = new LGApi();
+  lgapi.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
 }
 
@@ -257,7 +257,7 @@ function initAll(){
     
     //initialize widget parameters
     window.parameter = SetupParameters();
-    console.log(window.parameter);
+    //console.log(window.parameter);
     
     //adjust size
         //width
@@ -357,7 +357,7 @@ function initAll(){
     });
     
     //load content and bind events
-    api.getOrderedItems(window.PUBLISHER_URL);                
+    lgapi.getOrderedItems(window.PUBLISHER_URL);                
                    
                    
 }

@@ -23,40 +23,41 @@ var InfoType = {
 	    FULL: 2		
 };
 
-function Api() {
+function LGApi() {
+	var i = 1;
 }
 
-Api.prototype.init = function(domain, apiHandler) {
+LGApi.prototype.init = function(domain, apiHandler) {
 	this.domain = domain;
 	_apiHandler = apiHandler;
 }
 
-Api.prototype.submitItem = function(item) {
+LGApi.prototype.submitItem = function(item) {
 	assert(item.publisherUrl && item.url && item.email && item.title && item.description);
 	item.price = 0;
 	var data = this.serialize(item);
 	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
 };
 
-Api.prototype.updatePrice = function(publisherUrl, itemId, ccinfo) {
+LGApi.prototype.updatePrice = function(publisherUrl, itemId, ccinfo) {
 	var data = this.serialize(ccinfo);
 	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
 };
 
 
-Api.prototype.getOrderedItems = function(publisherUrl) {
+LGApi.prototype.getOrderedItems = function(publisherUrl) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_ordered_items', 'POST', data, '_apiHandler.onGetOrderedItems');
 };
 
-Api.prototype.getPaidItems = function(publisherUrl) {
+LGApi.prototype.getPaidItems = function(publisherUrl) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_paid_items', 'POST', data, '_apiHandler.onGetPaidItems');
 };
 
-Api.prototype.submitUserInteraction= function(publisherUrl, interactions) {
+LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions) {
 	assert(publisherUrl && interactions.length > 0);
 	var str;
 	var first = true;	
@@ -75,14 +76,14 @@ Api.prototype.submitUserInteraction= function(publisherUrl, interactions) {
 };
 
 
-Api.prototype.getFilter= function(publisherUrl) {
+LGApi.prototype.getFilter= function(publisherUrl) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_filter', 'POST', data, '_apiHandler.onGetFilter');
 };
 
 
-Api.prototype.submitFilter= function(publisherUrl, filter) {
+LGApi.prototype.submitFilter= function(publisherUrl, filter) {
 	assert(publisherUrl);
 	assert(filter.duration == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
@@ -96,14 +97,14 @@ Api.prototype.submitFilter= function(publisherUrl, filter) {
 	postRequest(this.domain, 'submit_filter', 'POST', data, '_apiHandler.onFilterSubmitted');
 };
 
-Api.prototype.getItemStats= function(itemId, infoType) {
+LGApi.prototype.getItemStats= function(itemId, infoType) {
 	assert(itemId > 0);
-	var data = this.serialize("itemId":itemId, "infoType":infoType});
+	var data = this.serialize({"itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, '_apiHandler.onGetItemStats');
 };
 
 
-Api.prototype.serialize = function(obj) {
+LGApi.prototype.serialize = function(obj) {
 	var first = true;
 	var str = "";
 	for(var prop in obj) {

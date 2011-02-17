@@ -57,8 +57,8 @@ function init(publisherUrl) {
   var initialized = true;
   var apiHandler = new ApiHandler();
   var domain = "http://5.latest.ligertailbackend.appspot.com";
-  window.api = new Api();
-  api.init(domain, apiHandler);
+  window.lgapi = new LGApi();
+  lgapi.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
 }
 
@@ -68,8 +68,8 @@ function initAll(){
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
-    console.log(urlParams['itemId']);
-    /********api.getItem(urlParams['itemId']);**********/
+    //console.log(urlParams['itemId']);
+    /********lgapi.getItem(urlParams['itemId']);**********/
     
     //load credit card validation
     //first
@@ -146,13 +146,13 @@ function initAll(){
     //redirect to receipt page
     jQuery("#payment_form").bind("sub submit", function(){
     	event.preventDefault();
-        console.log("submitted");
+        //console.log("submitted");
         
         if(/*everything is ok*/){
           //disable form & show waiting dialog, then submit
           jQuery("#payment_price, #payment_form :input").attr('disabled', true);
           
-          api.updatePrice(urlParams['itemId'], jQuery("#payment_price .pricing").html().replace("$",""));
+          lgapi.updatePrice(urlParams['itemId'], jQuery("#payment_price .pricing").html().replace("$",""));
           
         }
         else{
@@ -170,7 +170,7 @@ function initAll(){
     });
     
     //load paid content
-    api.getPaidItems(window.PUBLISHER_URL);
+    lgapi.getPaidItems(window.PUBLISHER_URL);
     
     //load statistics for content item
     //this is done in apihandler

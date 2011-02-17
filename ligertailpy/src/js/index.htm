@@ -27,7 +27,7 @@ function init() {
       domain += ":" + window.document.location.port;
     }
   }
-  window.api = new Api();
+  window.api = new LGApi();
   api.init(domain, apiHandler);
   window.publisherUrl = document.getElementById("publisherUrl").value;
 }

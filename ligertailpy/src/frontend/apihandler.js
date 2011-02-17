@@ -32,7 +32,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 ApiHandler.prototype.onPriceUpdated = function(response) {
 	//debug(response);
 	//receipt shown/emailed
-	console.log(repsonse);
+	//console.log(repsonse);
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
@@ -62,14 +62,14 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		jQuery(this).show("fast"); 
 		//this is a view
 		interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 
 	//update db, remove the current content, move stack up, & show more content
 	jQuery(".widget .content .close").click(function(){
 		//this is a close
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		jQuery(this).parent().remove();
 		jQuery(".widget .content:hidden").filter(":first").trigger("show");
 	});
@@ -78,14 +78,14 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	jQuery(".widget .content .text").click(function(){ 
 		//this is a click
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLICKS};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 	
 	//update db for like
 	jQuery(".widget .content .share").click(function(){ 
 		//this is a like
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		
 		alert("need to put in fb functionality");
 	});
@@ -115,7 +115,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	jQuery("#analytics .entry").after(content);
 	
 	jQuery("#analytics .entry").click(function(){
-		api.getItemStats(jQuery(this).attr("id"));
+		lgapi.getItemStats(jQuery(this).attr("id"));
 	});
 }
 
@@ -133,10 +133,10 @@ ApiHandler.prototype.onFilterSubmitted = function(response) {
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//debug(response);
-	console.log(response);
+	//console.log(response);
 	
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		console.log(item_obj);		
+		//console.log(item_obj);		
 	});
 }
