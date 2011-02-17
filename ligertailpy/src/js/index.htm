@@ -53,7 +53,7 @@ function getPaidItems() {
 
 function getItemStats() {
   var itemId = document.getElementById("itemid").value - 0;
-  api.getItemStats(publisherUrl, itemId, InfoType.FULL); // InfoType.SHORT
+  api.getItemStats(itemId, InfoType.FULL); // InfoType.SHORT
 }
 
 function getFilter() {

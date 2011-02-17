@@ -96,9 +96,9 @@ Api.prototype.submitFilter= function(publisherUrl, filter) {
 	postRequest(this.domain, 'submit_filter', 'POST', data, '_apiHandler.onFilterSubmitted');
 };
 
-Api.prototype.getItemStats= function(publisherUrl, itemId, infoType) {
-	assert(publisherUrl && itemId > 0);
-	var data = this.serialize({"publisherUrl": publisherUrl, "itemId":itemId, "infoType":infoType});
+Api.prototype.getItemStats= function(itemId, infoType) {
+	assert(itemId > 0);
+	var data = this.serialize("itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, '_apiHandler.onGetItemStats');
 };
 

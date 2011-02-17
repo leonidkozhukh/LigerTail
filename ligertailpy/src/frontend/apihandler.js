@@ -115,7 +115,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	jQuery("#analytics .entry").after(content);
 	
 	jQuery("#analytics .entry").click(function(){
-		api.getItemStats(window.PUBLISHER_URL, jQuery(this).attr("id"));
+		api.getItemStats(jQuery(this).attr("id"));
 	});
 }
 
