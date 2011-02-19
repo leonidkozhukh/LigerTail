@@ -39,7 +39,7 @@ LGApi.prototype.submitItem = function(item) {
 	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
 };
 
-LGApi.prototype.updatePrice = function(publisherUrl, itemId, ccinfo) {
+LGApi.prototype.updatePrice = function(ccinfo) {
 	var data = this.serialize(ccinfo);
 	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
 };

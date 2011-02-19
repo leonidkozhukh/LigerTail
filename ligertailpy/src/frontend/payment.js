@@ -152,7 +152,7 @@ function initAll(){
           //disable form & show waiting dialog, then submit
           jQuery("#payment_price, #payment_form :input").attr('disabled', true);
           
-          lgapi.updatePrice(urlParams['itemId'], jQuery("#payment_price .pricing").html().replace("$",""));
+          lgapi.updatePrice(jQuery("#payment_price .pricing").html().replace("$",""));
           
         }
         else{
