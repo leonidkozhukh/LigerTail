@@ -35,11 +35,11 @@ function LoadFile(filename, filetype){
 }
 
 LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
-LoadFile("../js/postrequest.js", "js");
-LoadFile("../js/json2.js", "js");
-LoadFile("../js/apiproxy.js", "js");
-LoadFile("../frontend/apihandler.js", "js");
-LoadFile("css/payment.css", "css");
+LoadFile("http://ligertail.com/a/js/postrequest.js", "js");
+LoadFile("http://ligertail.com/a/js/json2.js", "js");
+LoadFile("http://ligertail.com/a/js/apiproxy.js", "js");
+LoadFile("http://ligertail.com/a/frontend/apihandler.js", "js");
+LoadFile("http://ligertail.com/a/frontend/css/payment.css", "css");
 
 function getUrlParameters() {
     var map = {};
@@ -57,8 +57,8 @@ function init(publisherUrl) {
   var initialized = true;
   var apiHandler = new ApiHandler();
   var domain = "http://5.latest.ligertailbackend.appspot.com";
-  window.lgapi = new LGApi();
-  lgapi.init(domain, apiHandler);
+  window.api = new Api();
+  api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
 }
 
@@ -68,8 +68,8 @@ function initAll(){
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
-    //console.log(urlParams['itemId']);
-    /********lgapi.getItem(urlParams['itemId']);**********/
+    console.log(urlParams['itemId']);
+    //api.getItemStats(urlParams['itemId']);
     
     //load credit card validation
     //first
@@ -146,13 +146,13 @@ function initAll(){
     //redirect to receipt page
     jQuery("#payment_form").bind("sub submit", function(){
     	event.preventDefault();
-        //console.log("submitted");
+        console.log("submitted");
         
         if(/*everything is ok*/){
           //disable form & show waiting dialog, then submit
           jQuery("#payment_price, #payment_form :input").attr('disabled', true);
           
-          lgapi.updatePrice(jQuery("#payment_price .pricing").html().replace("$",""));
+          api.updatePrice(urlParams['itemId'], jQuery("#payment_price .pricing").html().replace("$",""));
           
         }
         else{
@@ -170,7 +170,7 @@ function initAll(){
     });
     
     //load paid content
-    lgapi.getPaidItems(window.PUBLISHER_URL);
+    api.getPaidItems(window.PUBLISHER_URL);
     
     //load statistics for content item
     //this is done in apihandler

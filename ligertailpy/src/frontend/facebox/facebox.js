@@ -79,8 +79,8 @@
     settings: {
       opacity      : 0.7,
       overlay      : true,
-      loadingImage : 'facebox/loading.gif',
-      closeImage   : 'facebox/closelabel.gif',
+      loadingImage : 'http://ligertail.com/a/frontend/facebox/loading.gif',
+      closeImage   : 'http://ligertail.com/a/frontend/facebox/closelabel.gif',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
       faceboxHtml  : '\
     <div id="facebox" style="display:none;"> \
@@ -97,7 +97,7 @@
                 </div> \
                 <div class="footer"> \
                   <a href="#" class="close"> \
-                    <img src="facebox/closelabel.gif" title="close" class="close_image" /> \
+                    <img src="http://ligertail.com/a/frontend/facebox/closelabel.gif" title="close" class="close_image" /> \
                   </a> \
                 </div> \
               </td> \

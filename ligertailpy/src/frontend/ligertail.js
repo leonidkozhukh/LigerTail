@@ -1,6 +1,3 @@
-//github is a pain
-
-
 (function(window, document, version, callback) {
     var j, d;
     var loaded = false;
@@ -37,34 +34,34 @@ function LoadFile(filename, filetype){
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
     LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
-    LoadFile("../js/postrequest.js", "js");
-    LoadFile("../js/json2.js", "js");
-    LoadFile("../js/apiproxy.js", "js");
-    LoadFile("../frontend/apihandler.js", "js");
+    LoadFile("http://ligertail.com/a/js/postrequest.js", "js");
+    LoadFile("http://ligertail.com/a/js/json2.js", "js");
+    LoadFile("http://ligertail.com/a/js/apiproxy.js", "js");
+    LoadFile("http://ligertail.com/a/frontend/apihandler.js", "js");
 
-    LoadFile("facebox/facebox.js", "js");
-    LoadFile("facebox/facebox.css", "css");
-    LoadFile("css/widget_1.css", "css");
+    LoadFile("http://ligertail.com/a/frontend/facebox/facebox.js", "js");
+    LoadFile("http://ligertail.com/a/frontend/facebox/facebox.css", "css");
+    LoadFile("http://ligertail.com/a/frontend/css/widget_1.css", "css");
     
     //LOAD PUBLISHER-SET PARAMETERS
 
 function SetupParameters(){
     ///////////////////////////////
-    var file_name = 'ligertail.js';
+    var file_name = "http://www.ligertail.com/a/frontend/ligertail.js";
     ///////////////////////////////
         scripts = document.getElementsByTagName("script"); 
         var i, j, src, parts, basePath, options = {};
         LTnode = document.createElement("div");
-        LTnode.setAttribute("class", "widget");
+        LTnode.setAttribute("class", "ligertail_widget");
         
-    for (i = 0; i < scripts.length; i++) {
+    for (i = 0; i < scripts.length; i++) { 
           src = scripts[i].src;
          if (src.indexOf(file_name) != -1) {
                //create ligertail container <div>               
                scripts[i].parentNode.appendChild(LTnode);
                
                //parse parameters                             
-               parts = src.split('?');
+               parts = src.split('?'); 
                 basePath = parts[0].replace(file_name, '');
                 if (parts[1]) {
                       var opt = parts[1].split('&');
@@ -103,21 +100,22 @@ function ValidateEmail(str) {
 
 function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
-        jQuery.facebox({ ajax: "submission.html"});
+        jQuery.facebox({ ajax: "../submission.html"});
         
         // Call embedly
         jQuery.ajax({
             type: "GET",
             url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
             dataType: "json",
-            success: function(data){ //console.log(data);
-                jQuery("#form_submission #title").val(data.title);    
-                jQuery("#form_submission #description").val(data.description);
-                jQuery("#form_submission #url").val(url);
+            success: function(data){
+                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
+                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
+                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
+                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
                 
-                //populate preview with data
-                jQuery("#preview .image img").attr("src", data.thumbnail_url);
-                
+                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
+                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
+                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
             },
             error: function(e){ alert("error: " + e);}        
         });
@@ -126,108 +124,115 @@ function OpenLightboxSubmission(url){
             //error checking & submission handling            
             
             //form validation
-            jQuery("#form_submission #url").blur(function(){ 
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").blur(function(){ 
                 if(!ValidateURL(jQuery(this).val()))
-                    jQuery("#form_submission tr:first").css("color", "red");
-                else if(jQuery("#form_submission tr:first").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#form_submission tr:first").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "red");
+                else{
+                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(jQuery(this).val()));
+                    if(jQuery("#ligertail_submission_lightbox_form tr:first").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "black");
+                }
             });
             
-            jQuery("#form_submission #title").blur(function(){ 
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").blur(function(){ 
                 if(jQuery(this).val().length < 3 || jQuery(this).val().length > 100)
-                    jQuery("#form_submission tr:nth-child(3)").css("color", "red");
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "red");
                 else{
-                    jQuery("#preview .source").html(jQuery(this).val());
-                    if(jQuery("#form_submission tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
-                        jQuery("#form_submission tr:nth-child(3)").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(jQuery(this).val());
+                    if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
+                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "black");
                 }
             });
 
-            jQuery("#form_submission #description").blur(function(){
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").blur(function(){
                 if(jQuery(this).val().length > 512 || jQuery(this).val().length == 0)
-                    jQuery("#form_submission tr:nth-child(5)").css("color", "red");
-                else if(jQuery("#form_submission tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#form_submission tr:nth-child(5)").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "red");
+                else if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "black");
             });
             
-            jQuery("#form_submission #email").blur(function(){
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").blur(function(){
                 if(!ValidateEmail(jQuery(this).val()))
-                    jQuery("#form_submission tr:nth-child(7)").css("color", "red");
-                else if(jQuery("#form_submission tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#form_submission tr:nth-child(7)").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "red");
+                else if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "black");
             });
             
             
-            jQuery("#form_submission").submit(function(){
-                window.submitForFree = true;
+            jQuery("#ligertail_submission_lightbox_form").submit(function(){
                 event.preventDefault();
+                window.submitForFree = true;
                 
                 var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
-                item.url = jQuery("#form_submission #url").val(); 
-                item.title = jQuery("#form_submission #title").val();
-                item.description = jQuery("#form_submission #description").val();
-                item.email = jQuery("#form_submission #email").val();
-                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); //console.log(item.thumbnailUrl);
+                item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
+                item.title = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val();
+                item.description = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val();
+                item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
 
                 //if url same as original, use embedly img
-                var img_src = "";
                 if(item.url == url)
-                    img_src = ""; //jQuery("#submission .thumb").attr("src");
+                    item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
-                    img_src = "default.png";
+                    item.thumbnailUrl = "http://ligertail.com/a/frontend/images/default.png";
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
                     item.description.length > 0 && item.description.length < 512 &&
                     ValidateEmail(item.email)){
                     
-                        lgapi.submitItem(item);
-                        //redirect to submit confirmation
+                        api.submitItem(item); 
+                        //console.log(item);
+                        
+                        //remove last item from view to make room for the new submission
+                        jQuery(".ligertail_widget .ligertail_widget_content:visible").filter(":last").hide();
+                        
+                        //close lightbox, add content to widget
+                        if(window.parameter["width"] == 600){
+                                                            
+                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>');
+                        }
+                        else{
+                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
+                        }
+                        
+                        jQuery(document).trigger('close.facebox');
+                        
+                        //redirect to submit confirmation later
                 }
                 else{
                         //console.log(item);
                 }
             });
             
-            jQuery("#form_submission #button_pay").click(function(){ 
-                window.submitForFree = false;
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(){ 
                 event.preventDefault();
+                window.submitForFree = false;
                 
                 var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
-                item.url = jQuery("#form_submission #url").val(); 
-                item.title = jQuery("#form_submission #title").val();
-                item.description = jQuery("#form_submission #description").val();
-                item.email = jQuery("#form_submission #email").val();
-                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); //console.log(item.thumbnailUrl);
+                item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
+                item.title = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val();
+                item.description = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val();
+                item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
+                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); 
 
                 //if url same as original, use embedly img
-                var img_src = "";
                 if(item.url == url)
-                    img_src = ""; //jQuery("#submission .thumb").attr("src");
+                    item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
-                    img_src = "default.png";
+                    item.thumbnailUrl = "http://ligertail.com/a/frontend/images/default.png";
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
                     item.description.length > 0 && item.description.length < 512 &&
                     ValidateEmail(item.email)){
                     
-                        lgapi.submitItem(item);
+                        api.submitItem(item);
                 }
                 else{
-                       // console.log(item);
-                }
-                /*
-                //ultimately will open a new window with ligertail.com/payments.html loaded
-                jQuery("#facebox .content").empty().load("payment.html");
-                jQuery("#facebox").css({
-                       top:    jQuery(window).height() / 10,
-                    left:    150 
-                  }).show();
-                */
-                
+                        //console.log(item);
+                }                
                 
             });
             
@@ -245,15 +250,15 @@ function init(publisherUrl) {
   var initialized = true;
   var apiHandler = new ApiHandler();
   var domain = "http://5.latest.ligertailbackend.appspot.com";
-  lgapi = new LGApi();
-  lgapi.init(domain, apiHandler);
+  window.api = new Api();
+  api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
 }
 
 function initAll(){
-    var CONTENT_HEIGHT_SMALL = 45;
-    var CONTENT_HEIGHT_LARGE = 100;
-    window.PUBLISHER_URL = "www.nytimes4.com"; //location.href;
+    var CONTENT_HEIGHT_SMALL = 25; //header=39 footer=20
+    var CONTENT_HEIGHT_LARGE = 90;//header=49 footer=35
+    window.PUBLISHER_URL = location.href;
     
     //initialize widget parameters
     window.parameter = SetupParameters();
@@ -263,24 +268,24 @@ function initAll(){
         //width
     if(window.parameter["width"]){
         if(window.parameter["width"] <= 300){ 
-            jQuery(".widget").attr("id", "widget_2");
+            $(".ligertail_widget").attr("id", "ligertail_widget_small");
             window.parameter["width"] = 300;     
         }
         else if(window.parameter["width"] > 300 && window.parameter["width"] < 600){ 
-            jQuery(".widget").attr("id", "widget_1");                                                                        
+            $(".ligertail_widget").attr("id", "ligertail_widget_large");                                                                        
             window.parameter["width"] = 600; 
         }
         else if(window.parameter["width"] >= 600){ 
-            jQuery(".widget").attr("id", "widget_1");
+            $(".ligertail_widget").attr("id", "ligertail_widget_large");
             window.parameter["width"] = 600; 
         }
         else{ 
-             jQuery(".widget").attr("id", "widget_2");
+             $(".ligertail_widget").attr("id", "ligertail_widget_small");
              window.parameter["width"] = 300; 
         }
     }
     else{ 
-         jQuery(".widget").attr("id", "widget_2");
+         $(".ligertail_widget").attr("id", "ligertail_widget_small");
          window.parameter["width"] = 300; 
     }
         
@@ -291,8 +296,8 @@ function initAll(){
             window.numItems = Math.floor((window.parameter["height"] - 59) / CONTENT_HEIGHT_SMALL);
         }
         else if(window.parameter["width"] == 600 && window.parameter["height"] > 0){
-            window.parameter["height"] = window.parameter["height"] - ((window.parameter["height"] - 94) % CONTENT_HEIGHT_LARGE);
-            window.numItems = Math.floor((window.parameter["height"] - 94) / CONTENT_HEIGHT_LARGE);
+            window.parameter["height"] = window.parameter["height"] - ((window.parameter["height"] - 84) % CONTENT_HEIGHT_LARGE);
+            window.numItems = Math.floor((window.parameter["height"] - 84) / CONTENT_HEIGHT_LARGE);
         }
     }
     else{
@@ -302,41 +307,41 @@ function initAll(){
         }
         else if(window.parameter["width"] == 600){
             window.parameter["height"] = 450;
-            window.numItems = Math.floor((window.parameter["height"] - 94)/ CONTENT_HEIGHT_LARGE);
+            window.numItems = Math.floor((window.parameter["height"] - 84)/ CONTENT_HEIGHT_LARGE);
         }
     }
-    
+
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     
     //load header, footer, and default content then bind events
     //this should be a switch statement
     if(window.parameter["width"] == 600){
-        var header = '<div id="header"><form><input name="textfield2" type="text" class="form" id="textfield2" value="Submit Link" /><input type="image" src="images/button_submit_1.png" name="button2" id="button2" value="Submit" /></form></div>';
-        var footer = '<div id="footer"><img src="images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
+        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
+        var footer = '<div id="ligertail_widget_footer"><img src="http://www.ligertail.com/a/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
         var content = '';
     }
     else{
-        var header = '<div id="header"><form><img src="images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input name="textfield" type="text" class="form_2" id="textfield" value="Submit Link" /><input type="image" src="images/button_submit_2.png" name="button" id="button" value="Submit" /></form></div>';
-        var footer = '<div id="footer"></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="http://www.ligertail.com/a/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
     
     for(var j = 0; j < window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="content"><div class="image"><img src="default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source">LigerTail.com</span><span class="title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content"><div class="ligertail_widget_image"><img src="http://www.ligertail.com/a/frontend/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
         }
         else{
-            content += '<div class="content"><div class="text"><span class="source">LigerTail.com</span><span class="title">Submit your content in the input box above!</span><p></p></div></div>';
+            content += '<div class="ligertail_widget_content"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span><p></p></div></div>';
         }
     }
     
-    $(".widget").append(header + content + footer);
-    $(".widget .content").show();
+    $(".ligertail_widget").append(header + content + footer);
+    $(".ligertail_widget .ligertail_widget_content").show();
     
     //events...
     //input box hover
-    $("#header input").hover(function(){ 
+    $("#ligertail_widget_header input").hover(function(){ 
         if($(this).val() == "Submit Link")
             $(this).val("http://").select();
         else
@@ -350,14 +355,14 @@ function initAll(){
     });
     
     //submit in lightbox
-    $("#header form").submit(function(){ 
+    $("#ligertail_widget_header form").submit(function(){ 
         event.preventDefault();
         var url = $(this).find("input:first").val();
         OpenLightboxSubmission(url);
     });
     
     //load content and bind events
-    lgapi.getOrderedItems(window.PUBLISHER_URL);                
+    api.getOrderedItems(window.PUBLISHER_URL);                
                    
                    
 }
