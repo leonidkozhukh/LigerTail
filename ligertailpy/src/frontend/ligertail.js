@@ -374,10 +374,21 @@ function initAll(){
                    
 }
     
-    
+function tryToInit() {
+    try {
+        var test = new ApiHandler();
+        var test1 = new LGApi();
+    } catch (e) {
+        setTimeout("tryToInit()", 100);
+        return;
+    }
+    initAll();
+}
+
     $(document).ready(function(){
-          initAll();                   
+       tryToInit();                  
     });
+    
 
 });
 
