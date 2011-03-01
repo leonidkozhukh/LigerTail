@@ -70,7 +70,7 @@ class UpdatePriceHandler(BaseHandler):
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
 
-        if self._verifyTransaction(item):  
+        if item and self._verifyTransaction(item):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))                                  
           item.put()
           logging.info('Number of price updates : %d' % len(item.payments))

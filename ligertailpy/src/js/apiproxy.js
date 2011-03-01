@@ -34,32 +34,32 @@ LGApi.prototype.init = function(domain, apiHandler) {
 	_apiHandler = apiHandler;
 }
 
-LGApi.prototype.submitItem = function(item) {
+LGApi.prototype.submitItem = function(item, callback) {
 	assert(item.publisherUrl && item.url && item.email && item.title && item.description);
 	item.price = 0;
 	var data = this.serialize(item);
-	postRequest(this.domain, 'submit_item', 'POST', data, '_apiHandler.onItemSubmitted');
+	postRequest(this.domain, 'submit_item', 'POST', data, callback ? callback : '_apiHandler.onItemSubmitted');
 };
 
-LGApi.prototype.updatePrice = function(ccinfo) {
+LGApi.prototype.updatePrice = function(ccinfo, callback) {
 	var data = this.serialize(ccinfo);
-	postRequest(this.domain, 'update_price', 'POST', data, '_apiHandler.onPriceUpdated');
+	postRequest(this.domain, 'update_price', 'POST', data, callback ? callback : '_apiHandler.onPriceUpdated');
 };
 
 
-LGApi.prototype.getOrderedItems = function(publisherUrl) {
+LGApi.prototype.getOrderedItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_ordered_items', 'POST', data, '_apiHandler.onGetOrderedItems');
+	postRequest(this.domain, 'get_ordered_items', 'POST', data, callback ? callback : '_apiHandler.onGetOrderedItems');
 };
 
-LGApi.prototype.getPaidItems = function(publisherUrl) {
+LGApi.prototype.getPaidItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_paid_items', 'POST', data, '_apiHandler.onGetPaidItems');
+	postRequest(this.domain, 'get_paid_items', 'POST', data, callback ? callback : '_apiHandler.onGetPaidItems');
 };
 
-LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions) {
+LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions, callback) {
 	assert(publisherUrl && interactions.length > 0);
 	var str;
 	var first = true;	
@@ -74,18 +74,18 @@ LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions) {
 		str += interactions[i].itemId + ":" + interactions[i].statType;		
 	}
 	var data = this.serialize({"publisherUrl": publisherUrl, "interactions": str});
-	postRequest(this.domain, 'submit_user_interaction', 'POST', data, '_apiHandler.onUserInteractionSubmitted');
+	postRequest(this.domain, 'submit_user_interaction', 'POST', data, callback ? callback : '_apiHandler.onUserInteractionSubmitted');
 };
 
 
-LGApi.prototype.getFilter= function(publisherUrl) {
+LGApi.prototype.getFilter= function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_filter', 'POST', data, '_apiHandler.onGetFilter');
+	postRequest(this.domain, 'get_filter', 'POST', data, callback ? callback : '_apiHandler.onGetFilter');
 };
 
 
-LGApi.prototype.submitFilter= function(publisherUrl, filter) {
+LGApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	assert(publisherUrl);
 	assert(filter.duration == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
@@ -96,13 +96,13 @@ LGApi.prototype.submitFilter= function(publisherUrl, filter) {
 		"filter.duration": filter.duration,
 		"filter.recency": filter.recency,
 		"filter.popularity": filter.popularity} );
-	postRequest(this.domain, 'submit_filter', 'POST', data, '_apiHandler.onFilterSubmitted');
+	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : '_apiHandler.onFilterSubmitted');
 };
 
-LGApi.prototype.getItemStats= function(itemId, infoType) {
+LGApi.prototype.getItemStats= function(itemId, infoType, callback) {
 	assert(itemId > 0);
 	var data = this.serialize({"itemId":itemId, "infoType":infoType});
-	postRequest(this.domain, 'get_item_stats', 'POST', data, '_apiHandler.onGetItemStats');
+	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : '_apiHandler.onGetItemStats');
 };
 
 

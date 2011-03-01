@@ -39,7 +39,11 @@ function submitItem() {
   item.title = "HELLO & BYEBYE";
   item.description = "blahblah";
   item.email = "email@emal.com";
-  api.submitItem(item);   
+  api.submitItem(item, 'onMySubmitted');   
+}
+
+function onMySubmitted(o) {
+	alert("Yay!");
 }
 
 function getOrderedItems() {
