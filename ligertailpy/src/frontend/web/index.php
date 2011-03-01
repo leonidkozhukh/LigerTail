@@ -31,7 +31,7 @@
 <p class="large_font">We all have something to share.</p>
         <p class="orange">&nbsp;</p>
     </div>
-    <div id="column_right"><img src="images/widget_sample.png" width="463" height="369" alt="Widget" /></div>
+    <div id="column_right"><script type="text/javascript" src="http://www.ligertail.com/a/frontend/ligertail.js"></script></div>
    
     
     <div style="clear:both;"></div>

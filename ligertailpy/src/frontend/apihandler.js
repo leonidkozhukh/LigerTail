@@ -22,7 +22,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
   // TODO: handle error case
   if (!window.submitForFree) {
 	var item = jQuery.parseJSON(response.items[0]);
-	window.location = "https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id;
+	window.open("https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id);
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...
@@ -30,77 +30,72 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 }
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
-	//debug(response);
 	//receipt shown/emailed
 	//console.log(repsonse);
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
-	//debug(response);
-	
 	var content = "";
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		//console.log(item_obj);
+		
 		if(window.parameter["width"] == 600){
-			content += '<div class="content" id="' + item_obj.id + '"><div class="close"><img src="images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="image"><a href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="text"><span class="source"><a href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div><!--div class="share"><a href="#"><img src="images/button_share.png" alt="Share" width="23" height="22" border="0" /></a></div---!></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
 		}
 		else{
-			content += '<div class="content" id="' + item_obj.id + '"><div class="close"></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title"><a href="' + item_obj.url + '">' + item_obj.title + '</a></span><p><a href="#"></a></p></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span><!--div class="share"><a href="#"><img src="images/button_share_2.png" alt="Share" width="16" height="16" border="0" /></a></div---!></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
 	});
 	
-	
-	jQuery(".widget #header").after(content);
+	if(content.length > 0){
+		jQuery(".ligertail_widget #ligertail_widget_header").after(content);
 	
 	//add in spot #
 	//for text click: jQuery(this).parent().index();
 	
 	var interactions = [];
 	// add events to content
-	jQuery(".widget .content").bind("show", function(){
-		jQuery(this).show("fast"); 
+	jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
+		jQuery(this).show("fast"); console.log(jQuery(this).attr('id'));
 		//this is a view
 		interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS};
-		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 
 	//update db, remove the current content, move stack up, & show more content
-	jQuery(".widget .content .close").click(function(){
+	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
 		//this is a close
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES};
-		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		jQuery(this).parent().remove();
-		jQuery(".widget .content:hidden").filter(":first").trigger("show");
+		jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 	});
 	
 	//update db for click
-	jQuery(".widget .content .text").click(function(){ 
+	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 		//this is a click
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLICKS};
-		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 	
 	//update db for like
-	jQuery(".widget .content .share").click(function(){ 
+	/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
 		//this is a like
 		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES};
-		lgapi.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		
 		alert("need to put in fb functionality");
-	});
+	});*/
 	
 	// show the right number of content items
-	jQuery(".widget .content:visible").hide();
-	jQuery(".widget .content:lt(" + window.numItems + ")").trigger("show");
+	jQuery(".ligertail_widget .ligertail_widget_content:visible").hide();
+	jQuery(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").trigger("show");
+	}
 	
 }
 
 ApiHandler.prototype.onGetPaidItems = function(response) {
-	//debug(response);
-	//console.log(response);
-      
-    var content = "";
+	var content = "";
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
 		//console.log(item_obj);		
@@ -115,28 +110,71 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	jQuery("#analytics .entry").after(content);
 	
 	jQuery("#analytics .entry").click(function(){
-		lgapi.getItemStats(jQuery(this).attr("id"));
+		api.getItemStats(window.PUBLISHER_URL, jQuery(this).attr("id"));
 	});
 }
 
 ApiHandler.prototype.onUserInteractionSubmitted = function(response) {
-	//debug(response);
+	
 }
 
 ApiHandler.prototype.onGetFilter = function(response) {
-	//debug(response);
+	
 }
 
 ApiHandler.prototype.onFilterSubmitted = function(response) {
-	//debug(response);
+	
 }
 
 ApiHandler.prototype.onGetItemStats = function(response) {
-	//debug(response);
 	//console.log(response);
+	//var scope = ["uniques", "eternity"];
+	//jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
+	//jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
 	
+	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""], 5:["", "", "", ""]};
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		//console.log(item_obj);		
+		console.log(item_obj);
+		window.publisherUrl = item_obj.publisherUrl;
+		window.PUBLISHER_URL = item_obj.publisherUrl;
+		//data += '<tr>' + '<td>' + item_obj.totalStats[0] + '</td>' + '<td>' + item_obj.totalStats[1] + '</td>' + '<td>' + item_obj.totalStats[2] + '</td>' + '<td>' + item_obj.totalStats[4] + '</td>' +  '</tr>';
+		
+		
+		for(var m = 0; m < 6; m++){
+				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_deltas; n++){ 
+						data[m][0] += item_obj.timedStats[m][n][0] + ';'; 
+						data[m][1] += item_obj.timedStats[m][n][1] + ';';
+						data[m][2] += item_obj.timedStats[m][n][2] + ';';
+						data[m][3] += item_obj.timedStats[m][n][4] + ';';
+				}
+		}
+		
+		console.log(data);
 	});
+	jQuery("#table-gen").append(data);
+	
+	//select default scope & initialize change function
+	
+	
+	
+	jQuery("#table-gen tr:first td").click(function(){
+			if(jQuery(this).html() == "uniques" || jQuery(this).html() == "pageviews" || jQuery(this).html() == "clicks" || jQuery(this).html() == "closes")
+				scope[0] = jQuery(this).html();
+			else
+				scope[1] = jQuery(this).html();
+				
+			//turn everything back to black font
+			jQuery("#table-gen tr:first td").css("color", "black");
+			//turn scope-d fields to red
+			jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
+			jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
+			
+			
+										
+	});
+	
+	
+	
+	
 }

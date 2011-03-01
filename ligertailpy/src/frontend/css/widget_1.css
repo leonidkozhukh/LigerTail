@@ -2,30 +2,33 @@
 /* CSS Document */
 
 
-a:link {
+.ligertail_widget a:link {
 	color:#000;
 	text-decoration:none;
 }
 
-.source a, .title a {
+.ligertail_widget a:visited {
+	color: #D97021;
+}
+
+.ligertail_widget .source a, .title a {
 	color:#000;
 }
-#widget_1 {
+#ligertail_widget_large {
 	width:600px;
 	float:left;
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:12px;
 }
 
-#widget_1 #header {
+#ligertail_widget_large #ligertail_widget_header {
 	background-image:url(../images/bg_header.png);
 	background-repeat:repeat-x;
 	padding: 14px;
 	height:21px;
 }
 
-
-#widget_1 .content {
+#ligertail_widget_large .ligertail_widget_content {
 	background-image:url(../images/bg_content.png);
 	background-repeat:repeat-x;
 	background-position:top;
@@ -33,26 +36,28 @@ a:link {
 	padding:5px;
 	float:left;
 	width: 590px;
+	display: none;
 }
 
-#widget_1 .close {
+#ligertail_widget_large .ligertail_widget_close {
 	float:left;
 }
 	
-#widget_1 .image {
+#ligertail_widget_large .ligertail_widget_image {
 	float:left;
 	margin-right:6px;
 	padding-top:10px;
 }
 
-#widget_1 .text {
+#ligertail_widget_large .ligertail_widget_text {
 	float:left;
 	width:430px;
 	padding-top:10px;
 	padding-bottom:10px;
+   
 }
 
-#widget_1 .form {
+#ligertail_widget_large .ligertail_widget_form {
 	background-image:url(../images/input_submit.png);
 	background-repeat:no-repeat;
 	border:none;
@@ -63,7 +68,7 @@ a:link {
 }
 
 
-#widget_1 .text .source {
+#ligertail_widget_large .ligertail_widget_text .ligertail_widget_source {
 	font-size:12px;
 	font-weight:bold;
 	text-transform:uppercase;
@@ -72,18 +77,18 @@ a:link {
 	border-right:1px solid #d36317;
 }
 
-#widget_1 .text p {
+#ligertail_widget_large .ligertail_widget_text p {
 	color:#666;
 	margin-top:4px;
 	margin-bottom:0px;
 }
 
-#widget_1 .share {
+#ligertail_widget_large .ligertail_widget_share {
 	float:left;
 	margin-top: 55px;
 }
 
-#widget_1 #footer {
+#ligertail_widget_large #ligertail_widget_footer {
 	height:35px;
 	background-image:url(../images/bg_footer.png);
 	background-repeat:repeat-x;
@@ -93,54 +98,57 @@ a:link {
 	
 
 
-#widget_2 {
+#ligertail_widget_small {
 	width:300px;
 	float:left;
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:12px;
 }
 
-#widget_2 #header {
+#ligertail_widget_small #ligertail_widget_header {
 	background-image:url(../images/bg_header_2.png);
 	background-repeat:repeat-x;
 	height:39px;
 }
 
 
-#widget_2 .content {
-	background-image:url(../images/bg_content.png);
-	background-repeat:repeat-x;
-	background-position:top;
-	margin:0px;
-	float:left;
-	width: 285px;
-	padding-top: 5px;
-	padding-right: 5px;
-	padding-left: 10px;
+#ligertail_widget_small .ligertail_widget_content {
+    background-image:url(../images/bg_content.png);
+    background-repeat:repeat-x;
+    background-position:top;
+    margin:0px;
+    float:left;
+    width: 289px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-left: 6px;
+    display: none;
 }
 
-#widget_2 .close {
+#ligertail_widget_small .ligertail_widget_close {
 	float:right;
 	clear: right;
 }
 	
-#widget_2 .image {
+#ligertail_widget_small .ligertail_widget_image {
 	float:left;
 	margin-right:6px;
 	padding-top:10px;
 }
 
-#widget_2 .text {
+#ligertail_widget_small .ligertail_widget_text {
 	float:left;
-	width:255px;
+	width:262px; height: 12px; overflow: hidden;
 	padding-top:4px;
 	padding-bottom:4px;
 	margin-right: 4px;
 	font-size: 12px;
+	line-height: 13px;
+	text-align: left;
 
 }
 
-#widget_2 .text .source {
+#ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
 	font-size:12px;
 	font-weight:bold;
 	text-transform:uppercase;
@@ -149,18 +157,12 @@ a:link {
 	border-right:1px solid #d36317;
 }
 
-#widget_2 .text p {
-	color:#666;
-	margin-top:4px;
-	margin-bottom:0px;
-}
-
-#widget_2 .share {
+#ligertail_widget_small .ligertail_widget_share {
 	float:right;
 	margin-top: 0px;
 }
 
-#widget_2 .form_2 {
+#ligertail_widget_small .ligertail_widget_form {
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
 	border:none;
@@ -172,7 +174,7 @@ a:link {
 
 
 
-#widget_2 #footer {
+#ligertail_widget_small #ligertail_widget_footer {
 	height:20px;
 	background-image:url(../images/bg_footer_2.png);
 	background-repeat:repeat-x;
