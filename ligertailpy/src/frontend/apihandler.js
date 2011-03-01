@@ -56,7 +56,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	var interactions = [];
 	// add events to content
 	jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
-		jQuery(this).show("fast"); 
+		jQuery(this).show("fast"); console.log(jQuery(this).attr('id'));
 		//this is a view
 		interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS};
 		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
@@ -128,9 +128,53 @@ ApiHandler.prototype.onFilterSubmitted = function(response) {
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
+	//var scope = ["uniques", "eternity"];
+	//jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
+	//jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
 	
+	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""], 5:["", "", "", ""]};
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		//console.log(item_obj);		
+		console.log(item_obj);
+		window.publisherUrl = item_obj.publisherUrl;
+		window.PUBLISHER_URL = item_obj.publisherUrl;
+		//data += '<tr>' + '<td>' + item_obj.totalStats[0] + '</td>' + '<td>' + item_obj.totalStats[1] + '</td>' + '<td>' + item_obj.totalStats[2] + '</td>' + '<td>' + item_obj.totalStats[4] + '</td>' +  '</tr>';
+		
+		
+		for(var m = 0; m < 6; m++){
+				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_deltas; n++){ 
+						data[m][0] += item_obj.timedStats[m][n][0] + ';'; 
+						data[m][1] += item_obj.timedStats[m][n][1] + ';';
+						data[m][2] += item_obj.timedStats[m][n][2] + ';';
+						data[m][3] += item_obj.timedStats[m][n][4] + ';';
+				}
+		}
+		
+		console.log(data);
 	});
+	jQuery("#table-gen").append(data);
+	
+	//select default scope & initialize change function
+	
+	
+	
+	jQuery("#table-gen tr:first td").click(function(){
+			if(jQuery(this).html() == "uniques" || jQuery(this).html() == "pageviews" || jQuery(this).html() == "clicks" || jQuery(this).html() == "closes")
+				scope[0] = jQuery(this).html();
+			else
+				scope[1] = jQuery(this).html();
+				
+			//turn everything back to black font
+			jQuery("#table-gen tr:first td").css("color", "black");
+			//turn scope-d fields to red
+			jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
+			jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
+			
+			
+										
+	});
+	
+	
+	
+	
 }

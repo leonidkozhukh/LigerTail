@@ -49,6 +49,16 @@ function getUrlParameters() {
     return map; 
 }
 
+//EMAIL VALIDATION FUNCTION
+
+function ValidateEmail(str) {
+    var reg = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    if(reg.test(str) == false) {
+        return false;
+    }
+    else return str;  
+}
+
 function init(publisherUrl) {
   if (initialized) {
     return;
@@ -57,7 +67,7 @@ function init(publisherUrl) {
   var initialized = true;
   var apiHandler = new ApiHandler();
   var domain = "http://5.latest.ligertailbackend.appspot.com";
-  window.api = new Api();
+  window.api = new LGApi();
   api.init(domain, apiHandler);
   window.publisherUrl = publisherUrl;
 }
@@ -68,8 +78,7 @@ function initAll(){
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
-    console.log(urlParams['itemId']);
-    //api.getItemStats(urlParams['itemId']);
+    api.getItemStats(urlParams['itemId'], 2);
     
     //load credit card validation
     //first
@@ -88,56 +97,76 @@ function initAll(){
             jQuery("#payment_form tr:nth-child(3)").css("color", "black");
     });
     
-    //address
-    jQuery("#payment_form #address").blur(function(){
-        if(jQuery(this).val().length == 0)
+    //email
+    jQuery("#payment_form #email").blur(function(){
+        if(ValidateEmail(jQuery(this).val()))
             jQuery("#payment_form tr:nth-child(5)").css("color", "red");
         else if(jQuery("#payment_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
             jQuery("#payment_form tr:nth-child(5)").css("color", "black");
     });
     
-    //city
-    jQuery("#payment_form #city").blur(function(){
+    //address
+    jQuery("#payment_form #address").blur(function(){
         if(jQuery(this).val().length == 0)
             jQuery("#payment_form tr:nth-child(7)").css("color", "red");
         else if(jQuery("#payment_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
             jQuery("#payment_form tr:nth-child(7)").css("color", "black");
     });
     
+    //city
+    jQuery("#payment_form #city").blur(function(){
+        if(jQuery(this).val().length == 0)
+            jQuery("#payment_form tr:nth-child(9)").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(9)").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(9)").css("color", "black");
+    });
+    
     //state
     jQuery("#payment_form #state").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(9) th:nth-child(2)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(9) th:nth-child(2)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(9) th:nth-child(2)").css("color", "black");
+        if(jQuery(this).val().length != 2)
+            jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color", "black");
     });
     
     //zip
     jQuery("#payment_form #zip").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(9) th:last").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(9) th:last").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(9) th:last").css("color", "black");
+        if(jQuery(this).val().length != 5)
+            jQuery("#payment_form tr:nth-child(11) th:last").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(11) th:last").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(11) th:last").css("color", "black");
     });
     
     //cc #
     jQuery("#payment_form #cc").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(11)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(11)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(11)").css("color", "black");
+        if(jQuery(this).val().length != 16)
+            jQuery("#payment_form tr:nth-child(13)").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(13)").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(13)").css("color", "black");
     });
     
     //exp
-    //need month/year selection
+    jQuery("#payment_form #expiration_month").blur(function(){
+        if(jQuery(this).val().length == 0)
+            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(15) th:first").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "black");
+    });
+    
+    jQuery("#payment_form #expiration_year").blur(function(){
+        if(jQuery(this).val().length != 4)
+            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(15) th:first").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "black");
+    });
     
     //cvs
-    /*jQuery("#payment_form #cvs").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(11)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(11)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(11)").css("color", "black");
-    });*/
+    jQuery("#payment_form #cvs").blur(function(){
+        if(jQuery(this).val().length != 3)
+            jQuery("#payment_form tr:nth-child(15) th:last").css("color", "red");
+        else if(jQuery("#payment_form tr:nth-child(15) th:last").css("color") == "rgb(255, 0, 0)")
+            jQuery("#payment_form tr:nth-child(15) th:last").css("color", "black");
+    });
     
 
     //catch submission
@@ -146,17 +175,48 @@ function initAll(){
     //redirect to receipt page
     jQuery("#payment_form").bind("sub submit", function(){
     	event.preventDefault();
-        console.log("submitted");
+        //console.log("submitted");
         
-        if(/*everything is ok*/){
-          //disable form & show waiting dialog, then submit
-          jQuery("#payment_price, #payment_form :input").attr('disabled', true);
+        var price = jQuery("#payment_price .pricing").html().replace("$", "");
+        var first_name = jQuery("#payment_form #first_name").val();
+        var last_name = jQuery("#payment_form #last_name").val();
+        var address = jQuery("#payment_form #address").val();
+        var city = jQuery("#payment_form #city").val();
+        var state = jQuery("#payment_form #state").val();
+        var zip = jQuery("#payment_form #zip").val();
+        var cc = jQuery ("#payment_form #cc").val();
+        var expiration_month = jQuery("#payment_form #expiration_month").val();
+        var expiration_year = jQuery("#payment_form #expiration_year").val();
+        var cvs = jQuery("#payment_form #cvs").val();
+        
+        if(price > 0 && first_name.length > 0 && last_name.length > 0 && 
+             address.length > 0 && city.length > 0 && state.length == 2 && 
+             zip.length == 5 && cc.length == 16 && expiration_month.length > 0 && 
+             expiration_year.length == 4 && cvs. length == 3){
+                                                              
+             //disable form & show waiting dialog, then submit
+             jQuery("#payment_price, #payment_form :input").attr('disabled', true);
           
-          api.updatePrice(urlParams['itemId'], jQuery("#payment_price .pricing").html().replace("$",""));
+             var paymentInfo = {
+                           "price": price,
+                           "first_name": first_name,
+                           "last_name": last_name,
+                           "itemId": urlParams['itemId'],
+                           "address": address,
+                           "city": city,
+                           "state": state,
+                           "zip": zip, 
+                           "cc": cc,
+                           "expiration": expiration_month + '/' + expiration_year,
+                           "cvs": cvs,                      
+             };
+             console.log(paymentInfo);
+             api.updatePrice(paymentInfo);
           
         }
         else{
              //show errors
+             jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
         }
     });
     
@@ -168,7 +228,7 @@ function initAll(){
     jQuery("#analytics .entry:first input").change(function(){
         jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
     });
-    
+    //console.log(window.PUBLISHER_URL);
     //load paid content
     api.getPaidItems(window.PUBLISHER_URL);
     
@@ -179,8 +239,19 @@ function initAll(){
     
 }
 
+function tryToInit() {
+    try {
+        var test = new ApiHandler();
+        var test1 = new LGApi();
+    } catch (e) {
+        setTimeout("tryToInit()", 100);
+        return;
+    }
+    initAll();
+}
+
     $(document).ready(function(){
-          initAll();                   
+       tryToInit();                  
     });
 
 });

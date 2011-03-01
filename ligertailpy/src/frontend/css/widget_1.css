@@ -7,6 +7,10 @@
 	text-decoration:none;
 }
 
+.ligertail_widget a:visited {
+	color: #D97021;
+}
+
 .ligertail_widget .source a, .title a {
 	color:#000;
 }
@@ -23,7 +27,6 @@
 	padding: 14px;
 	height:21px;
 }
-
 
 #ligertail_widget_large .ligertail_widget_content {
 	background-image:url(../images/bg_content.png);
