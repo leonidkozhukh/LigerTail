@@ -10,23 +10,52 @@ import logging
 import model
 import response
 import payment
+import os
+import cgi
+import wsgiref.handlers
+#import google.appengine.webapp.template
+##from google.appengine.ext.webapp import template
+#import appengine_django.auth.templatetags
 
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settingsdj' 
+
+#from google.appengine.dist import use_library
+#use_library('django', '1.2')
+from google.appengine.ext.webapp import template
+
+from django.conf import settings
+_ = settings.TEMPLATE_DIRS
+
+TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'frontend', 'web')
+#os.environ['DJANGO_SETTINGS_MODULE'] = 'djsettings'
 
 class MainHandler(webapp.RequestHandler):
     def get(self):
-        self.response.out.write('This should be ligertail home page')
-
+      #tmpl = os.path.join(TEMPLATES_DIR, 'about.html')
+                            #os.path.dirname(__file__), 'frontend', 'web', 'index.html')
+      context= {}
+      self.response.out.write('hello')
+                              #self._render('about.html', context))
+    
+    def _render(self, name, context):
+      path = os.path.join(TEMPLATES_DIR, name)
+      template_file = open('C:\\misha\\workspace\\ligertail\\ligertailpy\\src\\frontend\\web\\about.html')#path) 
+      compiled_template = template.Template(template_file.read()) 
+      template_file.close()  
+      return compiled_template.render(context)
+        
 class SubmitItemHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        logging.info('email %s', self.request.get('email'))
+        logging.info('email %s', self.getParam('email'))
         item = model.Item()
-        item.publisherUrl = self.request.get('publisherUrl')
-        item.url = self.request.get('url')
-        item.thumbnailUrl = self.request.get('thumbnailUrl')
-        item.title = self.request.get('title')
-        item.description = self.request.get('description')
-        item.email = self.request.get('email')
+        item.publisherUrl = self.getParam('publisherUrl')
+        item.url = self.getParam('url')
+        item.thumbnailUrl = self.getParam('thumbnailUrl')
+        item.title = self.getParam('title')
+        item.description = self.getParam('description')
+        item.email = self.getParam('email')
         item.sessionId = self.viewer.sessionId
         item.price = 0
         item.put()
@@ -39,10 +68,10 @@ class UpdatePriceHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         # TODO: assert https
-        item = BaseHandler.getItem(self, self.request.get('itemId'))
+        item = BaseHandler.getItem(self, self.getParam('itemId'))
 
-        if self._verifyTransaction(self.request, item):  
-          item.updatePrice(int(self.request.get('price')), self.request.get('email'))                                  
+        if self._verifyTransaction(item):  
+          item.updatePrice(int(self.getParam('price')), self.getParam('email'))                                  
           item.put()
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
@@ -51,19 +80,19 @@ class UpdatePriceHandler(BaseHandler):
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
         
-    def _verifyTransaction(self, request, item):
-        paymentInfo = {'price': request.get('price'),
-                       'first_name': request.get('first_name'),
-                       'last_name': request.get('last_name'),
-                       'itemId': request.get('itemId'),
+    def _verifyTransaction(self, item):
+        paymentInfo = {'price': self.getParam('price'),
+                       'first_name': self.getParam('first_name'),
+                       'last_name': self.getParam('last_name'),
+                       'itemId': self.getParam('itemId'),
                        'itemUrl': item.url,
-                       'address': request.get('address'),
-                       'city': request.get('city'),
-                       'state': request.get('state'),
-                       'zip': request.get('zip'),
-                       'cc': request.get('cc'),
-                       'expiration': request.get('expiration'),
-                       'cvs': request.get('cvs') };
+                       'address': self.getParam('address'),
+                       'city': self.getParam('city'),
+                       'state': self.getParam('state'),
+                       'zip': self.getParam('zip'),
+                       'cc': self.getParam('cc'),
+                       'expiration': self.getParam('expiration'),
+                       'cvs': self.getParam('cvs') };
                        
         result = payment.verify(paymentInfo) # False for real!, False)
         logging.info('verifyTransaction %s', str(result))
@@ -77,7 +106,7 @@ class GetOrderedItemsHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         orderedItems = BaseHandler.getOrderedItems(self,
-                                                   self.request.get('publisherUrl'),
+                                                   self.getParam('publisherUrl'),
                                                    self.viewer.filter)
         if self.client.numViewableItems * 2 < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numViewableItems * 2]
@@ -95,7 +124,7 @@ class GetOrderedItemsHandler(BaseHandler):
 class GetPaidItemsHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        paidItems = BaseHandler.getPaidItems(self, self.request.get('publisherUrl'))                                            
+        paidItems = BaseHandler.getPaidItems(self, self.getParam('publisherUrl'))                                            
         self.common_response.setItems(paidItems, response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
 
@@ -106,7 +135,7 @@ class SubmitUserInteractionHandler(BaseHandler):
     """
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        itemUpdates = self.request.get('interactions').split(',')
+        itemUpdates = self.getParam('interactions').split(',')
         for update in itemUpdates:
             itemWithUpdate = update.split(':')
             itemId = int(itemWithUpdate[0])
@@ -116,12 +145,12 @@ class SubmitUserInteractionHandler(BaseHandler):
               #TODO: handle uniques. This may be challenging since in order to know if the
               # impression is unique we need to have a map itemId->all viewers                    
           
-            BaseHandler.updateItem(self, self.request.get('publisherUrl'),
+            BaseHandler.updateItem(self, self.getParam('publisherUrl'),
                                    itemId=itemId, statType=statType)
             
         # Let client take care of immediate update
         # orderedItems = BaseHandler.getOrderedItems(self,
-        #                                           self.request.get('publisherUrl'),
+        #                                           self.getParam('publisherUrl'),
         #                                           self.viewer.filter)
         #self.common_response.setItems(orderedItems)
 
@@ -138,11 +167,11 @@ class SubmitFilterHandler(BaseHandler):
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         BaseHandler.updateFilter(self,
-                                 durationId=self.request.get('filter.durationId'),
-                                 popularity=self.request.get('filter.popularity'),
-                                 recency=self.request.get('filter.recency'))
+                                 durationId=self.getParam('filter.durationId'),
+                                 popularity=self.getParam('filter.popularity'),
+                                 recency=self.getParam('filter.recency'))
         orderedItems = BaseHandler.getOrderedItems(self,
-                                                   self.request.get('publisherUrl'),
+                                                   self.getParam('publisherUrl'),
                                                    self.viewer.filter)
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
         self.common_response.setFilter(self.viewer.filter)
@@ -167,9 +196,9 @@ class GetItemStatsHandler(BaseHandler):
     """
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
-        itemWithStats = BaseHandler.getItem(self, self.request.get('itemId'))
+        itemWithStats = BaseHandler.getItem(self, self.getParam('itemId'))
         itemInfoType = response.ItemInfo.FULL;
-        s = self.request.get('infoType');
+        s = self.getParam('infoType');
         if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 
           itemInfoType = int(s)
         self.common_response.setItems([itemWithStats], itemInfoType)
@@ -197,7 +226,7 @@ def main():
                                          ],
                                          debug=True)
     util.run_wsgi_app(application)
-
+    #wsgiref.handlers.CGIHandler().run(application)
 
 if __name__ == '__main__':
     main()

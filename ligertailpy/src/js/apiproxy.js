@@ -114,7 +114,7 @@ LGApi.prototype.serialize = function(obj) {
 		    } else {
 		          first = false;
 		    }
-	    	str += encodeURI(prop) + "=" + encodeURI(obj[prop]);
+	    	str += escape(prop) + "=" + escape(obj[prop]);
 	     }
 	}
 	return str;

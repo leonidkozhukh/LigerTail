@@ -6,6 +6,7 @@ from itemlist import itemList
 import filterstrategy
 import logging
 import model
+import cgi
 import re
 import response
 
@@ -41,6 +42,9 @@ class BaseHandler(webapp.RequestHandler):
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
     self.jsonp_callback = unicode(req.get('callback'))
     
+  def getParam(self, name):
+    return cgi.escape(self.request.get(name))
+  
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None):
     itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
  
