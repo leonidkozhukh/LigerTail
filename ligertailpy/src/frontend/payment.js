@@ -41,6 +41,14 @@ LoadFile("http://ligertail.com/a/js/apiproxy.js", "js");
 LoadFile("http://ligertail.com/a/frontend/apihandler.js", "js");
 LoadFile("http://ligertail.com/a/frontend/css/payment.css", "css");
 
+
+
+    $(document).ready(function(){
+       tryToInit(initAll);                  
+    });
+
+});
+
 function getUrlParameters() {
     var map = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -74,7 +82,7 @@ function init(publisherUrl) {
 
 function initAll(){
     window.PUBLISHER_URL = "http://www.ligertail.com/payments";
-    
+    alert("in");
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
@@ -174,7 +182,7 @@ function initAll(){
     //or
     //redirect to receipt page
     jQuery("#payment_form").bind("sub submit", function(){
-    	event.preventDefault();
+        event.preventDefault();
         //console.log("submitted");
         
         var price = jQuery("#payment_price .pricing").html().replace("$", "");
@@ -219,16 +227,16 @@ function initAll(){
              jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
         }
     });
-    
+    console.log("a");
     jQuery("#payment_price input").click(function(){
         jQuery("#payment_form").trigger("sub");
     });
-    
+    console.log("b");
     //change price
     jQuery("#analytics .entry:first input").change(function(){
         jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
     });
-    //console.log(window.PUBLISHER_URL);
+    console.log(window.PUBLISHER_URL);
     //load paid content
     api.getPaidItems(window.PUBLISHER_URL);
     
@@ -246,13 +254,7 @@ function tryToInit() {
     } catch (e) {
         setTimeout("tryToInit()", 100);
         return;
-    }
+    };
     initAll();
 }
-
-    $(document).ready(function(){
-       tryToInit();                  
-    });
-
-});
 
