@@ -36,7 +36,8 @@ class ResponseItem(json.JSONEncoder):
               'title' : o.title,
               'description' : o.description,
               'id' : o.id,
-              'thumbnailUrl' : o.thumbnailUrl
+              'thumbnailUrl' : o.thumbnailUrl,
+              'publisherUrl' : o.publisherUrl
               }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
