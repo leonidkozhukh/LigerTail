@@ -23,7 +23,7 @@ class ResponseItem(json.JSONEncoder):
         self.price = item.price
         self.stats = item.stats
         self.timedStats = item.timedStats
-        #publisherUrl
+        self.publisherUrl = item.publisherUrl
         #email
         #sessionId
         #sessionId
