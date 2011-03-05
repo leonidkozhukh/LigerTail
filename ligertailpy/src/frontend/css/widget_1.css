@@ -118,10 +118,10 @@
     background-position:top;
     margin:0px;
     float:left;
-    width: 289px;
+    width: 290px;
     padding-top: 5px;
     padding-right: 5px;
-    padding-left: 6px;
+    padding-left: 5px;
     display: none;
 }
 
@@ -138,23 +138,23 @@
 
 #ligertail_widget_small .ligertail_widget_text {
 	float:left;
-	width:262px; height: 12px; overflow: hidden;
-	padding-top:4px;
+	width:268px; height: 12px; overflow: hidden;
+	padding-top:2px;
 	padding-bottom:4px;
 	margin-right: 4px;
 	font-size: 12px;
-	line-height: 13px;
+	line-height: 14px;
 	text-align: left;
 
 }
 
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
-	font-size:12px;
+	font-size:9px;
 	font-weight:bold;
+	margin: 0px 5px 0px 0px;
 	text-transform:uppercase;
-	margin:0px 5px 0px 0px;
-	padding-right:5px;
-	border-right:1px solid #d36317;
+	padding-right:3px;
+	border-right:2px solid #d36317;
 }
 
 #ligertail_widget_small .ligertail_widget_share {
@@ -166,10 +166,14 @@
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
 	border:none;
-	padding: 4px;
-	width: 175px;
+	padding: 7px;
+	width: 185px;
 	height: 25px;
 	float: left;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 9px;
+	margin-left: 5px;
 }
 
 

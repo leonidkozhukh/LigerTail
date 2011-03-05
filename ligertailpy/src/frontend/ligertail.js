@@ -115,7 +115,7 @@ function OpenLightboxSubmission(url){
                 
                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
-                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
+                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
             },
             error: function(e){ alert("error: " + e);}        
         });
@@ -319,12 +319,12 @@ function initAll(){
     //load header, footer, and default content then bind events
     //this should be a switch statement
     if(window.parameter["width"] == 600){
-        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
         var footer = '<div id="ligertail_widget_footer"><img src="http://www.ligertail.com/a/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="http://www.ligertail.com/a/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="http://www.ligertail.com/a/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
@@ -334,7 +334,7 @@ function initAll(){
             content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_image"><img src="http://www.ligertail.com/a/frontend/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
         }
         else{
-            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span><p></p></div></div>';
+            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
         }
     }
     
@@ -349,14 +349,14 @@ function initAll(){
     
     //input box hover
     $("#ligertail_widget_header input").hover(function(){ 
-        if($(this).val() == "Submit Link")
+        if($(this).val() == "Submit Your Link Here")
             $(this).val("http://").select();
         else
             $(this).select();
     }, 
     function(){
         if($(this).val() == "")
-            $(this).val("Submit Link").blur();
+            $(this).val("Submit Your Link Here").blur();
         else
             $(this).blur();
     });

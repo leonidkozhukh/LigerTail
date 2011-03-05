@@ -43,7 +43,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
 		}
 		else{
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
 	});
 	
@@ -130,7 +130,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	var content;
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		content = '<div class="entry"><div class="pricing">$<input name="input_form_price" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
+		content = '<div class="entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
 		console.log(item_obj);
 		
 		window.publisherUrl = item_obj.publisherUrl;
