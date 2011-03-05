@@ -52,9 +52,8 @@ class ResponseItem(json.JSONEncoder):
                                    'day' : d.day,
                                    'hour' : d.hour,
                                    'minute' : d.minute }
-              ret['durationInfo'] = {'eternity' : model.ETERNITY.o,
+              ret['durationInfo'] = {'yearly' : model.YEARLY.o,
                                      'monthly' : model.MONTHLY.o,
-                                     'weekly' : model.WEEKLY.o,
                                      'daily' : model.DAILY.o,
                                      'hourly' : model.HOURLY.o,
                                      'minutely' : model.MINUTELY.o}

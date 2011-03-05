@@ -34,20 +34,20 @@ function LoadFile(filename, filetype){
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
     LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
-    LoadFile("http://ligertail.com/a/js/postrequest.js", "js");
-    LoadFile("http://ligertail.com/a/js/json2.js", "js");
-    LoadFile("http://ligertail.com/a/js/apiproxy.js", "js");
-    LoadFile("http://ligertail.com/a/frontend/apihandler.js", "js");
+    LoadFile("../js/postrequest.js", "js");
+    LoadFile("../js/json2.js", "js");
+    LoadFile("../js/apiproxy.js", "js");
+    LoadFile("apihandler.js", "js");
 
-    LoadFile("http://ligertail.com/a/frontend/facebox/facebox.js", "js");
-    LoadFile("http://ligertail.com/a/frontend/facebox/facebox.css", "css");
-    LoadFile("http://ligertail.com/a/frontend/css/widget_1.css", "css");
+    LoadFile("facebox/facebox.js", "js");
+    LoadFile("facebox/facebox.css", "css");
+    LoadFile("css/widget_1.css", "css");
     
     //LOAD PUBLISHER-SET PARAMETERS
 
 function SetupParameters(){
     ///////////////////////////////
-    var file_name = "http://www.ligertail.com/a/frontend/ligertail.js";
+    var file_name = "ligertail.js";
     ///////////////////////////////
         scripts = document.getElementsByTagName("script"); 
         var i, j, src, parts, basePath, options = {};
@@ -115,7 +115,7 @@ function OpenLightboxSubmission(url){
                 
                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
-                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
+                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
             },
             error: function(e){ alert("error: " + e);}        
         });
@@ -174,7 +174,7 @@ function OpenLightboxSubmission(url){
                 if(item.url == url)
                     item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
-                    item.thumbnailUrl = "http://ligertail.com/a/frontend/images/default.png";
+                    item.thumbnailUrl = "images/default.png";
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
@@ -191,10 +191,10 @@ function OpenLightboxSubmission(url){
                         
                         //add content to widget
                         if(window.parameter["width"] == 600){                                                          
-                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><p>' + item.description + '</p></div></div>');
+                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><p>' + item.description + '</p></div></div>');
                         }
                         else{
-                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
+                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
                         }
                         
                         //error here: not removing last item in widget
@@ -223,7 +223,7 @@ function OpenLightboxSubmission(url){
                 if(item.url == url)
                     item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
-                    item.thumbnailUrl = "http://ligertail.com/a/frontend/images/default.png";
+                    item.thumbnailUrl = "images/default.png";
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
@@ -251,9 +251,8 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  var domain = "http://5.latest.ligertailbackend.appspot.com";
   window.api = new LGApi();
-  api.init(domain, apiHandler);
+  api.init(apiHandler);
   window.publisherUrl = publisherUrl;
 }
 
@@ -319,19 +318,19 @@ function initAll(){
     //load header, footer, and default content then bind events
     //this should be a switch statement
     if(window.parameter["width"] == 600){
-        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
-        var footer = '<div id="ligertail_widget_footer"><img src="http://www.ligertail.com/a/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
+        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="images/button_submit_1.png" value="Submit" /></form></div>';
+        var footer = '<div id="ligertail_widget_footer"><img src="images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="http://www.ligertail.com/a/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="http://www.ligertail.com/a/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Link" /><input type="image" src="images/button_submit_2.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_image"><img src="http://www.ligertail.com/a/frontend/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_image"><img src="default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
         }
         else{
             content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span><p></p></div></div>';

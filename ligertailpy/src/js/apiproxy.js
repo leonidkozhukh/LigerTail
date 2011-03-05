@@ -29,7 +29,10 @@ function LGApi() {
 	var i = 1;
 }
 
-LGApi.prototype.init = function(domain, apiHandler) {
+LGApi.prototype.init = function(apiHandler, domain) {
+	if (!domain) {
+	  domain = LGApi.getDefaultDomain();
+	}
 	this.domain = domain;
 	_apiHandler = apiHandler;
 }
@@ -131,4 +134,13 @@ assert = function(cond) {
 		alert("Invalid condition ");
 		blah/0;
 	}
-}		
+}
+
+LGApi.getDefaultDomain = function() {
+  var domain = "http://" + window.document.location.hostname;
+  if (window.document.location.port) {
+    domain += ":" + window.document.location.port;
+  }
+  //var domain = "http://5.latest.ligertailbackend.appspot.com";
+  return domain;
+}

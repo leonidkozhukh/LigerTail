@@ -74,9 +74,8 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  var domain = "http://5.latest.ligertailbackend.appspot.com";
   window.api = new LGApi();
-  api.init(domain, apiHandler);
+  api.init(apiHandler);
   window.publisherUrl = publisherUrl;
 }
 

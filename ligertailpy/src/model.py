@@ -1,10 +1,10 @@
-from datetime import datetime, date, time, timedelta
 from google.appengine.api import memcache, users
 from google.appengine.ext import db
 from time import mktime
+import datetime
 import logging
 import pickle
-
+import calendar
 
 
 # Set the debug level
@@ -24,34 +24,27 @@ SEC = 1
 MIN = SEC * 60
 HOUR = MIN * 60
 DAY = HOUR * 24
-WEEK = DAY * 7
-MONTH = DAY * 30
+
   
 NUM_DELTAS = 20
 
 class Duration:
-  def __init__(self, name, id, period_sec, delta_sec, num_deltas):
+  def __init__(self, name, id, num_items):
     self.name = name
     self.id = id
-    self.sec = period_sec
-    self.delta_sec = delta_sec
-    self.num_deltas = num_deltas
+    self.num_items = num_items
     self.o = {}
     self.o['id'] = self.id
-    self.o['sec'] = self.sec
-    self.o['delta_sec'] = self.delta_sec
-    self.o['num_deltas'] = self.num_deltas
-  
-ETERNITY = Duration('eternity', 0, None, MONTH, 12)
-MONTHLY = Duration('monthly', 1, MONTH, DAY, 30)
-WEEKLY = Duration('weekly', 2, WEEK, DAY, 14)
-DAILY = Duration('daily', 3, DAY, HOUR, 48)
-HOURLY = Duration('hourly', 4, HOUR, MIN * 5, 20)
-MINUTELY = Duration('minutely', 5, MIN, MIN, 20) 
+    self.o['num_items'] = self.num_items
 
-DurationInfo = {ETERNITY.id: ETERNITY,
+YEARLY = Duration('yearly', 0, 3)
+MONTHLY = Duration('monthly', 1, 12)
+DAILY = Duration('daily', 2, 31)
+HOURLY = Duration('hourly', 3, 24)
+MINUTELY = Duration('minutely', 4, 60) 
+
+DurationInfo = {YEARLY.id: YEARLY,
              MONTHLY.id: MONTHLY,
-             WEEKLY.id: WEEKLY,
              DAILY.id: DAILY,
              HOURLY.id: HOURLY,
              MINUTELY.id: MINUTELY}
@@ -63,7 +56,7 @@ class Preference:
 class Filter(db.Model):
   recency = db.IntegerProperty(default=50)
   popularity = db.IntegerProperty(default=50)
-  durationId = db.IntegerProperty(default=ETERNITY.id)
+  durationId = db.IntegerProperty(default=YEARLY.id)
   default = False
 
   def update(self, durationId, popularity, recency):
@@ -160,7 +153,7 @@ class Item(db.Model):
    
   def updatePrice(self, price, email):
     # TODO: check for price > 0 and email valid
-    paymentInfo = PaymentInfo(datetime.now(),
+    paymentInfo = PaymentInfo(datetime.datetime.utcnow(),
                               price, email)
     self.payments.append(paymentInfo)
     
@@ -172,8 +165,8 @@ class TimedStats(object):
 
   def create_(self):
     durations = {}
-    for durationId in range(ETERNITY.id, MINUTELY.id+1):
-      durations[durationId] = self.createStatArray_(DurationInfo[durationId].num_deltas)
+    for durationId in range(YEARLY.id, MINUTELY.id+1):
+      durations[durationId] = self.createStatArray_(DurationInfo[durationId].num_items)
     return durations
   
   def createStatArray_(self, num_deltas):
@@ -191,34 +184,60 @@ class TimedStats(object):
             StatType.VIEWS : 0
           }
 
-  def update(self, updateTime = datetime.now(), statType = StatType.UNKNOWN):
-    for durationId in range(ETERNITY.id, MINUTELY.id+1):
-      duration = DurationInfo[durationId]
-      timeBucket = int(mktime(updateTime.timetuple())) / duration.delta_sec
-      logging.info ('timeBucket for updateTime %s is %d' % (str(updateTime), timeBucket))
-      recordedStats = self.durations[durationId]
-      statArray = []
-      previousTimeBucket = 0
-      if self.updateTime:
-        previousTimeBucket = int(mktime(self.updateTime.timetuple())) / duration.delta_sec
-      if previousTimeBucket != 0 and previousTimeBucket < timeBucket:
-        i = 0
-        while timeBucket > previousTimeBucket and i < duration.num_deltas:
-          statArray.append(self.createEmptyStats_())
-          timeBucket -= 1
-          i += 1
-        j = 0
-        while i < duration.num_deltas:
-          statArray.append(recordedStats[j])
-          i += 1
-          j += 1
-        if statType != StatType.UNKNOWN:
-          statArray[0][statType] = statArray[0][statType] + 1
-        self.durations[durationId] = statArray
-      elif statType != StatType.UNKNOWN: 
-        recordedStats[0][statType] = recordedStats[0][statType] + 1
+  def update(self, updateTime = datetime.datetime.utcnow(), statType = StatType.UNKNOWN):
+    prevYear = prevMonth  = prevDay = prevHour = prevMinute = -1
+    
+    if self.updateTime:
+      timedelta = updateTime - self.updateTime
+      if updateTime.year - self.updateTime.year <= YEARLY.num_items:
+        prevYear = updateTime.year - self.updateTime.year
+      if updateTime.month >= self.updateTime.month and updateTime.year == self.updateTime.year:
+        prevMonth = updateTime.month - self.updateTime.month
+      elif updateTime.month < self.updateTime.month and updateTime.year - 1 == self.updateTime.year:
+        prevMonth = updateTime.month + 12 - self.updateTime.month
+      if updateTime.day >= self.updateTime.day and updateTime.month == self.updateTime.month and updateTime.year == self.updateTime.year:
+        prevDay = updateTime.day - self.updateTime.day
+      elif updateTime.day < self.updateTime.day and timedelta.days < 31:
+        prevDay = updateTime.day + calendar.mdays[self.updateTime.month] - self.updateTime.day
+      if updateTime.hour >= self.updateTime.hour and timedelta.days == 0:
+        prevHour = updateTime.hour - self.updateTime.hour
+      elif updateTime.hour < self.updateTime.hour and timedelta.days == 0:
+        prevHour = updateTime.hour + 24 - self.updateTime.hour
+      if updateTime.minute >= self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
+        prevMinute = updateTime.minute - self.updateTime.minute
+      elif updateTime.minute < self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600:
+        prevMinute = updateTime.minute + 60 - self.updateTime.minute
+            
+    self.updateStats_(YEARLY, statType, prevYear)
+    self.updateStats_(MONTHLY, statType, prevMonth)
+    self.updateStats_(DAILY, statType, prevDay)
+    self.updateStats_(HOURLY, statType, prevHour)
+    self.updateStats_(MINUTELY, statType, prevMinute)
     self.updateTime = updateTime
     return self.durations
+
+  def updateStats_(self, duration, statType, previousTimeBucket):  
+    recordedStats = self.durations[duration.id]
+    statArray = []
+    i = 0
+    if previousTimeBucket == -1:
+      previousTimeBucket = duration.num_items #clear out the array      
+    if previousTimeBucket > 0:
+      i = 0
+      while previousTimeBucket > 0 and i < duration.num_items:
+        statArray.append(self.createEmptyStats_())
+        previousTimeBucket -= 1
+        i += 1
+      j = 0
+      while i < duration.num_items:
+        statArray.append(recordedStats[j])
+        i += 1
+        j += 1
+      if statType != StatType.UNKNOWN:
+        statArray[0][statType] = statArray[0][statType] + 1
+      self.durations[duration.id] = statArray
+    elif statType != StatType.UNKNOWN: 
+      recordedStats[0][statType] = recordedStats[0][statType] + 1
     
 class ItemUpdateEntity(object):  
   itemId = None
@@ -230,7 +249,7 @@ class ItemUpdateEntity(object):
     self.itemId = itemId
     self.bNew = bNew
     self.statType = statType
-    self.creationTime = datetime.now()
+    self.creationTime = datetime.datetime.utcnow()
 
 
 class Bucket(db.Model):
