@@ -25,9 +25,14 @@ import os
 from google.appengine.ext.webapp import template
 
 class MainHandler(webapp.RequestHandler):
-    def get(self):
-      path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', 'index.html')
-      self.response.out.write(template.render(path, {}))
+    def get(self, url):
+        if url == "submission.html":
+            path = os.path.join(os.path.dirname(__file__), 'frontend', url)
+        elif len(url) > 0:
+            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', url)
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', 'index.html')
+        self.response.out.write(template.render(path, {}))
         
 class SubmitItemHandler(BaseHandler):
     def post(self):
@@ -195,7 +200,7 @@ class ProcessUpdatesWorker(webapp.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication(
-                                         [('/', MainHandler),
+                                         [
                                           # apis
                                           ('/submit_item', SubmitItemHandler),
                                           ('/update_price', UpdatePriceHandler),
@@ -206,7 +211,9 @@ def main():
                                           ('/submit_filter', SubmitFilterHandler),
                                           ('/get_item_stats', GetItemStatsHandler),
                                           # tasks
-                                          ('/process_updates', ProcessUpdatesWorker)
+                                          ('/process_updates', ProcessUpdatesWorker),
+                                          # everything else
+                                          ('/(.*)', MainHandler)
                                          ],
                                          debug=True)
     util.run_wsgi_app(application)

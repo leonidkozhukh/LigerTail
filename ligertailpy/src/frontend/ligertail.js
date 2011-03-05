@@ -100,7 +100,7 @@ function ValidateEmail(str) {
 
 function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
-        jQuery.facebox({ ajax: "../submission.html"});
+        jQuery.facebox({ ajax: "/submission.html"});
         
         // Call embedly
         jQuery.ajax({

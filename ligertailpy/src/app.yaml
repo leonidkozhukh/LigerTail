@@ -19,10 +19,9 @@ handlers:
   
 - url: /frontend/web/css
   static_dir: frontend/web/css
- 
-- url: /payment.html
-  static_files: frontend/web/\1
-  upload: frontend/web/payment.html
+  
+- url: /payment\.html
+  script: main.py
   secure: always
     
 - url: /admin
@@ -31,4 +30,5 @@ handlers:
       
 - url: /.*
   script: main.py
+  secure: optional
 
