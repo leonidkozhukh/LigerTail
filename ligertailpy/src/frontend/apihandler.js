@@ -31,7 +31,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
 	//receipt shown/emailed
-	//console.log(repsonse);
+	console.log(response);
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
@@ -43,7 +43,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
 		}
 		else{
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
 	});
 	
@@ -110,7 +110,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	jQuery("#analytics .entry").after(content);
 	
 	jQuery("#analytics .entry").click(function(){
-		api.getItemStats(window.PUBLISHER_URL, jQuery(this).attr("id"));
+		api.getItemStats(jQuery(this).attr("id"), 2);
 	});
 }
 
@@ -126,6 +126,23 @@ ApiHandler.prototype.onFilterSubmitted = function(response) {
 	
 }
 
+ApiHandler.prototype.onGetItemInfo = function(response) {
+	var content;
+	jQuery.each(response.items, function(i, item){
+		var item_obj = jQuery.parseJSON(item);
+		content = '<div class="entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
+		console.log(item_obj);
+		
+		window.publisherUrl = item_obj.publisherUrl;
+		window.PUBLISHER_URL = item_obj.publisherUrl;										
+	});													
+	
+	jQuery("#analytics").append(content);
+	
+	api.getPaidItems(window.PUBLISHER_URL);
+	
+}
+
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
 	//var scope = ["uniques", "eternity"];
@@ -136,8 +153,7 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
 		console.log(item_obj);
-		window.publisherUrl = item_obj.publisherUrl;
-		window.PUBLISHER_URL = item_obj.publisherUrl;
+		
 		//data += '<tr>' + '<td>' + item_obj.totalStats[0] + '</td>' + '<td>' + item_obj.totalStats[1] + '</td>' + '<td>' + item_obj.totalStats[2] + '</td>' + '<td>' + item_obj.totalStats[4] + '</td>' +  '</tr>';
 		
 		
@@ -152,29 +168,5 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 		
 		console.log(data);
 	});
-	jQuery("#table-gen").append(data);
-	
-	//select default scope & initialize change function
-	
-	
-	
-	jQuery("#table-gen tr:first td").click(function(){
-			if(jQuery(this).html() == "uniques" || jQuery(this).html() == "pageviews" || jQuery(this).html() == "clicks" || jQuery(this).html() == "closes")
-				scope[0] = jQuery(this).html();
-			else
-				scope[1] = jQuery(this).html();
-				
-			//turn everything back to black font
-			jQuery("#table-gen tr:first td").css("color", "black");
-			//turn scope-d fields to red
-			jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
-			jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
-			
-			
-										
-	});
-	
-	
-	
 	
 }

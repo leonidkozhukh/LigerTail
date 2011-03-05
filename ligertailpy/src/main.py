@@ -18,32 +18,21 @@ import wsgiref.handlers
 #import appengine_django.auth.templatetags
 
 import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settingsdj' 
+#os.environ['DJANGO_SETTINGS_MODULE'] = 'settingsdj' 
 
 #from google.appengine.dist import use_library
 #use_library('django', '1.2')
 from google.appengine.ext.webapp import template
 
-from django.conf import settings
-_ = settings.TEMPLATE_DIRS
-
-TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'frontend', 'web')
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'djsettings'
-
 class MainHandler(webapp.RequestHandler):
-    def get(self):
-      #tmpl = os.path.join(TEMPLATES_DIR, 'about.html')
-                            #os.path.dirname(__file__), 'frontend', 'web', 'index.html')
-      context= {}
-      self.response.out.write('hello')
-                              #self._render('about.html', context))
-    
-    def _render(self, name, context):
-      path = os.path.join(TEMPLATES_DIR, name)
-      template_file = open('C:\\misha\\workspace\\ligertail\\ligertailpy\\src\\frontend\\web\\about.html')#path) 
-      compiled_template = template.Template(template_file.read()) 
-      template_file.close()  
-      return compiled_template.render(context)
+    def get(self, url):
+        if url == "submission.html":
+            path = os.path.join(os.path.dirname(__file__), 'frontend', url)
+        elif len(url) > 0:
+            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', url)
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', 'index.html')
+        self.response.out.write(template.render(path, {}))
         
 class SubmitItemHandler(BaseHandler):
     def post(self):
@@ -211,7 +200,7 @@ class ProcessUpdatesWorker(webapp.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication(
-                                         [('/', MainHandler),
+                                         [
                                           # apis
                                           ('/submit_item', SubmitItemHandler),
                                           ('/update_price', UpdatePriceHandler),
@@ -222,7 +211,9 @@ def main():
                                           ('/submit_filter', SubmitFilterHandler),
                                           ('/get_item_stats', GetItemStatsHandler),
                                           # tasks
-                                          ('/process_updates', ProcessUpdatesWorker)
+                                          ('/process_updates', ProcessUpdatesWorker),
+                                          # everything else
+                                          ('/(.*)', MainHandler)
                                          ],
                                          debug=True)
     util.run_wsgi_app(application)

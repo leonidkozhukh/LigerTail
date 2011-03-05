@@ -7,19 +7,28 @@ handlers:
 - url: /js
   static_dir: js
   secure: optional
+  
+- url: /frontend/css
+  static_dir: frontend/css
+  
+- url: /frontend/images
+  static_dir: frontend/images  
 
-- url: /frontend/payment\.html
+- url: /frontend/web/images
+  static_dir: frontend/web/images
+  
+- url: /frontend/web/css
+  static_dir: frontend/web/css
+  
+- url: /payment\.html
+  script: main.py
   secure: always
-  static_dir: frontend
-  
-- url: /frontend
-  static_dir: frontend
-  secure: optional
-  
+    
 - url: /admin
   script: admin/admin.py
   login: admin
       
-- url: .*
+- url: /.*
   script: main.py
+  secure: optional
 

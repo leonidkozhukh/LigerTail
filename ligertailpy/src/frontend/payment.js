@@ -35,11 +35,11 @@ function LoadFile(filename, filetype){
 }
 
 LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
-LoadFile("http://ligertail.com/a/js/postrequest.js", "js");
-LoadFile("http://ligertail.com/a/js/json2.js", "js");
-LoadFile("http://ligertail.com/a/js/apiproxy.js", "js");
-LoadFile("http://ligertail.com/a/frontend/apihandler.js", "js");
-LoadFile("http://ligertail.com/a/frontend/css/payment.css", "css");
+LoadFile("js/postrequest.js", "js");
+LoadFile("js/json2.js", "js");
+LoadFile("js/apiproxy.js", "js");
+LoadFile("apihandler.js", "js");
+LoadFile("css/payment.css", "css");
 
 
 
@@ -61,7 +61,7 @@ function getUrlParameters() {
 
 function ValidateEmail(str) {
     var reg = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-    if(reg.test(str) == false) {
+    if(reg.test(str) == false) { 
         return false;
     }
     else return str;  
@@ -81,11 +81,11 @@ function init(publisherUrl) {
 
 function initAll(){
     window.PUBLISHER_URL = "http://www.ligertail.com/payments";
-    alert("in");
+    
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
-    api.getItemStats(urlParams['itemId'], 2);
+    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
     
     //load credit card validation
     //first
@@ -106,7 +106,7 @@ function initAll(){
     
     //email
     jQuery("#payment_form #email").blur(function(){
-        if(ValidateEmail(jQuery(this).val()))
+        if(!ValidateEmail(jQuery(this).val()))
             jQuery("#payment_form tr:nth-child(5)").css("color", "red");
         else if(jQuery("#payment_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
             jQuery("#payment_form tr:nth-child(5)").css("color", "black");
@@ -226,19 +226,17 @@ function initAll(){
              jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
         }
     });
-    console.log("a");
+    
     jQuery("#payment_price input").click(function(){
         jQuery("#payment_form").trigger("sub");
     });
-    console.log("b");
+    
     //change price
     jQuery("#analytics .entry:first input").change(function(){
         jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
     });
-    console.log(window.PUBLISHER_URL);
-    //load paid content
-    api.getPaidItems(window.PUBLISHER_URL);
     
+    //load paid content    
     //load statistics for content item
     //this is done in apihandler
     
