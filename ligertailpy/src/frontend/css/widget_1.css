@@ -180,7 +180,7 @@
 
 #ligertail_widget_small #ligertail_widget_footer {
 	height:20px;
-	background-image:url(../images/bg_footer_2.png);
+	background-image:url("../images/bg_footer_2.png");
 	background-repeat:repeat-x;
 	clear:both;
 	background-position:right;

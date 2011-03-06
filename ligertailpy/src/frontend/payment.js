@@ -34,12 +34,12 @@ function LoadFile(filename, filetype){
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
-LoadFile("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", "js");
-LoadFile("js/postrequest.js", "js");
-LoadFile("js/json2.js", "js");
-LoadFile("js/apiproxy.js", "js");
-LoadFile("apihandler.js", "js");
-LoadFile("css/payment.css", "css");
+LoadFile("../js/jquery.min.js", "js");
+LoadFile("../js/postrequest.js", "js");
+LoadFile("../js/json2.js", "js");
+LoadFile("../js/apiproxy.js", "js");
+LoadFile("../frontend/apihandler.js", "js");
+LoadFile("../frontend/css/payment.css", "css");
 
 
 

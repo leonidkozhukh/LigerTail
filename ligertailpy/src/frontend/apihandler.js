@@ -22,7 +22,18 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
   // TODO: handle error case
   if (!window.submitForFree) {
 	var item = jQuery.parseJSON(response.items[0]);
-	window.open("https://ligertailbackend.appspot.com/frontend/payment.html?itemId=" + item.id);
+	var domain = "";
+	if (window.document.location.hostname == "localhost") {
+		domain = "http://" + window.document.location.hostname;		
+	} else {
+		domain = "https://" + window.document.location.hostname;
+	}
+    if (window.document.location.port) {
+	    domain += ":" + window.document.location.port;
+	}
+    var url = domain + "/frontend/payment.html?itemId=" + item.id;
+    document.location.href = url;
+	//window.open(domain + "/frontend/payment.html?itemId=" + item.id);
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...
@@ -40,10 +51,10 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		var item_obj = jQuery.parseJSON(item);
 		
 		if(window.parameter["width"] == 600){
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
 		}
 		else{
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close"><img src="http://ligertail.com/a/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
 	});
 	
@@ -130,7 +141,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	var content;
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		content = '<div class="entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
+		content = '<div class="entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
 		console.log(item_obj);
 		
 		window.publisherUrl = item_obj.publisherUrl;

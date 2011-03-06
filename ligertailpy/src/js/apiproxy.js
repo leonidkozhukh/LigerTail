@@ -142,5 +142,6 @@ LGApi.getDefaultDomain = function() {
     domain += ":" + window.document.location.port;
   }
   //var domain = "http://5.latest.ligertailbackend.appspot.com";
+  domain += "/api";
   return domain;
 }

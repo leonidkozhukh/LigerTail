@@ -21,14 +21,8 @@ $(document).ready(function(){
 function init() {
   var apiHandler = new BaseApiHandler();
   var domain = document.getElementById("domain").value;
-  if (!domain) {
-    domain = "http://" + window.document.location.hostname;
-    if (window.document.location.port) {
-      domain += ":" + window.document.location.port;
-    }
-  }
   window.api = new LGApi();
-  api.init(domain, apiHandler);
+  api.init(apiHandler, domain);
   window.publisherUrl = document.getElementById("publisherUrl").value;
 }
 

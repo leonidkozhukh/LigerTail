@@ -26,12 +26,10 @@ from google.appengine.ext.webapp import template
 
 class MainHandler(webapp.RequestHandler):
     def get(self, url):
-        if url == "submission.html":
-            path = os.path.join(os.path.dirname(__file__), 'frontend', url)
-        elif len(url) > 0:
-            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', url)
+        if len(url) > 0:
+            path = os.path.join(os.path.dirname(__file__), 'web', url)
         else:
-            path = os.path.join(os.path.dirname(__file__), 'frontend', 'web', 'index.html')
+            path = os.path.join(os.path.dirname(__file__), 'web', 'index.html')
         self.response.out.write(template.render(path, {}))
         
 class SubmitItemHandler(BaseHandler):
@@ -202,18 +200,19 @@ def main():
     application = webapp.WSGIApplication(
                                          [
                                           # apis
-                                          ('/submit_item', SubmitItemHandler),
-                                          ('/update_price', UpdatePriceHandler),
-                                          ('/get_ordered_items', GetOrderedItemsHandler),
-                                          ('/get_paid_items', GetPaidItemsHandler),
-                                          ('/submit_user_interaction', SubmitUserInteractionHandler),
-                                          ('/get_filter', GetFilterHandler),
-                                          ('/submit_filter', SubmitFilterHandler),
-                                          ('/get_item_stats', GetItemStatsHandler),
+                                          ('/api/submit_item', SubmitItemHandler),
+                                          ('/api/update_price', UpdatePriceHandler),
+                                          ('/api/get_ordered_items', GetOrderedItemsHandler),
+                                          ('/api/get_paid_items', GetPaidItemsHandler),
+                                          ('/api/submit_user_interaction', SubmitUserInteractionHandler),
+                                          ('/api/get_filter', GetFilterHandler),
+                                          ('/api/submit_filter', SubmitFilterHandler),
+                                          ('/api/get_item_stats', GetItemStatsHandler),
                                           # tasks
                                           ('/process_updates', ProcessUpdatesWorker),
                                           # everything else
-                                          ('/(.*)', MainHandler)
+                                          ('/(.*)', MainHandler),
+                                          
                                          ],
                                          debug=True)
     util.run_wsgi_app(application)
