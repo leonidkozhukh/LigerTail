@@ -25,14 +25,17 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 	var domain = "";
 	if (window.document.location.hostname == "localhost") {
 		domain = "http://" + window.document.location.hostname;		
+	    if (window.document.location.port) {
+		    domain += ":" + window.document.location.port;
+		}
 	} else {
-		domain = "https://" + window.document.location.hostname;
+		domain = "https://ligertailbackend.appspot.com";
 	}
-    if (window.document.location.port) {
-	    domain += ":" + window.document.location.port;
-	}
-    var url = domain + "/frontend/payment.html?itemId=" + item.id;
-    document.location.href = url;
+    // var url = domain + "/frontend/payment.html?itemId=" + item.id;
+	var url = domain + "/payment.html?itemId=" + item.id;
+    
+    // TODO : make sure it opens in a new window
+	document.location.href = url;
 	//window.open(domain + "/frontend/payment.html?itemId=" + item.id);
   }
   else{
