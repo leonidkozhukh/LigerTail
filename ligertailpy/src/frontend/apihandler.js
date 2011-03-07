@@ -113,12 +113,12 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 		content += '<div class="entry" id="' + item_obj.id + '"><div class="pricing">$' + item_obj.price + '</div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div></div>';
 		
 		if(i == 0){
-				jQuery("#analytics .entry:first input").val(item_obj.price + 1);
+				jQuery("#analytics .your_entry:first input").val(item_obj.price + 1);
 				jQuery("#payment_price .pricing").html("$" + (item_obj.price + 1));
 		}
 	});
 	
-	jQuery("#analytics .entry").after(content);
+	jQuery("#analytics .your_entry").after(content);
 	
 	jQuery("#analytics .entry").click(function(){
 		api.getItemStats(jQuery(this).attr("id"), 2);
@@ -141,7 +141,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	var content;
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		content = '<div class="entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
+		content = '<div class="your_entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
 		console.log(item_obj);
 		
 		window.publisherUrl = item_obj.publisherUrl;
@@ -149,6 +149,11 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	});													
 	
 	jQuery("#analytics").append(content);
+	
+	//change price
+    jQuery("#analytics .your_entry:first input").change(function(){ 
+        jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
+    });
 	
 	api.getPaidItems(window.PUBLISHER_URL);
 	

@@ -232,9 +232,7 @@ function initAll(){
     });
     
     //change price
-    jQuery("#analytics .entry:first input").change(function(){
-        jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
-    });
+    //done after item is loaded in apihandler
     
     //load paid content    
     //load statistics for content item
