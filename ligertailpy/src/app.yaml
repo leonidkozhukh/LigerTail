@@ -1,5 +1,5 @@
 application: ligertailbackend
-version: 5
+version: 6
 runtime: python
 api_version: 1
 
@@ -10,6 +10,7 @@ handlers:
 
 - url: /frontend
   static_dir: frontend
+  secure: optional
   
 #- url: /frontend/css
 #  static_dir: frontend/css
@@ -26,11 +27,16 @@ handlers:
 - url: /web/css
   static_dir: web/css
   
+- url: /web/amline
+  static_dir: web/amline
+  
 - url: /frontend/payment\.html
   secure: always
   static_dir: frontend
-  
 
+- url: /payment\.html
+  secure: always
+  script: main.py
 
 - url: /admin
   script: admin/admin.py
