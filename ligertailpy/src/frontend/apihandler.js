@@ -164,28 +164,44 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
-	//var scope = ["uniques", "eternity"];
-	//jQuery("#table-gen tr:first td:contains(" + scope[0] + ")").css("color", "red");
-	//jQuery("#table-gen tr:first td:contains(" + scope[1] + ")").css("color", "red");
+	var dur  = {
+	YY: 0,
+	MM: 1,
+	DD: 2,
+	hh: 3,
+	mm: 4
+};
+	jQuery("#graphs h3").after('<select id="type"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');
 	
-	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""], 5:["", "", "", ""]};
+	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
 		console.log(item_obj);
 		
 		//data += '<tr>' + '<td>' + item_obj.totalStats[0] + '</td>' + '<td>' + item_obj.totalStats[1] + '</td>' + '<td>' + item_obj.totalStats[2] + '</td>' + '<td>' + item_obj.totalStats[4] + '</td>' +  '</tr>';
 		
-		
-		for(var m = 0; m < 6; m++){
-				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_deltas; n++){ 
-						data[m][0] += item_obj.timedStats[m][n][0] + ';'; 
-						data[m][1] += item_obj.timedStats[m][n][1] + ';';
-						data[m][2] += item_obj.timedStats[m][n][2] + ';';
-						data[m][3] += item_obj.timedStats[m][n][4] + ';';
+		for(var m = 0; m < 5; m++){ 
+				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_items; n++){ 
+							data[m][0] += n + ';' + item_obj.timedStats[m][n][0] + '\n'; 
+							data[m][1] += n + ';' + item_obj.timedStats[m][n][1] + '\n'; 
+							data[m][2] += n + ';' + item_obj.timedStats[m][n][2] + '\n'; 
+							data[m][3] += n + ';' + item_obj.timedStats[m][n][4] + '\n'; 		
 				}
 		}
-		
+
 		console.log(data);
+		
+		jQuery("#graphs #type").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #duration").val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery("#graphs #duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});
+		
+		jQuery("#graphs #duration").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #type").val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});
 	});
 	
 }

@@ -6,8 +6,8 @@
 <!-- "!" before x or y position (for example: <x>!20</x>) means that the coordinate will be calculated from the right side or the bottom -->
 
 <settings> 
-  <data_type></data_type>                                     <!-- [xml] (xml / csv) -->
-  <csv_separator></csv_separator>                             <!-- [;] (string) csv file data separator (you need it only if you are using csv file for your data) -->
+  <data_type>csv</data_type>                                     <!-- [xml] (xml / csv) -->
+  <csv_separator>;</csv_separator>                             <!-- [;] (string) csv file data separator (you need it only if you are using csv file for your data) -->
   <skip_rows></skip_rows>                                     <!-- [0] (Number) if you are using csv data type, you can set the number of rows which should be skipped here -->       
   <font></font>                                               <!-- [Arial] (font name) use device fonts, such as Arial, Times New Roman, Tahoma, Verdana... -->
   <text_size></text_size>                                     <!-- [11] (Number) text size of all texts. Every text size can be set individually in the settings below -->

@@ -17,7 +17,7 @@ var Duration  = {
 	MINUTELY: 5
 };
 
-var reverseDuration = ["eternity", "monthly", "weekly", "daily", "hourly", "minutely"];
+var reverseDuration = ["yearly", "monthly", "daily", "hourly", "minutely"];
 
 var InfoType = {
 	    SHORT : 0,
