@@ -44,7 +44,6 @@ class SubmitItemHandler(BaseHandler):
         item.description = self.getParam('description')
         item.email = self.getParam('email')
         item.sessionId = self.viewer.sessionId
-        item.price = 0
         item.put()
         BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
         BaseHandler.sendConfirmationEmail(self, item)
@@ -66,7 +65,7 @@ class UpdatePriceHandler(BaseHandler):
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
         BaseHandler.writeResponse(self)
-        
+         
     def _verifyTransaction(self, item):
         paymentInfo = {'price': self.getParam('price'),
                        'first_name': self.getParam('first_name'),
