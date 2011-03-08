@@ -38,6 +38,6 @@ def applyFilter(items, filter):
     item.v = popularity * filter.popularity + \
         recency * filter.recency + \
         views * TOTAL_VIEWS_K + \
-        float(item.price) / seconds * PRICE_K
+        float(item.getPrice()) / seconds * PRICE_K
   orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
   return orderedItems  

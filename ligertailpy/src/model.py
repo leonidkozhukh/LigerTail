@@ -95,7 +95,6 @@ class Item(db.Model):
   description = db.TextProperty()
   email = db.EmailProperty()
   publisherUrl = db.StringProperty()
-  price = db.IntegerProperty(default=0)
   sessionId = db.StringProperty()
   pickled_stats = db.BlobProperty(required=False)
   pickled_timedstats = db.BlobProperty(required=False)
@@ -157,6 +156,12 @@ class Item(db.Model):
                               price, email)
     self.payments.append(paymentInfo)
     
+  def getPrice(self):
+    price = 0
+    for p in self.payments:
+      price += p.price
+    return price
+  
 
 class TimedStats(object):
   def __init__(self):  

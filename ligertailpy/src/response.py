@@ -20,7 +20,7 @@ class ResponseItem(json.JSONEncoder):
         self.title = item.title
         self.description = item.description
         self.itemInfo = itemInfo
-        self.price = item.price
+        self.price = item.getPrice()
         self.stats = item.stats
         self.timedStats = item.timedStats
         self.publisherUrl = item.publisherUrl

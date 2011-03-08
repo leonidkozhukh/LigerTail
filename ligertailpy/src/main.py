@@ -44,7 +44,6 @@ class SubmitItemHandler(BaseHandler):
         item.description = self.getParam('description')
         item.email = self.getParam('email')
         item.sessionId = self.viewer.sessionId
-        item.price = 0
         item.put()
         BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
         BaseHandler.sendConfirmationEmail(self, item)
