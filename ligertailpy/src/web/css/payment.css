@@ -60,6 +60,17 @@
 	border: 1px solid #ccc;
 	height: 45px;
 	padding-top:5px;
+	padding-bottom: 8px;ß
+}
+
+#analytics .your_entry {
+	clear: both;
+	background-image:url(../images/bg_entry.png);
+	background-repeat:repeat-x;
+	border: 1px solid #ccc;
+	height: 45px;
+	padding-top:5px;
+	padding-bottom: 8px;
 }
 
 #analytics .entry:hover {
