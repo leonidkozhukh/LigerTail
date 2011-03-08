@@ -41,3 +41,4 @@ def applyFilter(items, filter):
         float(item.getPrice()) / seconds * PRICE_K
   orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
   return orderedItems  
+

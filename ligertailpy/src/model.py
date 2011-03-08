@@ -155,7 +155,7 @@ class Item(db.Model):
     paymentInfo = PaymentInfo(datetime.datetime.utcnow(),
                               price, email)
     self.payments.append(paymentInfo)
-    
+     
   def getPrice(self):
     price = 0
     for p in self.payments:
