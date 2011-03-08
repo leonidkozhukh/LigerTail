@@ -88,8 +88,8 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	//update db for click
 	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 		//this is a click
-		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLICKS};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS}; 
+		//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 	
 	//update db for like
