@@ -42,6 +42,7 @@ class SubmitItemHandler(BaseHandler):
         item.thumbnailUrl = self.getParam('thumbnailUrl')
         item.title = self.getParam('title')
         item.description = self.getParam('description')
+        item.price = 0
         item.email = self.getParam('email')
         item.sessionId = self.viewer.sessionId
         item.put()

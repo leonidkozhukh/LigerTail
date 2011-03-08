@@ -93,6 +93,7 @@ class Item(db.Model):
   thumbnailUrl = db.StringProperty()
   title = db.StringProperty()
   description = db.TextProperty()
+  price = db.IntegerProperty(default = 0)
   email = db.EmailProperty()
   publisherUrl = db.StringProperty()
   sessionId = db.StringProperty()
@@ -155,12 +156,8 @@ class Item(db.Model):
     paymentInfo = PaymentInfo(datetime.datetime.utcnow(),
                               price, email)
     self.payments.append(paymentInfo)
-     
-  def getPrice(self):
-    price = 0
-    for p in self.payments:
-      price += p.price
-    return price
+    # TODO: use more sophisticated price estimate
+    self.price += price
   
 
 class TimedStats(object):
