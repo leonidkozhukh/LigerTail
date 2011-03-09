@@ -3,7 +3,7 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from itemlist import itemList
-import filterstrategy
+from filterstrategy import filterStrategy
 import logging
 import model
 import cgi
@@ -54,7 +54,7 @@ class BaseHandler(webapp.RequestHandler):
       logging.info('return default from memcache for %s', publisherUrl)
       return defaultOrderedItems
     logging.info('filter is not default for %s', publisherUrl)
-    return filterstrategy.applyFilter(defaultOrderedItems, filter)
+    return filterStrategy.applyFilter(defaultOrderedItems, filter)
       
   def getPaidItems(self, publisherUrl):
       logging.info('getPaidItems')

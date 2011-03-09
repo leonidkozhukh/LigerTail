@@ -2,43 +2,53 @@ import model
 import logging
 import datetime
 
-def applyFilter(items, filter):
-  #TODO: support timeliness
-  LIKES_RATE_K = 500.0
-  CLICKS_RATE_K = 100.0
-  CLOSES_RATE_K = -20.0
-  TOTAL_LIKES_K = 1.0
-  TOTAL_CLICKS_K = 1.0
-  TOTAL_CLOSES_K = -1.0
-  TOTAL_VIEWS_K = -0.2
-  
-  RECENCY_K = 1000.0
-  PRICE_K = 1000.0
-  today = datetime.datetime.today()
-  for item in items:
-    likes = float(item.stats[model.StatType.LIKES])
-    closes = float(item.stats[model.StatType.CLOSES])
-    views = float(item.stats[model.StatType.VIEWS])
-    clicks = float(item.stats[model.StatType.CLICKS])
-    likesRate = 0.0
-    clicksRate = 0.0
-    closesRate = 0.0
-    if views:
-      likesRate = likes/views
-      closesRate = closes/views
-      clicksRate = clicks/views
-    popularity = likesRate * LIKES_RATE_K + \
-        clicksRate * CLICKS_RATE_K + \
-        closesRate * CLOSES_RATE_K + \
-        likes * TOTAL_LIKES_K + \
-        clicks * TOTAL_CLICKS_K + \
-        closes * TOTAL_CLOSES_K
-    seconds = float((today - item.creationTime).seconds) + 1
-    recency = RECENCY_K / seconds 
-    item.v = popularity * filter.popularity + \
-        recency * filter.recency + \
-        views * TOTAL_VIEWS_K + \
-        float(item.price) / seconds * PRICE_K
-  orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
-  return orderedItems  
+class Singleton(object):
+  """ A Pythonic Singleton """
+  def __new__(cls, *args, **kwargs):
+    if '_inst' not in vars(cls):
+      cls._inst = object.__new__(cls, *args, **kwargs)
+    return cls._inst
 
+class DefaultFilterStrategy(Singleton):
+  def __init__(self, id):
+    self.params = None
+    self.id = id
+    self.refresh = True
+    
+  def refreshParams(self):
+    self.refresh = True
+    
+  def applyFilter(self, items, filter):    
+    if not self.params or self.refresh:
+      self.params = model.getOrderingAlgorithmParams(self.id)
+      self.refresh = False
+    #TODO: support timeliness
+    today = datetime.datetime.today()
+    for item in items:
+      likes = float(item.stats[model.StatType.LIKES])
+      closes = float(item.stats[model.StatType.CLOSES])
+      views = float(item.stats[model.StatType.VIEWS])
+      clicks = float(item.stats[model.StatType.CLICKS])
+      likesRate = 0.0
+      clicksRate = 0.0
+      closesRate = 0.0
+      if views:
+        likesRate = likes/views
+        closesRate = closes/views
+        clicksRate = clicks/views
+      popularity = likesRate * self.params.likes_factor + \
+          clicksRate * self.params.clicks_factor + \
+          closesRate * self.params.closes_factor + \
+          likes * self.params.total_likes_factor + \
+          clicks * self.params.total_clicks_factor + \
+          closes * self.params.total_closes_factor
+      seconds = float((today - item.creationTime).seconds) + 1
+      recency = self.params.recency_factor / seconds 
+      item.v = popularity * filter.popularity + \
+          recency * filter.recency + \
+          views * self.params.total_views_factor + \
+          float(item.price) / seconds * self.params.price_factor
+    orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
+    return orderedItems  
+
+filterStrategy = DefaultFilterStrategy('default')

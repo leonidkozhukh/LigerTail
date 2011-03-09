@@ -38,8 +38,8 @@ handlers:
   secure: always
   script: main.py
 
-- url: /admin
-  script: admin/admin.py
+- url: /webadmin
+  script: main.py
   login: admin
       
 - url: /api/.*

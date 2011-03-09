@@ -6,6 +6,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from itemlist import itemList
+import admin 
 import logging
 import model
 import response
@@ -210,6 +211,7 @@ def main():
                                           ('/api/get_item_stats', GetItemStatsHandler),
                                           # tasks
                                           ('/process_updates', ProcessUpdatesWorker),
+                                          ('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           
