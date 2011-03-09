@@ -1,6 +1,6 @@
 import model
 import logging
-import filterstrategy
+from filterstrategy import filterStrategy
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
@@ -74,7 +74,7 @@ class ItemList(Singleton):
 
   def refreshCacheForDefaultOrderedItems(self, publisherUrl):    
     items = model.getItems(publisherUrl)
-    defaultOrderedItems = filterstrategy.applyFilter(items, model.getDefaultFilter())
+    defaultOrderedItems = filterStrategy.applyFilter(items, model.getDefaultFilter())
     logging.info('repopulating memache for %s', publisherUrl)
     memcache.set('def_list_%s' % publisherUrl, defaultOrderedItems)
     return defaultOrderedItems

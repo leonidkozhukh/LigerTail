@@ -294,6 +294,32 @@ class Viewer(db.Model):
         # Pickle data
         self.pickled_filter = pickle.dumps((self.filter), 2)
         db.Model.put(self)
+
+class OrderingAlgorithmParams(db.Model):
+  name = db.StringProperty(default = 'default')
+  likes_factor = db.FloatProperty(default=500.0)
+  clicks_factor = db.FloatProperty(default=100.0)
+  closes_factor = db.FloatProperty(default = -20.0)
+  total_likes_factor = db.FloatProperty(default = 1.0)
+  total_clicks_factor = db.FloatProperty(default = 1.0)
+  total_closes_factor = db.FloatProperty(default = -1.0)
+  total_views_factor = db.FloatProperty(default = -0.2)
+  recency_factor = db.FloatProperty(default = 1000.0)
+  price_factor = db.FloatProperty(default = 1000.0)
+
+  def update(self, likes, clicks, closes,
+             total_likes, total_clicks, total_closes, total_views,
+             recency, price):
+    self.likes_factor = float(likes)
+    self.clicks_factor = float(clicks)
+    self.closes_factor = float(closes)
+    self.total_likes_factor = float(total_likes)
+    self.total_clicks_factor = float(total_clicks)
+    self.total_closes_factor = float(total_closes)
+    self.total_views_factor = float(total_views)
+    self.recency_factor = float(recency)
+    self.price_factor = float(price)
+    self.put()
      
 def getItems(publisherUrl):
     return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).fetch(1000);
@@ -329,3 +355,15 @@ DEFAULT_FILTER_.default = True
 
 def getDefaultFilter():
     return DEFAULT_FILTER_
+
+
+def getOrderingAlgorithmParams(id):
+    params = db.GqlQuery('SELECT * FROM OrderingAlgorithmParams WHERE name=:1', id).get()
+    if (params):
+      logging.info('Found ordering algorithm params for id %s' % id)
+    else:
+      logging.info('Did not find ordering alg params for id %s. Creating' % id)
+      params = OrderingAlgorithmParams()
+      params.name = id
+      params.put()
+    return params
