@@ -102,23 +102,30 @@ function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
         jQuery.facebox({ ajax: "/frontend/submission.html"});
         
-        // Call embedly
-        jQuery.ajax({
-            type: "GET",
-            url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
-            dataType: "json",
-            success: function(data){
-                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
-                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
-                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
-                jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
+        if(ValidateURL(url)){
+                // disable form & call embedly
+                jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "true");
                 
-                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
-                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
-                jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
-            },
-            error: function(e){ alert("error: " + e);}        
-        });
+                jQuery.ajax({
+                       type: "GET",
+                       url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
+                       dataType: "json",
+                       success: function(data){
+                                    //enable form input
+                                    jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "false"); 
+                                              
+                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
+                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
+                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
+                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
+                
+                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
+                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
+                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
+                       },
+                       error: function(e){ alert("error: " + e);}        
+                });
+        }
         
         jQuery(document).bind('reveal.facebox', function(){ 
             //error checking & submission handling            
