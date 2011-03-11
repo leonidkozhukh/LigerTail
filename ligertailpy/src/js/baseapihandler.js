@@ -41,3 +41,7 @@ BaseApiHandler.prototype.onFilterSubmitted = function(response) {
 BaseApiHandler.prototype.onGetItemStats = function(response) {
 	debug(response);
 }
+
+BaseApiHandler.prototype.onGetSpotStats = function(response) {
+	debug(response);
+}

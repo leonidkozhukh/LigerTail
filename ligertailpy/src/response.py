@@ -62,6 +62,36 @@ class ResponseItem(json.JSONEncoder):
       return json.JSONEncoder.default(self, o)
 
 
+class ResponseSpot(json.JSONEncoder):
+    def initFrom(self, spot):
+        self.spot = spot.spot
+        self.publisherUrl = spot.publisherUrl
+        self.stats = spot.stats
+        self.timedStats = spot.timedStats
+        
+    def default(self, o):
+      if isinstance(o, ResponseSpot):
+          ret = {'publisherUrl' : o.publisherUrl}
+          total = {}
+          for i in range (model.StatType.BEGIN, model.StatType.END):
+            total[i] = o.stats[i]
+          ret['totalStats'] = total
+          ret['timedStats'] = o.timedStats.update()
+          d = o.timedStats.updateTime
+          ret['updateTime'] = {'year' : d.year,
+                               'month' : d.month,
+                               'day' : d.day,
+                               'hour' : d.hour,
+                               'minute' : d.minute }
+          ret['durationInfo'] = {'yearly' : model.YEARLY.o,
+                                 'monthly' : model.MONTHLY.o,
+                                 'daily' : model.DAILY.o,
+                                 'hourly' : model.HOURLY.o,
+                                 'minutely' : model.MINUTELY.o}
+          return ret
+      return json.JSONEncoder.default(self, o)
+
+
 class ResponseFilter(json.JSONEncoder):
     def initFrom(self, filter):
         self.durationId = filter.durationId
@@ -84,6 +114,7 @@ class CommonResponse(json.JSONEncoder):
     
   def reset(self):
     self.items = []
+    self.spots = []
     self.sessionId = None
     self.filter = {}
     self.status = "ok"
@@ -92,26 +123,33 @@ class CommonResponse(json.JSONEncoder):
   def default(self, o):
       if isinstance(o, CommonResponse):
           return {"items" : o.items,
-              "filter" : o.filter,
-              "status" : o.status,
-              "error" : o.error
-              }
+                  "spots" : o.spots,
+                  "filter" : o.filter,
+                  "status" : o.status,
+                  "error" : o.error
+                  }
       elif isinstance(o, ResponseItem):
           return json.dumps(o, cls=ResponseItem)
+      elif isinstance(o, ResponseSpot):
+          return json.dumps(o, cls=ResponseSpot)
       elif isinstance(o, ResponseFilter):
           return json.dumps(o, cls=ResponseFilter) 
       else:
           return json.JSONEncoder.default(self, o)
-  
-  
+     
   def setItems(self, items, itemInfo):
     for item in items:
       ri = ResponseItem()
       ri.initFrom(item, itemInfo)
       self.items.append(ri)
   
+  def setSpots(self, spots):
+    for spot in spots:
+      rs = ResponseSpot()
+      rs.initFrom(spot)
+      self.spots.append(rs)
+      
   def setFilter(self, filter):
     self.filter = ResponseFilter()
     self.filter.initFrom(filter)
     
-

@@ -205,3 +205,7 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 	});
 	
 }
+
+ApiHandler.prototype.onGetSpotStats = function(response) {
+	debug(response);
+}

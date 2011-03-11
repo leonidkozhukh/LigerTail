@@ -53,16 +53,16 @@ class ItemList(Singleton):
     if (item and item.publisherUrl != publisherUrl):
       logging.error('mismatched publisherUrl for item %s, %d. Expected %s but found %s',
                     item.url, itemId, publisherUrl, item.publisherUrl)
-    self.initiateUpdateProcessing(publisherUrl)
+    self.initiateItemUpdateProcessing(publisherUrl)
   
-  def initiateUpdateProcessing(self, publisherUrl):
+  def initiateItemUpdateProcessing(self, publisherUrl):
     numOfUpdates = memcache.incr('num_updates_%s' % publisherUrl, initial_value=0)
     workerAdded = memcache.get('worker_added_%s' % publisherUrl)
     if numOfUpdates >= TOTAL_UPDATES_BEFORE_RECALCULATING and not workerAdded:
       logging.info('initiating item update processing for %s', publisherUrl)
       memcache.set('worker_added_%s' % publisherUrl, True)
       memcache.set('num_updates_%s' % publisherUrl, 0) #do not update until reset
-      taskqueue.add(url='/process_updates', params={'publisherUrl': publisherUrl})
+      taskqueue.add(url='/process_item_updates', params={'publisherUrl': publisherUrl})
 
 
   def getDefaultOrderedItems(self, publisherUrl):
@@ -102,7 +102,7 @@ class ItemList(Singleton):
           item = items[entity.itemId]
         if entity.statType and item:
           logging.info('updating item %s: statType: %d', item.url, entity.statType)
-          item.update(entity.creationTime, entity.statType)
+          item.update(entity.statType, entity.creationTime)
       for item in items.values():
         item.put()
     #TODO: write updates into timed log

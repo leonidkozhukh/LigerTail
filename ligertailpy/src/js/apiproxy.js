@@ -69,12 +69,13 @@ LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions, call
 	for (var i = 0; i < interactions.length; i++) {
 		assert(interactions[i].itemId > 0);
 		assert(interactions[i].statType >= StatType.UNIQUES && interactions[i].statType <= StatType.CLOSES);
+		assert(interactions[i].spot > 0);
 		if (!first) {
 			str += ",";
 		} else {
 			str = "";
 		}
-		str += interactions[i].itemId + ":" + interactions[i].statType;		
+		str += interactions[i].itemId + ":" + interactions[i].statType + ":" + interactions[i].spot;		
 	}
 	var data = this.serialize({"publisherUrl": publisherUrl, "interactions": str});
 	postRequest(this.domain, 'submit_user_interaction', 'POST', data, callback ? callback : '_apiHandler.onUserInteractionSubmitted');
@@ -106,6 +107,12 @@ LGApi.prototype.getItemStats= function(itemId, infoType, callback) {
 	assert(itemId > 0);
 	var data = this.serialize({"itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : '_apiHandler.onGetItemStats');
+};
+
+LGApi.prototype.getSpotStats= function(spot, callback) {
+	assert(spot > 0);
+	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
+	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : '_apiHandler.onGetSpotStats');
 };
 
 

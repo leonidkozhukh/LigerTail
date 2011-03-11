@@ -3,6 +3,7 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from itemlist import itemList
+from spotlist import spotList
 from filterstrategy import filterStrategy
 import logging
 import model
@@ -45,8 +46,10 @@ class BaseHandler(webapp.RequestHandler):
   def getParam(self, name):
     return cgi.escape(self.request.get(name))
   
-  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None):
+  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=None):
     itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
+    if not bNew and int(spot) > 0:
+      spotList.updateSpot(publisherUrl, int(spot), statType)
  
   def getOrderedItems(self, publisherUrl, filter):
     defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)

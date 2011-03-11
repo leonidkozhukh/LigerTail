@@ -54,6 +54,11 @@ function getItemStats() {
   api.getItemStats(itemId, InfoType.WITH_PRICE); //InfoType.FULL); // InfoType.SHORT
 }
 
+function getSpotStats() {
+	var spot = document.getElementById("spot").value - 0;
+	api.getSpotStats(spot);
+}
+
 function getFilter() {
   api.getFilter(publisherUrl);
 }
@@ -69,12 +74,12 @@ function submitFilter() {
 function submitUserInteraction() {
   interactions = [];
   var itemId = document.getElementById("itemid").value - 0;
-  interactions.push({itemId: itemId , statType: StatType.VIEWS});
-  interactions.push({itemId: itemId , statType: StatType.VIEWS});
-  interactions.push({itemId: itemId , statType: StatType.VIEWS});
-  interactions.push({itemId:itemId, statType: StatType.CLOSES});
-  interactions.push({itemId:itemId, statType: StatType.CLICKS});
-  interactions.push({itemId:itemId, statType: StatType.CLICKS});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId:itemId, statType: StatType.CLOSES, spot:3 });
+  interactions.push({itemId:itemId, statType: StatType.CLICKS, spot:4});
+  interactions.push({itemId:itemId, statType: StatType.CLICKS, spot: 1});
   api.submitUserInteraction(publisherUrl, interactions);
 }
 
@@ -116,7 +121,10 @@ function updatePrice() {
 
 <A href="#" onMouseDown="submitUserInteraction()" ><div> submit user interaction</div></A>
 <A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
-<div>Price (cents): </div><INPUT TYPE="text" ID="price" VALUE="100"><P>
+<div>Price $</div><INPUT TYPE="text" ID="price" VALUE="1"><P>
 <A href="#" onMouseDown="updatePrice()" ><div> update price</div></A>
+
+<div>Spot: </div><INPUT TYPE="text"  ID="spot" VALUE="1"><P>
+<A href="#" onMouseDown="getSpotStats()" ><div> get spot stats</div></A>
 
 </BODY>

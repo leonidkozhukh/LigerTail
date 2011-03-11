@@ -6,6 +6,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from itemlist import itemList
+from spotlist import spotList
 import admin 
 import logging
 import model
@@ -100,10 +101,12 @@ class GetOrderedItemsHandler(BaseHandler):
           orderedItems = orderedItems[0: self.client.numViewableItems * 2]
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
         numViewed = 0
+        spot = 1
         for item in orderedItems:
             if numViewed >= self.client.numViewableItems:
                 break
-            BaseHandler.updateItem(self, item.publisherUrl, item=item, statType=model.StatType.VIEWS)
+            BaseHandler.updateItem(self, item.publisherUrl, item=item, statType=model.StatType.VIEWS, spot=spot)
+            spot += 1
             #if self.viewer.isNew:
             #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
         BaseHandler.writeResponse(self)
@@ -128,13 +131,13 @@ class SubmitUserInteractionHandler(BaseHandler):
             itemWithUpdate = update.split(':')
             itemId = int(itemWithUpdate[0])
             statType = int(itemWithUpdate[1])
+            spot = int(itemWithUpdate[2])
             if statType == model.StatType.LIKES or statType == model.StatType.CLOSES:
               BaseHandler.updateViewer(self, statType=statType, itemId=itemId)
               #TODO: handle uniques. This may be challenging since in order to know if the
               # impression is unique we need to have a map itemId->all viewers                    
-          
             BaseHandler.updateItem(self, self.getParam('publisherUrl'),
-                                   itemId=itemId, statType=statType)
+                                   itemId=itemId, statType=statType, spot=spot)
             
         # Let client take care of immediate update
         # orderedItems = BaseHandler.getOrderedItems(self,
@@ -166,22 +169,6 @@ class SubmitFilterHandler(BaseHandler):
         BaseHandler.writeResponse(self)
 
 class GetItemStatsHandler(BaseHandler):
-    """
-    returns an object
-    {  totalStats: map StatType->int - total number of each user interaction
-       timedStats: map duration.id -> Array[duration.num_deltas]<totalStats for the time period corresponding to a delta,
-         in the most recent order
-       updateTime - the time relative to which the recent stats are calculated.
-         timedStats[duration.id][0] represent total stats in the period [updateTime-duration.delta_sec, updateTime]
-         timedStats[duration.id][1] -> [updateTime - 2*duration.delta_sec, updateTime -duration.delta_sec]
-       durationdInfo: map duration name -> {
-         id: <duration id>
-         sec: <duration in sec>
-         delta_sec: <duration delta in sec>, e.g. for duration = MONTHLY delta may be 1 day, in sec
-         num_deltas: <length of array representing stats for each delta. e.g. for MONTHLY num_deltas = 30 
-       }
-     } 
-    """
     def post(self):
         BaseHandler.initFromRequest(self, self.request)
         itemWithStats = BaseHandler.getItem(self, self.getParam('itemId'))
@@ -192,10 +179,21 @@ class GetItemStatsHandler(BaseHandler):
         self.common_response.setItems([itemWithStats], itemInfoType)
         BaseHandler.writeResponse(self)
 
+class GetSpotStatsHandler(BaseHandler):
+    def post(self):
+        BaseHandler.initFromRequest(self, self.request)
+        spot = model.getSpot(self.getParam('publisherUrl'), int(self.getParam('spot')))
+        self.common_response.setSpots([spot])
+        BaseHandler.writeResponse(self)
 
-class ProcessUpdatesWorker(webapp.RequestHandler):
+
+class ProcessItemUpdatesWorker(webapp.RequestHandler):
     def post(self):
       itemList.processUpdates(self.request.get('publisherUrl'))
+
+class ProcessSpotUpdatesWorker(webapp.RequestHandler):
+    def post(self):
+      spotList.processSpotUpdates(self.request.get('publisherUrl'))
 
 def main():
     application = webapp.WSGIApplication(
@@ -209,8 +207,10 @@ def main():
                                           ('/api/get_filter', GetFilterHandler),
                                           ('/api/submit_filter', SubmitFilterHandler),
                                           ('/api/get_item_stats', GetItemStatsHandler),
+                                          ('/api/get_spot_stats', GetSpotStatsHandler),
                                           # tasks
-                                          ('/process_updates', ProcessUpdatesWorker),
+                                          ('/process_item_updates', ProcessItemUpdatesWorker),
+                                          ('/process_spot_updates', ProcessSpotUpdatesWorker),
                                           ('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),

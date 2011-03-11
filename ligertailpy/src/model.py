@@ -160,6 +160,59 @@ class Item(db.Model):
     self.price += price
   
 
+
+class Spot(db.Model):
+  creationTime = db.DateTimeProperty(auto_now_add=True)
+  spot = db.IntegerProperty()
+  publisherUrl = db.StringProperty()
+  pickled_stats = db.BlobProperty(required=False)
+  pickled_timedstats = db.BlobProperty(required=False)
+  stats = {}
+  timedStats = {}
+  
+  def __init__(self, *args, **kwargs):
+    super(Spot, self).__init__(*args, **kwargs)
+    if self.pickled_stats:
+      (self.stats) = pickle.loads(self.pickled_stats)
+      if not self.stats.has_key(StatType.CLICKS):
+        self.stats[StatType.CLICKS] = 0
+      if not self.stats.has_key(StatType.CLOSES):
+        self.stats[StatType.CLOSES] = 0
+      if not self.stats.has_key(StatType.LIKES):
+        self.stats[StatType.LIKES] = 0
+      if not self.stats.has_key(StatType.UNIQUES):
+        self.stats[StatType.UNIQUES] = 0
+      if not self.stats.has_key(StatType.VIEWS):
+        self.stats[StatType.VIEWS] = 0
+      
+    else: 
+      self.stats = {
+                    StatType.CLICKS : 0,
+                    StatType.CLOSES : 0,
+                    StatType.LIKES : 0,
+                    StatType.UNIQUES : 0,
+                    StatType.VIEWS : 0
+                  }
+    if self.pickled_timedstats:
+      (self.timedStats) = pickle.loads(self.pickled_timedstats)
+    else:
+      self.timedStats = TimedStats()    
+    
+  def put(self):
+    '''Stores the object, making the derived fields consistent.'''
+    # Pickle data
+    self.pickled_stats = pickle.dumps((self.stats), 2)
+    self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
+    db.Model.put(self)
+ 
+  def update(self, statType, creationTime):
+    if not self.stats.has_key(statType):
+      self.stats[statType] = 1
+    else:
+      self.stats[statType] += 1
+    self.timedStats.update(statType, creationTime)
+
+
 class TimedStats(object):
   def __init__(self):  
     self.durations = self.create_()
@@ -186,7 +239,7 @@ class TimedStats(object):
             StatType.VIEWS : 0
           }
 
-  def update(self, updateTime = datetime.datetime.utcnow(), statType = StatType.UNKNOWN):
+  def update(self, statType = StatType.UNKNOWN, updateTime = datetime.datetime.utcnow()):
     prevYear = prevMonth  = prevDay = prevHour = prevMinute = -1
     
     if self.updateTime:
@@ -250,6 +303,16 @@ class ItemUpdateEntity(object):
   def __init__(self, itemId, bNew, statType):
     self.itemId = itemId
     self.bNew = bNew
+    self.statType = statType
+    self.creationTime = datetime.datetime.utcnow()
+
+class SpotUpdateEntity(object):  
+  spot = None
+  statType = None
+  creationTime = None
+  
+  def __init__(self, spot, statType):
+    self.spot = spot
     self.statType = statType
     self.creationTime = datetime.datetime.utcnow()
 
@@ -320,6 +383,22 @@ class OrderingAlgorithmParams(db.Model):
     self.recency_factor = float(recency)
     self.price_factor = float(price)
     self.put()
+
+class PublisherUrlParams(db.Model):
+  publisherUrl = db.StringProperty()
+  num_item_buckets = db.IntegerProperty(default = 2)
+  total_item_updates_before_recalculating = db.IntegerProperty(default=5)
+  num_spot_buckets = db.IntegerProperty(default = 5)
+  total_spot_updates_before_recalculating = db.IntegerProperty(default=5)
+
+  def update(self, numItemBuckets, totalItemUpdates,
+             numSpotBuckets, totalSpotUpdates):
+    self.num_item_buckets = int(numItemBuckets)
+    self.total_item_updates_before_recalculating = int(totalItemUpdates)
+    self.num_spot_buckets = int(numSpotBuckets)
+    self.total_spot_updates_before_recalculating = int(totalSpotUpdates)
+    self.put()
+
      
 def getItems(publisherUrl):
     return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).fetch(1000);
@@ -327,7 +406,14 @@ def getItems(publisherUrl):
 def getPaidItems(publisherUrl):
     return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).fetch(1000);
 
-  
+def getSpot(publisherUrl, pos):
+    spot = db.GqlQuery('SELECT * FROM Spot WHERE publisherUrl=:1 AND spot=:2', publisherUrl, int(pos)).get()
+    if not spot:
+      spot = Spot()
+      spot.publisherUrl = publisherUrl
+      spot.spot = pos
+    return spot
+
 def getViewer(sessionId):
     viewer = db.GqlQuery('SELECT * FROM Viewer WHERE sessionId=:1', sessionId).get()
     if (viewer):
