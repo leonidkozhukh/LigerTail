@@ -112,7 +112,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	var content = "";
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		//console.log(item_obj);		
+		console.log(item_obj);		
 		content += '<div class="entry" id="' + item_obj.id + '"><div class="pricing">$' + item_obj.price + '</div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div></div>';
 		
 		if(i == 0){
