@@ -25,7 +25,7 @@ var dur  = {
 	mm: 4
 };
 
-var reverseDuration = ["yearly", "monthly", "daily", "hourly", "minutely"];
+var DurationInfo = [{name: "yearly", length: 3}, {name: "monthly", length: 12}, {name: "daily", length: 31}, {name: "hourly", length: 24}, {name: "minutely", length: 60}];
 
 var InfoType = {
 	    SHORT : 0,
@@ -33,44 +33,44 @@ var InfoType = {
 	    FULL: 2		
 };
 
-function LGApi() {
+function LTApi() {
 	var i = 1;
 }
 
-LGApi.prototype.init = function(apiHandler, domain) {
+LTApi.prototype.init = function(apiHandler, domain) {
 	if (!domain) {
-	  domain = LGApi.getDefaultDomain();
+	  domain = LTApi.getDefaultDomain();
 	}
 	this.domain = domain;
 	_apiHandler = apiHandler;
 }
 
-LGApi.prototype.submitItem = function(item, callback) {
+LTApi.prototype.submitItem = function(item, callback) {
 	assert(item.publisherUrl && item.url && item.email && item.title && item.description);
 	item.price = 0;
 	var data = this.serialize(item);
 	postRequest(this.domain, 'submit_item', 'POST', data, callback ? callback : '_apiHandler.onItemSubmitted');
 };
 
-LGApi.prototype.updatePrice = function(ccinfo, callback) {
+LTApi.prototype.updatePrice = function(ccinfo, callback) {
 	var data = this.serialize(ccinfo);
 	postRequest(this.domain, 'update_price', 'POST', data, callback ? callback : '_apiHandler.onPriceUpdated');
 };
 
 
-LGApi.prototype.getOrderedItems = function(publisherUrl, callback) {
+LTApi.prototype.getOrderedItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_ordered_items', 'POST', data, callback ? callback : '_apiHandler.onGetOrderedItems');
 };
 
-LGApi.prototype.getPaidItems = function(publisherUrl, callback) {
+LTApi.prototype.getPaidItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_paid_items', 'POST', data, callback ? callback : '_apiHandler.onGetPaidItems');
 };
 
-LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions, callback) {
+LTApi.prototype.submitUserInteraction= function(publisherUrl, interactions, callback) {
 	assert(publisherUrl && interactions.length > 0);
 	var str;
 	var first = true;	
@@ -90,14 +90,14 @@ LGApi.prototype.submitUserInteraction= function(publisherUrl, interactions, call
 };
 
 
-LGApi.prototype.getFilter= function(publisherUrl, callback) {
+LTApi.prototype.getFilter= function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
 	postRequest(this.domain, 'get_filter', 'POST', data, callback ? callback : '_apiHandler.onGetFilter');
 };
 
 
-LGApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
+LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	assert(publisherUrl);
 	assert(filter.duration == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
@@ -111,13 +111,13 @@ LGApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : '_apiHandler.onFilterSubmitted');
 };
 
-LGApi.prototype.getItemStats= function(itemId, infoType, callback) {
+LTApi.prototype.getItemStats= function(itemId, infoType, callback) {
 	assert(itemId > 0);
 	var data = this.serialize({"itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : '_apiHandler.onGetItemStats');
 };
 
-LGApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
+LTApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
 	assert(publisherUrl);
 	assert(spot > 0);
 	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
@@ -125,13 +125,13 @@ LGApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
 };
 
 
-LGApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
+LTApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl":publisherUrl});
 	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : '_apiHandler.onGetPublisherSiteStats');
 };
 
-LGApi.prototype.serialize = function(obj) {
+LTApi.prototype.serialize = function(obj) {
 	var first = true;
 	var str = "";
 	for(var prop in obj) {
@@ -217,7 +217,7 @@ assert = function(cond) {
 	}
 }
 
-LGApi.getDefaultDomain = function() {
+LTApi.getDefaultDomain = function() {
   var domain = "http://" + window.document.location.hostname;
   if (window.document.location.port) {
     domain += ":" + window.document.location.port;
