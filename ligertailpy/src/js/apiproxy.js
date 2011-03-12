@@ -150,10 +150,69 @@ LGApi.prototype.serialize = function(obj) {
     return value;
   });*/
 };
+/*
+function stacktrace() { 
+	  function join(args) {
+		 s = ''
+		 for (var i =0 ;i < args.length; i++) {
+			 s += args[i] + ',';
+		 }
+		 return s;
+	  }
+	  function st2(f) {
+	    return !f ? [] : 
+	        st2(f.caller).concat([f.toString().split('(')[0].substring(9) + '(' + join(f.arguments) + ')']);
+	  }
+	  return st2(arguments.callee.caller);
+	}
+*/
+Function.prototype.trace = function()
+{
+    var trace = [];
+    var current = this;
+    while(current)
+    {
+        trace.push(current.signature());
+        current = current.caller;
+    }
+    return trace.join('\n');
+}
+Function.prototype.signature = function()
+{
+    var signature = {
+        name: this.getName(),
+        params: [],
+        toString: function()
+        {
+            var params = this.params.length > 0 ?
+                "'" + this.params.join("', '") + "'" : "";
+            return this.name + "(" + params + ")"
+        }
+    };
+    if(this.arguments)
+    {
+        for(var x=0; x<this .arguments.length; x++)
+            signature.params.push(this.arguments[x]);
+    }
+    return signature;
+}
+Function.prototype.getName = function()
+{
+    if(this.name)
+        return this.name;
+    var definition = this.toString().split("\n")[0];
+    //return definition;
+    // TODO: Show args
+    var exp = new RegExp('/^function ([^\s(]+).+/|>');
+    if(exp.test(definition))
+        return definition.split("\n")[0].replace(exp, "$1") || "anonymous";
+    return "anonymous";
+    
+}
 
 assert = function(cond) {
 	if (!cond) {
-		alert("Invalid condition ");
+		alert("Invalid condition:\n " + arguments.callee.trace());
 		blah/0;
 	}
 }
