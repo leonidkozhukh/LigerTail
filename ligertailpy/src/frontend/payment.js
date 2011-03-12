@@ -237,7 +237,7 @@ function initAll(){
     //load paid content    
     //load statistics for content item
     //this is done in apihandler
-    
+   
     
     
 }

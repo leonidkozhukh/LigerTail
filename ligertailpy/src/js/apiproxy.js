@@ -17,6 +17,14 @@ var Duration  = {
 	MINUTELY: 5
 };
 
+var dur  = {
+	YY: 0,
+	MM: 1,
+	DD: 2,
+	hh: 3,
+	mm: 4
+};
+
 var reverseDuration = ["yearly", "monthly", "daily", "hourly", "minutely"];
 
 var InfoType = {
@@ -110,8 +118,8 @@ LGApi.prototype.getItemStats= function(itemId, infoType, callback) {
 };
 
 LGApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
-	assert(spot > 0);
 	assert(publisherUrl);
+	assert(spot > 0);
 	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
 	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : '_apiHandler.onGetSpotStats');
 };
