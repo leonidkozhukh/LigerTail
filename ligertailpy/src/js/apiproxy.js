@@ -109,12 +109,19 @@ LGApi.prototype.getItemStats= function(itemId, infoType, callback) {
 	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : '_apiHandler.onGetItemStats');
 };
 
-LGApi.prototype.getSpotStats= function(spot, callback) {
+LGApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
 	assert(spot > 0);
+	assert(publisherUrl);
 	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
 	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : '_apiHandler.onGetSpotStats');
 };
 
+
+LGApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
+	assert(publisherUrl);
+	var data = this.serialize({"publisherUrl":publisherUrl});
+	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : '_apiHandler.onGetPublisherSiteStats');
+};
 
 LGApi.prototype.serialize = function(obj) {
 	var first = true;

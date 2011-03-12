@@ -10,6 +10,7 @@ import model
 import cgi
 import re
 import response
+import sys
 
 
 # Set the debug level
@@ -146,4 +147,7 @@ class BaseHandler(webapp.RequestHandler):
     self.response.out.write('%s(%s);' % (self.jsonp_callback, s))
     self.response.headers["Access-Control-Allow-Origin"] = '*'
 
+  def logException(self):
+    self.common_response.set_error('Internal server error %s' % sys.exc_info()[1])
+    logging.exception("Error")
 

@@ -45,3 +45,7 @@ BaseApiHandler.prototype.onGetItemStats = function(response) {
 BaseApiHandler.prototype.onGetSpotStats = function(response) {
 	debug(response);
 }
+
+BaseApiHandler.prototype.onGetPublisherSiteStats = function(response) {
+	debug(response);
+}

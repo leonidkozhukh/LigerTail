@@ -15,6 +15,7 @@ import payment
 import os
 import cgi
 import wsgiref.handlers
+import sys
 #import google.appengine.webapp.template
 ##from google.appengine.ext.webapp import template
 #import appengine_django.auth.templatetags
@@ -36,25 +37,29 @@ class MainHandler(webapp.RequestHandler):
         
 class SubmitItemHandler(BaseHandler):
     def post(self):
-        BaseHandler.initFromRequest(self, self.request)
-        logging.info('email %s', self.getParam('email'))
-        item = model.Item()
-        item.publisherUrl = self.getParam('publisherUrl')
-        item.url = self.getParam('url')
-        item.thumbnailUrl = self.getParam('thumbnailUrl')
-        item.title = self.getParam('title')
-        item.description = self.getParam('description')
-        item.price = 0
-        item.email = self.getParam('email')
-        item.sessionId = self.viewer.sessionId
-        item.put()
-        BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
-        BaseHandler.sendConfirmationEmail(self, item)
-        self.common_response.setItems([item], response.ItemInfo.SHORT)
+        try:
+          BaseHandler.initFromRequest(self, self.request)
+          logging.info('email %s', self.getParam('email'))
+          item = model.Item()
+          item.publisherUrl = self.getParam('publisherUrl')
+          item.url = self.getParam('url')
+          item.thumbnailUrl = self.getParam('thumbnailUrl')
+          item.title = self.getParam('title')
+          item.description = self.getParam('description')
+          item.price = 0
+          item.email = self.getParam('email')
+          item.sessionId = self.viewer.sessionId
+          item.put()
+          BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
+          BaseHandler.sendConfirmationEmail(self, item)
+          self.common_response.setItems([item], response.ItemInfo.SHORT)
+        except Exception:
+          self.logException()
         BaseHandler.writeResponse(self)
-    
+        
 class UpdatePriceHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
@@ -67,7 +72,9 @@ class UpdatePriceHandler(BaseHandler):
           BaseHandler.sendConfirmationEmail(self, item)
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
          
     def _verifyTransaction(self, item):
         paymentInfo = {'price': self.getParam('price'),
@@ -93,6 +100,7 @@ class UpdatePriceHandler(BaseHandler):
 class GetOrderedItemsHandler(BaseHandler):
      
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
@@ -109,15 +117,20 @@ class GetOrderedItemsHandler(BaseHandler):
             spot += 1
             #if self.viewer.isNew:
             #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
   
 
 class GetPaidItemsHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         paidItems = BaseHandler.getPaidItems(self, self.getParam('publisherUrl'))                                            
         self.common_response.setItems(paidItems, response.ItemInfo.WITH_PRICE)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 class SubmitUserInteractionHandler(BaseHandler):
     """ 
@@ -125,6 +138,7 @@ class SubmitUserInteractionHandler(BaseHandler):
     interactions: a list of pairs <itemId>:<statType>, e.g. '23:1, 34:2'
     """
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         itemUpdates = self.getParam('interactions').split(',')
         for update in itemUpdates:
@@ -146,16 +160,22 @@ class SubmitUserInteractionHandler(BaseHandler):
         #self.common_response.setItems(orderedItems)
 
         #TODO: it's up to the client to update the ordered items
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 class GetFilterHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         self.common_response.setFilter(self.viewer.filter)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 class SubmitFilterHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         BaseHandler.updateFilter(self,
                                  durationId=self.getParam('filter.durationId'),
@@ -166,10 +186,13 @@ class SubmitFilterHandler(BaseHandler):
                                                    self.viewer.filter)
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
         self.common_response.setFilter(self.viewer.filter)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 class GetItemStatsHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         itemWithStats = BaseHandler.getItem(self, self.getParam('itemId'))
         itemInfoType = response.ItemInfo.FULL;
@@ -177,14 +200,29 @@ class GetItemStatsHandler(BaseHandler):
         if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 
           itemInfoType = int(s)
         self.common_response.setItems([itemWithStats], itemInfoType)
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 class GetSpotStatsHandler(BaseHandler):
     def post(self):
+      try:
         BaseHandler.initFromRequest(self, self.request)
         spot = model.getSpot(self.getParam('publisherUrl'), int(self.getParam('spot')))
         self.common_response.setSpots([spot])
-        BaseHandler.writeResponse(self)
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
+
+class GetPublisherSiteStatsHandler(BaseHandler):
+    def post(self):
+      try:
+        BaseHandler.initFromRequest(self, self.request)
+        publisher = model.getPublisherSite(self.getParam('publisherUrl'))
+        self.common_response.setPublisherSites([publisher])
+      except Exception:
+        BaseHandler.logException()
+      BaseHandler.writeResponse(self)
 
 
 class ProcessItemUpdatesWorker(webapp.RequestHandler):
@@ -208,6 +246,7 @@ def main():
                                           ('/api/submit_filter', SubmitFilterHandler),
                                           ('/api/get_item_stats', GetItemStatsHandler),
                                           ('/api/get_spot_stats', GetSpotStatsHandler),
+                                          ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
                                           ('/process_spot_updates', ProcessSpotUpdatesWorker),

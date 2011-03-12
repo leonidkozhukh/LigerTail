@@ -11,7 +11,11 @@ handlers:
 - url: /frontend
   static_dir: frontend
   secure: optional
-  
+    
+- url: /favicon.ico
+  static_files: web/images/favicon.ico
+  upload: web/images/favicon.ico
+
 #- url: /frontend/css
 #  static_dir: frontend/css
   

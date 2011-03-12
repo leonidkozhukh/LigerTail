@@ -37,7 +37,7 @@ function submitItem() {
 }
 
 function onMySubmitted(o) {
-	alert("Yay!");
+	alert("Yay!" + o);
 }
 
 function getOrderedItems() {
@@ -51,12 +51,16 @@ function getPaidItems() {
 
 function getItemStats() {
   var itemId = document.getElementById("itemid").value - 0;
-  api.getItemStats(itemId, InfoType.WITH_PRICE); //InfoType.FULL); // InfoType.SHORT
+  api.getItemStats(itemId, InfoType.FULL); // InfoType.SHORT
 }
 
 function getSpotStats() {
 	var spot = document.getElementById("spot").value - 0;
-	api.getSpotStats(spot);
+	api.getSpotStats(spot, publisherUrl);
+}
+
+function getPublisherSiteStats() {
+  api.getPublisherSiteStats(publisherUrl);
 }
 
 function getFilter() {
@@ -112,6 +116,7 @@ function updatePrice() {
 <div>PublisherUrl </div><INPUT TYPE="text" ID="publisherUrl" VALUE="www.nytimes3.com"><P>
 
 <A href="#" onMouseDown="init()"><div>init api</div></A>
+<A href="#" onMouseDown="getPublisherSiteStats()" ><div> get publisher site stats</div></A>
 <A href="#" onMouseDown="submitItem()" ><div> submit item</div></A>
 <A href="#" onMouseDown="getOrderedItems()" ><div> get ordered items</div></A>
 <A href="#" onMouseDown="getPaidItems()" ><div> get paid items</div></A>

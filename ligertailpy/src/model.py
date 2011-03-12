@@ -87,25 +87,14 @@ class PaymentInfo:
   def __str__(self):
     return '%s $%d %s' %(self.creationTime, self.price, self.email)
 
-class Item(db.Model):
-  creationTime = db.DateTimeProperty(auto_now_add=True)
-  url = db.StringProperty()
-  thumbnailUrl = db.StringProperty()
-  title = db.StringProperty()
-  description = db.TextProperty()
-  price = db.IntegerProperty(default = 0)
-  email = db.EmailProperty()
-  publisherUrl = db.StringProperty()
-  sessionId = db.StringProperty()
+
+class StatContainer(db.Model):
   pickled_stats = db.BlobProperty(required=False)
   pickled_timedstats = db.BlobProperty(required=False)
-  pickled_payments = db.BlobProperty(required=False)
   stats = {}
   timedStats = {}
-  payments = []
-  
-  def __init__(self, *args, **kwargs):
-    super(Item, self).__init__(*args, **kwargs)
+
+  def initStats(self):
     if self.pickled_stats:
       (self.stats) = pickle.loads(self.pickled_stats)
       if not self.stats.has_key(StatType.CLICKS):
@@ -131,25 +120,45 @@ class Item(db.Model):
       (self.timedStats) = pickle.loads(self.pickled_timedstats)
     else:
       self.timedStats = TimedStats()
-    
+
+  def putPickledStats(self):
+    self.pickled_stats = pickle.dumps((self.stats), 2)
+    self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
+
+  def updateStats(self, statType, creationTime):
+    if not self.stats.has_key(statType):
+      self.stats[statType] = 1
+    else:
+      self.stats[statType] += 1
+    self.timedStats.update(statType, creationTime)
+
+
+class Item(StatContainer):
+  creationTime = db.DateTimeProperty(auto_now_add=True)
+  url = db.StringProperty()
+  thumbnailUrl = db.StringProperty()
+  title = db.StringProperty()
+  description = db.TextProperty()
+  price = db.IntegerProperty(default = 0)
+  email = db.EmailProperty()
+  publisherUrl = db.StringProperty()
+  sessionId = db.StringProperty()  
+  pickled_payments = db.BlobProperty(required=False)
+  payments = []
+  
+  def __init__(self, *args, **kwargs):
+    super(Item, self).__init__(*args, **kwargs)
+    self.initStats()
     if self.pickled_payments:
       (self.payments) = pickle.loads(self.pickled_payments)
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
     # Pickle data
-    self.pickled_stats = pickle.dumps((self.stats), 2)
-    self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
+    self.putPickledStats()
     self.pickled_payments = pickle.dumps((self.payments), 2)
     db.Model.put(self)
- 
-  def update(self, statType, creationTime):
-    if not self.stats.has_key(statType):
-      self.stats[statType] = 1
-    else:
-      self.stats[statType] += 1
-    self.timedStats.update(statType, creationTime)
-          
+           
    
   def updatePrice(self, price, email):
     # TODO: check for price > 0 and email valid
@@ -161,56 +170,36 @@ class Item(db.Model):
   
 
 
-class Spot(db.Model):
+class Spot(StatContainer):
   creationTime = db.DateTimeProperty(auto_now_add=True)
   spot = db.IntegerProperty()
   publisherUrl = db.StringProperty()
-  pickled_stats = db.BlobProperty(required=False)
-  pickled_timedstats = db.BlobProperty(required=False)
-  stats = {}
-  timedStats = {}
   
   def __init__(self, *args, **kwargs):
     super(Spot, self).__init__(*args, **kwargs)
-    if self.pickled_stats:
-      (self.stats) = pickle.loads(self.pickled_stats)
-      if not self.stats.has_key(StatType.CLICKS):
-        self.stats[StatType.CLICKS] = 0
-      if not self.stats.has_key(StatType.CLOSES):
-        self.stats[StatType.CLOSES] = 0
-      if not self.stats.has_key(StatType.LIKES):
-        self.stats[StatType.LIKES] = 0
-      if not self.stats.has_key(StatType.UNIQUES):
-        self.stats[StatType.UNIQUES] = 0
-      if not self.stats.has_key(StatType.VIEWS):
-        self.stats[StatType.VIEWS] = 0
-      
-    else: 
-      self.stats = {
-                    StatType.CLICKS : 0,
-                    StatType.CLOSES : 0,
-                    StatType.LIKES : 0,
-                    StatType.UNIQUES : 0,
-                    StatType.VIEWS : 0
-                  }
-    if self.pickled_timedstats:
-      (self.timedStats) = pickle.loads(self.pickled_timedstats)
-    else:
-      self.timedStats = TimedStats()    
+    self.initStats()
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
     # Pickle data
-    self.pickled_stats = pickle.dumps((self.stats), 2)
-    self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
+    self.putPickledStats()
     db.Model.put(self)
- 
-  def update(self, statType, creationTime):
-    if not self.stats.has_key(statType):
-      self.stats[statType] = 1
-    else:
-      self.stats[statType] += 1
-    self.timedStats.update(statType, creationTime)
+
+
+class PublisherSite(StatContainer):
+  creationTime = db.DateTimeProperty(auto_now_add=True)
+  publisherUrl = db.StringProperty()
+  
+  def __init__(self, *args, **kwargs):
+    super(PublisherSite, self).__init__(*args, **kwargs)
+    self.initStats()
+    
+  def put(self):
+    '''Stores the object, making the derived fields consistent.'''
+    # Pickle data
+    self.putPickledStats()
+    db.Model.put(self)
+
 
 
 class TimedStats(object):
@@ -384,7 +373,7 @@ class OrderingAlgorithmParams(db.Model):
     self.price_factor = float(price)
     self.put()
 
-class PublisherUrlParams(db.Model):
+class PublisherSiteParams(db.Model):
   publisherUrl = db.StringProperty()
   num_item_buckets = db.IntegerProperty(default = 2)
   total_item_updates_before_recalculating = db.IntegerProperty(default=5)
@@ -427,6 +416,14 @@ def getViewer(sessionId):
         viewer.put()
         viewer.filter = getDefaultFilter()
     return viewer
+
+def getPublisherSite(publisherUrl):
+    publisher = db.GqlQuery('SELECT * FROM PublisherSite WHERE publisherUrl=:1', publisherUrl).get()
+    if not publisher:
+      publisher = PublisherSite()
+      publisher.publisherUrl = publisherUrl
+      publisher.put()
+    return publisher
 
 def getBucket(bucketId):
   bucket = db.GqlQuery('SELECT * FROM Bucket WHERE bucketId=:1', bucketId).get()

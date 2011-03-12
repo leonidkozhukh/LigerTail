@@ -79,7 +79,7 @@ class SpotList(Singleton):
           spot = spots[entity.spot]
         if entity.statType and spot:
           logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
-          spot.update(entity.statType, entity.creationTime)
+          spot.updateStats(entity.statType, entity.creationTime)
       for spot in spots.values():
         spot.put()
     #TODO: write updates into timed log

@@ -12,7 +12,25 @@ class ItemInfo(object):
     WITH_PRICE = 1
     FULL = 2
 
-class ResponseItem(json.JSONEncoder):
+class ResponseStats(json.JSONEncoder):
+  def initStatsFrom(self, statsContainer):
+    self.stats = statsContainer.stats
+    self.timedStats = statsContainer.timedStats
+
+  def populateStats(self, ret):
+    total = {}
+    for i in range (model.StatType.BEGIN, model.StatType.END):
+      total[i] = self.stats[i]
+    ret['totalStats'] = total
+    ret['timedStats'] = self.timedStats.update()
+    d = self.timedStats.updateTime
+    ret['updateTime'] = {'year' : d.year,
+                         'month' : d.month,
+                         'day' : d.day,
+                         'hour' : d.hour,
+                         'minute' : d.minute }
+
+class ResponseItem(ResponseStats):
     def initFrom(self, item, itemInfo):
         self.id = item.key().id()
         self.url = item.url
@@ -21,13 +39,10 @@ class ResponseItem(json.JSONEncoder):
         self.description = item.description
         self.itemInfo = itemInfo
         self.price = item.price
-        self.stats = item.stats 
-        self.timedStats = item.timedStats
         self.publisherUrl = item.publisherUrl
+        self.initStatsFrom(item)
         #email
         #sessionId
-        #sessionId
-        #pickled_stats
 
 
     def default(self, o):
@@ -42,52 +57,33 @@ class ResponseItem(json.JSONEncoder):
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
           if o.itemInfo == ItemInfo.FULL:
-              total = {}
-              for i in range (model.StatType.BEGIN, model.StatType.END):
-                total[i] = o.stats[i]
-              ret['totalStats'] = total
-              ret['timedStats'] = o.timedStats.update()
-              d = o.timedStats.updateTime
-              ret['updateTime'] = {'year' : d.year,
-                                   'month' : d.month,
-                                   'day' : d.day,
-                                   'hour' : d.hour,
-                                   'minute' : d.minute }
-              ret['durationInfo'] = {'yearly' : model.YEARLY.o,
-                                     'monthly' : model.MONTHLY.o,
-                                     'daily' : model.DAILY.o,
-                                     'hourly' : model.HOURLY.o,
-                                     'minutely' : model.MINUTELY.o}
+              o.populateStats(ret)
           return ret
       return json.JSONEncoder.default(self, o)
 
 
-class ResponseSpot(json.JSONEncoder):
+class ResponseSpot(ResponseStats):
     def initFrom(self, spot):
         self.spot = spot.spot
         self.publisherUrl = spot.publisherUrl
-        self.stats = spot.stats
-        self.timedStats = spot.timedStats
+        self.initStatsFrom(spot)
         
     def default(self, o):
       if isinstance(o, ResponseSpot):
+          ret = {'publisherUrl' : o.publisherUrl, 'spot': o.spot}
+          o.populateStats(ret)
+          return ret
+      return json.JSONEncoder.default(self, o)
+
+class ResponsePublisherSite(ResponseStats):
+    def initFrom(self, publisher):
+        self.publisherUrl = publisher.publisherUrl
+        self.initStatsFrom(publisher)
+        
+    def default(self, o):
+      if isinstance(o, ResponsePublisherSite):
           ret = {'publisherUrl' : o.publisherUrl}
-          total = {}
-          for i in range (model.StatType.BEGIN, model.StatType.END):
-            total[i] = o.stats[i]
-          ret['totalStats'] = total
-          ret['timedStats'] = o.timedStats.update()
-          d = o.timedStats.updateTime
-          ret['updateTime'] = {'year' : d.year,
-                               'month' : d.month,
-                               'day' : d.day,
-                               'hour' : d.hour,
-                               'minute' : d.minute }
-          ret['durationInfo'] = {'yearly' : model.YEARLY.o,
-                                 'monthly' : model.MONTHLY.o,
-                                 'daily' : model.DAILY.o,
-                                 'hourly' : model.HOURLY.o,
-                                 'minutely' : model.MINUTELY.o}
+          o.populateStats(ret)
           return ret
       return json.JSONEncoder.default(self, o)
 
@@ -115,6 +111,7 @@ class CommonResponse(json.JSONEncoder):
   def reset(self):
     self.items = []
     self.spots = []
+    self.publisherSites = []
     self.sessionId = None
     self.filter = {}
     self.status = "ok"
@@ -124,6 +121,7 @@ class CommonResponse(json.JSONEncoder):
       if isinstance(o, CommonResponse):
           return {"items" : o.items,
                   "spots" : o.spots,
+                  "publisherSites" : o.publisherSites,
                   "filter" : o.filter,
                   "status" : o.status,
                   "error" : o.error
@@ -132,6 +130,8 @@ class CommonResponse(json.JSONEncoder):
           return json.dumps(o, cls=ResponseItem)
       elif isinstance(o, ResponseSpot):
           return json.dumps(o, cls=ResponseSpot)
+      elif isinstance(o, ResponsePublisherSite):
+          return json.dumps(o, cls=ResponsePublisherSite)
       elif isinstance(o, ResponseFilter):
           return json.dumps(o, cls=ResponseFilter) 
       else:
@@ -149,6 +149,12 @@ class CommonResponse(json.JSONEncoder):
       rs.initFrom(spot)
       self.spots.append(rs)
       
+  def setPublisherSites(self, publisherSites):
+    for publisherSite in publisherSites:
+      rp = ResponsePublisherSite()
+      rp.initFrom(publisherSite)
+      self.publisherSites.append(rp)
+    
   def setFilter(self, filter):
     self.filter = ResponseFilter()
     self.filter.initFrom(filter)
