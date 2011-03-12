@@ -70,16 +70,16 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	var interactions = [];
 	// add events to content
 	jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
-		jQuery(this).show("fast"); console.log(jQuery(this).attr('id'));
+		jQuery(this).show("fast");
 		//this is a view
-		interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS};
+		interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).index()};
 		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 
 	//update db, remove the current content, move stack up, & show more content
 	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
 		//this is a close
-		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES};
+		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES, spot: jQuery(this).parent().attr('id')};
 		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		jQuery(this).parent().remove();
 		jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
@@ -88,14 +88,14 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 	//update db for click
 	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 		//this is a click
-		interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS}; 
+		interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().attr('id')}; 
 		//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	});
 	
 	//update db for like
 	/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
 		//this is a like
-		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES};
+		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id')};
 		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		
 		alert("need to put in fb functionality");
@@ -122,6 +122,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	});
 	
 	jQuery("#analytics .your_entry").after(content);
+	jQuery("#graphs #type option:last").attr('disabled', "");
 	
 	jQuery("#analytics .entry").click(function(){
 		api.getItemStats(jQuery(this).attr("id"), 2);
@@ -159,26 +160,17 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
     });
 	
 	api.getPaidItems(window.PUBLISHER_URL);
-	
+	api.getSpotStats(1, window.PUBLISHER_URL);
 }
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
-	var dur  = {
-	YY: 0,
-	MM: 1,
-	DD: 2,
-	hh: 3,
-	mm: 4
-};
-	jQuery("#graphs h3").after('<select id="type"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');
-	
+
+	jQuery("#graphs h3").after('item: <select id="item_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="item_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
 		console.log(item_obj);
-		
-		//data += '<tr>' + '<td>' + item_obj.totalStats[0] + '</td>' + '<td>' + item_obj.totalStats[1] + '</td>' + '<td>' + item_obj.totalStats[2] + '</td>' + '<td>' + item_obj.totalStats[4] + '</td>' +  '</tr>';
 		
 		for(var m = 0; m < 5; m++){ 
 				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_items; n++){ 
@@ -191,21 +183,46 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 
 		console.log(data);
 		
-		jQuery("#graphs #type").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #duration").val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery("#graphs #duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
+		jQuery("#graphs #item_metric").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #item_duration").val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery("#graphs #item_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
 			so.write("flashcontent");
 		});
 		
-		jQuery("#graphs #duration").change(function(){
+		jQuery("#graphs #item_duration").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #type").val()]);                                       // you can pass chart data as a string directly from this file
+			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #item_metric").val()]);                                       // you can pass chart data as a string directly from this file
 			so.write("flashcontent");
 		});
 	});
 	
 }
 
-ApiHandler.prototype.onGetSpotStats = function(response) {
-	debug(response);
+ApiHandler.prototype.onGetSpotStats = function(response) { 
+	jQuery("#graphs h3").after('spot: <select id="spot_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="spot_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
+	jQuery.each(response.spots, function(i, spot){ 
+		var spot_obj = jQuery.parseJSON(spot);
+		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
+		for(var m = 0; m < 5; m++){ 
+				for(var n = 0; n < spot_obj.durationInfo[reverseDuration[m]].num_items; n++){ 
+							data[m][0] += n + ';' + spot_obj.timedStats[m][n][0] + '\n'; 
+							data[m][1] += n + ';' + spot_obj.timedStats[m][n][1] + '\n'; 
+							data[m][2] += n + ';' + spot_obj.timedStats[m][n][2] + '\n'; 
+							data[m][3] += n + ';' + spot_obj.timedStats[m][n][4] + '\n'; 		
+				}
+		}
+		console.log(data);	
+		
+		jQuery("#graphs #spot_metric").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #spot_duration").val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery("#graphs #spot_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});
+		
+		jQuery("#graphs #spot_duration").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #spot_metric").val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});							
+	});
 }

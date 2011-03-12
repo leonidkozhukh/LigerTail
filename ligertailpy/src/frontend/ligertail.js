@@ -112,7 +112,7 @@ function OpenLightboxSubmission(url){
                        dataType: "json",
                        success: function(data){
                                     //enable form input
-                                    jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "false"); 
+                                    jQuery("#ligertail_submission_lightbox_form input").attr("disabled", ""); 
                                               
                                     jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
                                     jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
@@ -264,7 +264,7 @@ function init(publisherUrl) {
 }
 
 function initAll(){
-    var CONTENT_HEIGHT_SMALL = 25; //header=39 footer=20
+    var CONTENT_HEIGHT_SMALL = 23; //header=39 footer=20
     var CONTENT_HEIGHT_LARGE = 90;//header=49 footer=35
     window.PUBLISHER_URL = location.href;
     
