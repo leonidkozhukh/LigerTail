@@ -48,12 +48,17 @@ class BaseHandler(webapp.RequestHandler):
     return cgi.escape(self.request.get(name))
   
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=None):
-    itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
+    if itemId > 0: # empty placeholders have itemId < 0
+      itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
     if not bNew and int(spot) > 0:
       spotList.updateSpot(publisherUrl, int(spot), statType)
  
   def getOrderedItems(self, publisherUrl, filter):
     defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
+    # use spot = 0 to record publisher site views and uniques
+    spotList.updateSpot(publisherUrl, 0, model.StatType.VIEWS)
+    if self.viewer.isNew:
+      spotList.updateSpot(publisherUrl, 0, model.StatType.UNIQUES)
     if filter.default:
       logging.info('return default from memcache for %s', publisherUrl)
       return defaultOrderedItems
