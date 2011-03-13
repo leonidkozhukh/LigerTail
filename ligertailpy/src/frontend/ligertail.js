@@ -258,7 +258,7 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  window.api = new LGApi();
+  window.api = new LTApi();
   api.init(apiHandler);
   window.publisherUrl = publisherUrl;
 }

@@ -74,7 +74,7 @@ function init(publisherUrl) {
   
   var initialized = true;
   var apiHandler = new ApiHandler();
-  window.api = new LGApi();
+  window.api = new LTApi();
   api.init(apiHandler);
   window.publisherUrl = publisherUrl;
 }
@@ -245,7 +245,7 @@ function initAll(){
 function tryToInit() {
     try {
         var test = new ApiHandler();
-        var test1 = new LGApi();
+        var test1 = new LTApi();
     } catch (e) {
         setTimeout("tryToInit()", 100);
         return;

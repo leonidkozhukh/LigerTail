@@ -21,7 +21,7 @@ $(document).ready(function(){
 function init() {
   var apiHandler = new BaseApiHandler();
   var domain = document.getElementById("domain").value;
-  window.api = new LGApi();
+  window.api = new LTApi();
   api.init(apiHandler, domain);
   window.publisherUrl = document.getElementById("publisherUrl").value;
 }

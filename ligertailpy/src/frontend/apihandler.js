@@ -112,7 +112,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	var content = "";
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		console.log(item_obj);		
+		//console.log(item_obj);		
 		content += '<div class="entry" id="' + item_obj.id + '"><div class="pricing">$' + item_obj.price + '</div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div></div>';
 		
 		if(i == 0){
@@ -146,7 +146,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
 		content = '<div class="your_entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
-		console.log(item_obj);
+		//console.log(item_obj);
 		
 		window.publisherUrl = item_obj.publisherUrl;
 		window.PUBLISHER_URL = item_obj.publisherUrl;										
@@ -160,6 +160,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
     });
 	
 	api.getPaidItems(window.PUBLISHER_URL);
+	api.getPublisherSiteStats(window.PUBLISHER_URL);
 	api.getSpotStats(1, window.PUBLISHER_URL);
 }
 
@@ -173,7 +174,7 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 		console.log(item_obj);
 		
 		for(var m = 0; m < 5; m++){ 
-				for(var n = 0; n < item_obj.durationInfo[reverseDuration[m]].num_items; n++){ 
+				for(var n = 0; n < DurationInfo[m].length; n++){ 
 							data[m][0] += n + ';' + item_obj.timedStats[m][n][0] + '\n'; 
 							data[m][1] += n + ';' + item_obj.timedStats[m][n][1] + '\n'; 
 							data[m][2] += n + ';' + item_obj.timedStats[m][n][2] + '\n'; 
@@ -204,7 +205,7 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 		var spot_obj = jQuery.parseJSON(spot);
 		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 		for(var m = 0; m < 5; m++){ 
-				for(var n = 0; n < spot_obj.durationInfo[reverseDuration[m]].num_items; n++){ 
+				for(var n = 0; n < DurationInfo[m].length; n++){ 
 							data[m][0] += n + ';' + spot_obj.timedStats[m][n][0] + '\n'; 
 							data[m][1] += n + ';' + spot_obj.timedStats[m][n][1] + '\n'; 
 							data[m][2] += n + ';' + spot_obj.timedStats[m][n][2] + '\n'; 
@@ -222,6 +223,35 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 		jQuery("#graphs #spot_duration").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
 			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #spot_metric").val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});							
+	});
+}
+
+ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
+	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
+	jQuery.each(response.publisherSites, function(i, site){ 
+		var site_obj = jQuery.parseJSON(site);
+		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
+		for(var m = 0; m < 5; m++){ 
+				for(var n = 0; n < DurationInfo[m].length; n++){ 
+							data[m][0] += n + ';' + site_obj.timedStats[m][n][0] + '\n'; 
+							data[m][1] += n + ';' + site_obj.timedStats[m][n][1] + '\n'; 
+							data[m][2] += n + ';' + site_obj.timedStats[m][n][2] + '\n'; 
+							data[m][3] += n + ';' + site_obj.timedStats[m][n][4] + '\n'; 		
+				}
+		}
+		console.log(data);	
+		
+		jQuery("#graphs #site_metric").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #site_duration").val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery("#graphs #site_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
+			so.write("flashcontent");
+		});
+		
+		jQuery("#graphs #site_duration").change(function(){
+			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
+			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #site_metric").val()]);                                       // you can pass chart data as a string directly from this file
 			so.write("flashcontent");
 		});							
 	});
