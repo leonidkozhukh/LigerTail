@@ -102,7 +102,9 @@ function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
         jQuery.facebox({ ajax: "/frontend/submission.html"});
         
-        if(ValidateURL(url)){
+        //make sure lightbox form loads before embed.ly is called        
+        jQuery(document).bind('reveal.facebox', function(event){ 
+            if(ValidateURL(url)){
                 // disable form & call embedly
                 jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "true");
                 
@@ -120,14 +122,12 @@ function OpenLightboxSubmission(url){
                                     jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
                 
                                     jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
-                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
-                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_text").after('<div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div>');          
+                                    jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html(data.title);         
                        },
                        error: function(e){ alert("error: " + e);}        
                 });
-        }
-        
-        jQuery(document).bind('reveal.facebox', function(){ 
+            }                                               
+            
             //error checking & submission handling            
             
             //form validation
@@ -194,7 +194,7 @@ function OpenLightboxSubmission(url){
                         jQuery(document).trigger('close.facebox');
                         
                         //remove last item from view to make room for the new submission
-                        jQuery(".ligertail_widget .ligertail_widget_content:visible:last").hide();
+                        jQuery(".ligertail_widget .ligertail_widget_content:visible:last").css('display', 'none');
                         
                         //add content to widget
                         if(window.parameter["width"] == 600){                                                          
@@ -245,7 +245,18 @@ function OpenLightboxSubmission(url){
                 
             });
             
-        });        
+        });  
+        
+        jQuery(document).bind('close.facebox', function(){
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val("");    
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val("");
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("");
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val("");                                              
+            jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_source").html("ligertail.com");
+            jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_small .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
+            
+            jQuery(document).unbind('reveal.facebox');     
+        });      
     });
 }
 
@@ -267,6 +278,7 @@ function initAll(){
     var CONTENT_HEIGHT_SMALL = 23; //header=39 footer=20
     var CONTENT_HEIGHT_LARGE = 90;//header=49 footer=35
     window.PUBLISHER_URL = location.href;
+    window.LIGERTAIL_ITEMS_LOADED = 0;
     
     //initialize widget parameters
     window.parameter = SetupParameters();
@@ -337,10 +349,10 @@ function initAll(){
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_image"><img src="../fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_image"><img src="../fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
         }
         else{
-            content += '<div class="ligertail_widget_content" id="' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
         }
     }
     
