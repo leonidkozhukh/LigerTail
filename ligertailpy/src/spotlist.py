@@ -62,6 +62,7 @@ class SpotList(Singleton):
   
   def processSpotUpdates(self, publisherUrl):
     logging.info('process spot updates worker for %s', publisherUrl)
+    publisherSite = model.getPublisherSite(publisherUrl)
     bucketIds = self.getBucketIds(publisherUrl)
     entities = {}
     for bucketId in bucketIds:
@@ -73,15 +74,27 @@ class SpotList(Singleton):
       for entity in entities[bucketId]:
         spot = None
         if not spots.has_key(entity.spot):
-          spot = model.getSpot(publisherUrl, entity.spot)
+          if entity.spot:
+            spot = model.getSpot(publisherUrl, entity.spot)
+          else:
+            spot = model.Spot() #temporary spot to store publisher site stats
+            spot.spot = 0
           spots[entity.spot] = spot
         else:
           spot = spots[entity.spot]
-        if entity.statType and spot:
+        if spot:
           logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
           spot.updateStats(entity.statType, entity.creationTime)
+          if entity.spot and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
+            publisherSite.updateStats(entity.statType, entity.creationTime)
+          elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
+            logging.info('updating publisher site stats: statType: %d', entity.statType)
+            publisherSite.updateStats(entity.statType, entity.creationTime)
       for spot in spots.values():
-        spot.put()
+        if spot.spot:  #ignore 0 spot used to record publisher site stats
+          spot.put()
+      publisherSite.put()
+
     #TODO: write updates into timed log
     # reset number of updates
     memcache.set('spot_num_updates_%s' % publisherUrl, 0)

@@ -396,7 +396,9 @@ def getPaidItems(publisherUrl):
     return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).fetch(1000);
 
 def getSpot(publisherUrl, pos):
-    spot = db.GqlQuery('SELECT * FROM Spot WHERE publisherUrl=:1 AND spot=:2', publisherUrl, int(pos)).get()
+    spot = None
+    if pos:
+      spot = db.GqlQuery('SELECT * FROM Spot WHERE publisherUrl=:1 AND spot=:2', publisherUrl, int(pos)).get()
     if not spot:
       spot = Spot()
       spot.publisherUrl = publisherUrl

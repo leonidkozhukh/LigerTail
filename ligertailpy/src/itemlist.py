@@ -82,7 +82,6 @@ class ItemList(Singleton):
   
   def processUpdates(self, publisherUrl):
     logging.info('process updates worker for %s', publisherUrl)
-    publisherSite = model.getPublisherSite(publisherUrl)
     bucketIds = self.getBucketIds(publisherUrl)
     entities = {}
     for bucketId in bucketIds:
@@ -104,10 +103,8 @@ class ItemList(Singleton):
         if entity.statType and item:
           logging.info('updating item %s: statType: %d', item.url, entity.statType)
           item.updateStats(entity.statType, entity.creationTime)
-          publisherSite.updateStats(entity.statType, entity.creationTime)
       for item in items.values():
         item.put()
-    publisherSite.put()
     #TODO: write updates into timed log
     self.refreshCacheForDefaultOrderedItems(publisherUrl)
     # reset number of updates
