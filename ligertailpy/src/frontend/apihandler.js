@@ -19,9 +19,22 @@ function getDomain(url) {
 }
 
 ApiHandler.prototype.onItemSubmitted = function(response) {
+	var item = jQuery.parseJSON(response.items[0]);
+	
+	//remove last item from view to make room for the new submission
+    jQuery(".ligertail_widget .ligertail_widget_content:eq(7)").hide();
+                        
+    //add content to widget
+     if(window.parameter["width"] == 600){                                                          
+          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><p>' + item.description + '</p></div></div>');
+     }
+     else{
+          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
+     }													
+														
+														
   // TODO: handle error case
   if (!window.submitForFree) {
-	var item = jQuery.parseJSON(response.items[0]);
 	var domain = "";
 	if (window.document.location.hostname == "localhost") {
 		domain = "http://" + window.document.location.hostname;		
@@ -36,7 +49,8 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
     
     // TODO : make sure it opens in a new window
 	//document.location.href = url;
-	//window.open(domain + "/payment.html?itemId=" + item.id);
+	alert(domain + "/payment.html?itemId=" + item.id);
+	window.open(domain + "/payment.html?itemId=" + item.id);
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...
@@ -237,7 +251,7 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
 	jQuery.each(response.publisherSites, function(i, site){ 
-		var site_obj = jQuery.parseJSON(site);
+		var site_obj = jQuery.parseJSON(site); console.log(site_obj);
 		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 		for(var m = 0; m < 5; m++){ 
 				for(var n = 0; n < DurationInfo[m].length; n++){ 

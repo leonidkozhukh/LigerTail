@@ -166,9 +166,8 @@ function OpenLightboxSubmission(url){
             });
             
             
-            jQuery("#ligertail_submission_lightbox_form").submit(function(){
+            jQuery("#ligertail_submission_lightbox_form").submit(function(event){
                 event.preventDefault();
-                window.submitForFree = true;
                 
                 var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
@@ -193,16 +192,7 @@ function OpenLightboxSubmission(url){
                         
                         jQuery(document).trigger('close.facebox');
                         
-                        //remove last item from view to make room for the new submission
-                        jQuery(".ligertail_widget .ligertail_widget_content:visible:last").css('display', 'none');
                         
-                        //add content to widget
-                        if(window.parameter["width"] == 600){                                                          
-                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><p>' + item.description + '</p></div></div>');
-                        }
-                        else{
-                            jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
-                        }
                         
                         //error here: not removing last item in widget
                         
@@ -214,35 +204,17 @@ function OpenLightboxSubmission(url){
                 }
             });
             
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(){ 
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_free").click(function(event){
                 event.preventDefault();
-                window.submitForFree = false;
+                window.submitForFree = true;                                                                                                  
+                jQuery("#ligertail_submission_lightbox_form").submit(); 
                 
-                var item = {}; 
-                item.publisherUrl = window.PUBLISHER_URL;
-                item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
-                item.title = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val();
-                item.description = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val();
-                item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
-                item.thumbnailUrl = jQuery("#preview .image img").attr("src"); 
-
-                //if url same as original, use embedly img
-                if(item.url == url)
-                    item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
-                else
-                    item.thumbnailUrl = "../frontend/images/default.png";
-
-                if(ValidateURL(item.url) && 
-                    (item.title.length > 3 && item.title.length < 100) && 
-                    item.description.length > 0 && item.description.length < 512 &&
-                    ValidateEmail(item.email)){
-                    
-                        api.submitItem(item);
-                }
-                else{
-                        //console.log(item);
-                }                
-                
+            });
+            
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(event){ 
+                event.preventDefault();
+                window.submitForFree = false;               
+                jQuery("#ligertail_submission_lightbox_form").submit();
             });
             
         });  
