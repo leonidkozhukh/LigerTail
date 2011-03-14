@@ -99,7 +99,13 @@ function ValidateEmail(str) {
 //LOAD SUBMISSION LIGHTBOX
 
 function OpenLightboxSubmission(url){
+    jQuery(document).bind('init.facebox', function(){
+            LoadFile("../frontend/css/submission.css", "css");                                                     
+    });
+        
     jQuery.facebox(function(){     
+        
+        
         jQuery.facebox({ ajax: "/frontend/submission.html"});
         
         //make sure lightbox form loads before embed.ly is called        
@@ -248,7 +254,7 @@ function init(publisherUrl) {
 
 function initAll(){
     var CONTENT_HEIGHT_SMALL = 23; //header=39 footer=20
-    var CONTENT_HEIGHT_LARGE = 90;//header=49 footer=35
+    var CONTENT_HEIGHT_LARGE = 91;//header=49 footer=35
     window.PUBLISHER_URL = location.href;
     window.LIGERTAIL_ITEMS_LOADED = 0;
     
@@ -321,7 +327,7 @@ function initAll(){
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_image"><img src="../fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_close"></div><div class="ligertail_widget_image"><img src="../fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span><p>Display your content here to get recognized!!!</p></div></div>';
         }
         else{
             content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
@@ -352,7 +358,7 @@ function initAll(){
     });
     
     //submit in lightbox
-    $("#ligertail_widget_header form").submit(function(){ 
+    $("#ligertail_widget_header form").submit(function(event){ 
         event.preventDefault();
         var url = $(this).find("input:first").val();
         OpenLightboxSubmission(url);
