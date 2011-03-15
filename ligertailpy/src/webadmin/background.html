@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		</head>
+	<body>
+  Logged in: {{ user }}
+<h1>Background processing configuration</h1>
+  <form method="POST" action="update_activities">
+  <table>
+    <tr>
+      <td>Name</td>
+      <td>Enabled</td>
+      <td>Load</td>
+      <td>Buckets</td>
+      <td># Updates to trigger</td>
+      <td>Min time (sec)</td>
+      <td>Max time (sec)</td>
+    </tr>
+  {% for activity in activities %}
+    <tr>
+      <td>
+        <input type="text" name="name__{{activity.index}}" value = {{ activity.name}} />
+      </td>
+      <td>
+        {% if activity.enabled %}
+        <INPUT TYPE=CHECKBOX NAME="enabled_{{activity.index}}" CHECKED='yes' value='true' />
+        {% else %}
+        <INPUT TYPE=CHECKBOX NAME="enabled_{{activity.index}}" value='true'/>
+        {% endif %}
+      </td>
+      <td>
+        <input type="text" name="load__{{activity.index}}" value={{ activity.activity_load }} />
+      </td>
+      <td>
+        <input type="text" name="buckets__{{activity.index}}" value={{ activity.num_buckets }} />
+      </td>
+      <td>
+        <input type="text" name="updates__{{activity.index}}" value={{ activity.total_updates_before_triggering }} />
+      </td>
+      <td>
+        <input type="text" name="mintime__{{activity.index}}" value={{ activity.min_time_sec_between_jobs }} />
+      </td>
+      <td>
+        <input type="text" name="maxtime__{{activity.index}}" value={{ activity.max_time_sec_before_triggering }} />
+      </td>
+    </tr>
+   </table>
+{% endfor %}
+    <br/>
+    <input type="submit" value="Update" />
+
+  </form>
+  </body>
+</html>

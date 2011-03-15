@@ -423,6 +423,7 @@ class ActivityParams(db.Model):
   enabled = db.BooleanProperty(default = True)
   min_time_sec_between_jobs = db.IntegerProperty(default = 0)
   max_time_sec_before_triggering = db.IntegerProperty(default = 60)
+  index = 0 #used for templates
   
   def __str__(self):
     enabled = 'DISABLED'
@@ -440,12 +441,51 @@ class ActivityParams(db.Model):
   def update(self, activity, name, numBuckets, totalUpdates, enabled, minTime, maxTime):
     self.activity_load = activity
     self.name = name
-    self.num_buckets = int(numBuckets)
-    self.total_updates_before_triggering = int(totalUpdates)
+    self.num_buckets = numBuckets
+    self.total_updates_before_triggering = totalUpdates
     self.enabled = enabled
-    self.min_time_sec_between_jobs = int(minTime)
-    self.max_time_sec_before_triggering = int(maxTime)
-    self.put()
+    self.min_time_sec_between_jobs = minTime
+    self.max_time_sec_before_triggering = maxTime
+    
+  def getErrors(self):
+    er = ''
+    if not self.name:
+      er += '|name empty'
+    if self.activity_load <= 0:
+      er += '|load <= 0'
+    if self.num_buckets <= 0:
+      er += '|buckets <= 0'
+    if self.total_updates_before_triggering <= 0:
+      er += '|updates <= 0'
+    if self.min_time_sec_between_jobs < 0:
+      er += '|mintime < 0'
+    if self.max_time_sec_before_triggering <= self.min_time_sec_between_jobs:
+      er += '|maxtime <= mintime'
+    return er
+  
+  def updateFrom(self, other):
+    updated = False
+    if other.getErrors() == '' and self.name == other.name:
+      if self.activity_load != other.activity_load:
+        updated = True
+        self.activity_load = other.activity_load
+      if self.num_buckets != other.num_buckets:
+        updated = True
+        self.num_buckets = other.num_buckets
+      if self.total_updates_before_triggering != other.total_updates_before_triggering:
+        updated = True
+        self.total_updates_before_triggering = other.total_updates_before_triggering 
+      if self.enabled != other.enabled:
+        updated = True
+        self.enabled = other.enabled
+      if self.min_time_sec_between_jobs != other.min_time_sec_between_jobs:
+        updated = True
+        self.min_time_sec_between_jobs = other.min_time_sec_between_jobs
+      if self.max_time_sec_before_triggering != other.max_time_sec_before_triggering:
+        updated = True
+        self.max_time_sec_before_triggering = other.max_time_sec_before_triggering
+    return updated    
+
 
      
 def getItems(publisherUrl):

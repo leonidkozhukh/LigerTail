@@ -55,8 +55,8 @@ class ActivityManager(Singleton):
     memcache.set('last_job_time_%s' % publisherUrl, time.time())
   
   # called by admin UI after update
-  def refreshActivities(self, newActivities):
-    self.activities = None
+  def refreshActivities(self):
+    self.activities = []
     self.lazyLoad_()
   
   def initiateItemUpdateProcessing(self, publisherUrl):

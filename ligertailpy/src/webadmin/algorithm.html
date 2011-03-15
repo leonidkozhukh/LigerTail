@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		</head>
+	<body>
+<h1>Algorithm configuration</h1>    
+  Logged in: {{ user }}
+  
+  <!--  TODO process as object key/value pairs  -->
+  
+  <form method="POST" action="update_alg">
+    Likes factor: <input type="text" name="likes_factor" value = {{ alg.likes_factor }} /><br />
+    Clicks factor: <input type="text" name="clicks_factor" value = {{ alg.clicks_factor }} /><br />
+    Closes factor: <input type="text" name="closes_factor" value = {{ alg.closes_factor }} /><br />
+    Total likes factor: <input type="text" name="total_likes_factor" value = {{ alg.total_likes_factor }} /><br />
+    Total clicks factor:  <input type="text" name="total_clicks_factor" value = {{ alg.total_clicks_factor }} /><br /> 
+    Total closes factor: <input type="text" name="total_closes_factor" value = {{ alg.total_closes_factor }} /><br /> 
+    Total views factor: <input type="text" name="total_views_factor" value = {{ alg.total_views_factor }} /><br />
+    Recency factor: <input type="text" name="recency_factor" value = {{ alg.recency_factor }} /><br />
+    Price factor: <input type="text" name="price_factor" value = {{ alg.price_factor }} /><br />
+    <input type="submit" value="Update" />
+
+  </form>
+  
+    {{ p }}
+  </body>
+</html>
