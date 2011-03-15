@@ -4,27 +4,18 @@ from filterstrategy import filterStrategy
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
-
-NUM_BUCKETS_PER_PUBLISHER_URL = 2
-TOTAL_UPDATES_BEFORE_RECALCULATING = 5
-
-class Singleton(object):
-  """ A Pythonic Singleton """
-  def __new__(cls, *args, **kwargs):
-    if '_inst' not in vars(cls):
-      cls._inst = object.__new__(cls, *args, **kwargs)
-    return cls._inst
+from activitymanager import activityManager
+from activitymanager import Singleton
 
 
-
-def addToBucket(bucketKey, entity):
+def addToBucket_(bucketKey, entity):
   ''' Transactional method
   '''
   bucket = db.get(bucketKey)
   bucket.entities.append(entity)
   bucket.put()
 
-def emptyBucket(bucketKey):
+def emptyBucket_(bucketKey):
   bucket = db.get(bucketKey)
   entities = bucket.entities
   bucket.entities = []
@@ -34,36 +25,30 @@ def emptyBucket(bucketKey):
   
 class ItemList(Singleton):
   
-  def getBucketId(self, itemId, publisherUrl ):
-    return '%s_%d' % (publisherUrl, itemId % NUM_BUCKETS_PER_PUBLISHER_URL)
+  def getItemBucketId_(self, itemId, publisherUrl, numBuckets):
+    return '%s_%d' % (publisherUrl, itemId % numBuckets)
   
-  def getBucketIds(self, publisherUrl):
-    return ['%s_%d' % (publisherUrl, i) for i in range(0,NUM_BUCKETS_PER_PUBLISHER_URL)]
+  def getItemBucketIds_(self, publisherUrl, numBuckets):
+    return ['%s_%d' % (publisherUrl, i) for i in range(0, numBuckets)]
   
-  def updateItem(self, publisherUrl, itemId, item, bNew, statType):
-    ''' for performance purpose store updates only in memcache
-    '''
-    if not itemId:
+  def getBucketId_(self, bucketIndex, publisherUrl):
+    return '%s_%d' % (publisherUrl, bucketIndex)
+  
+  def updateItem(self, publisherUrl, itemId, item, bNew, statType, spot):
+    numBuckets = activityManager.getNumBuckets(publisherUrl)
+    if not itemId and item:
       itemId = item.key().id()
-    bucketId = self.getBucketId(itemId, publisherUrl)  
-    entity = model.ItemUpdateEntity(itemId, bNew, statType)
+    if not itemId:
+      itemId = 0
+    bucketId = self.getItemBucketId_(itemId, publisherUrl, numBuckets)  
+    entity = model.ItemUpdateEntity(itemId, bNew, statType, spot)
     bucket = model.getBucket(bucketId)
-  
-    db.run_in_transaction(addToBucket, bucket.key(), entity)
+    
+    db.run_in_transaction(addToBucket_, bucket.key(), entity)
     if (item and item.publisherUrl != publisherUrl):
       logging.error('mismatched publisherUrl for item %s, %d. Expected %s but found %s',
                     item.url, itemId, publisherUrl, item.publisherUrl)
-    self.initiateItemUpdateProcessing(publisherUrl)
-  
-  def initiateItemUpdateProcessing(self, publisherUrl):
-    numOfUpdates = memcache.incr('num_updates_%s' % publisherUrl, initial_value=0)
-    workerAdded = memcache.get('worker_added_%s' % publisherUrl)
-    if numOfUpdates >= TOTAL_UPDATES_BEFORE_RECALCULATING and not workerAdded:
-      logging.info('initiating item update processing for %s', publisherUrl)
-      memcache.set('worker_added_%s' % publisherUrl, True)
-      memcache.set('num_updates_%s' % publisherUrl, 0) #do not update until reset
-      taskqueue.add(url='/process_item_updates', params={'publisherUrl': publisherUrl})
-
+    activityManager.initiateItemUpdateProcessing(publisherUrl)
 
   def getDefaultOrderedItems(self, publisherUrl):
     logging.info('getDefaultOrderedItems')
@@ -82,33 +67,75 @@ class ItemList(Singleton):
   
   def processUpdates(self, publisherUrl):
     logging.info('process updates worker for %s', publisherUrl)
-    bucketIds = self.getBucketIds(publisherUrl)
+    publisherSite = model.getPublisherSite(publisherUrl)
+    numBuckets = activityManager.getNumBuckets(publisherUrl)
+    bucketIds = self.getItemBucketIds_(publisherUrl, numBuckets)
     entities = {}
     for bucketId in bucketIds:
       bucket = model.getBucket(bucketId)
-      entities[bucketId] = db.run_in_transaction(emptyBucket, bucket.key())
+      entities[bucketId] = db.run_in_transaction(emptyBucket_, bucket.key())
       #TODO: mapreduce?
     for bucketId in bucketIds:
       items = {}
+      spots = {}
       for entity in entities[bucketId]:
-        item = None
-        if not items.has_key(entity.itemId):
-          item = model.Item.get_by_id(entity.itemId)
-          if not item:
-            logging.error('no item found for id %d', entity.itemId)
+        if entity.itemId:
+          # update items
+          item = None
+          if not items.has_key(entity.itemId):
+            item = model.Item.get_by_id(entity.itemId)
+            if not item:
+              logging.error('no item found for id %d', entity.itemId)
+            else:
+              items[entity.itemId] = item               
           else:
-            items[entity.itemId] = item               
-        else:
-          item = items[entity.itemId]
-        if entity.statType and item:
-          logging.info('updating item %s: statType: %d', item.url, entity.statType)
-          item.updateStats(entity.statType, entity.creationTime)
+            item = items[entity.itemId]
+          if entity.statType and item:
+            logging.info('updating item %s: statType: %d', item.url, entity.statType)
+            item.updateStats(entity.statType, entity.creationTime)
+      
+        # update spots
+        if entity.spot != None:
+          spot = None
+          if not spots.has_key(entity.spot):
+            if entity.spot > 0:
+              spot = model.getSpot(publisherUrl, entity.spot)
+              spots[entity.spot] = spot
+          else:
+            spot = spots[entity.spot]
+          if spot:
+            logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
+            spot.updateStats(entity.statType, entity.creationTime)
+          if entity.spot != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
+            publisherSite.updateStats(entity.statType, entity.creationTime)
+          elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
+            logging.info('updating publisher site stats: statType: %d', entity.statType)
+            publisherSite.updateStats(entity.statType, entity.creationTime)
+        
+      #TODO: use a method to store lists
       for item in items.values():
         item.put()
-    #TODO: write updates into timed log
-    self.refreshCacheForDefaultOrderedItems(publisherUrl)
-    # reset number of updates
-    memcache.set('num_updates_%s' % publisherUrl, 0)
-    memcache.set('worker_added_%s' % publisherUrl, False)
+        
+      for spot in spots.values():
+        spot.put()
+    
+      publisherSite.put() 
+      #TODO: write updates into timed log
+      self.refreshCacheForDefaultOrderedItems(publisherUrl)
+      activityManager.finishItemUpdateProcessing(publisherSite)
+      newNumBuckets = activityManager.getNumBuckets(publisherUrl)
+      if newNumBuckets < numBuckets:
+        # If the number of buckets was decreased, move items from higher buckets to where the belong now
+        # It is safe at this point because item updates go into the smaller buckets.
+        leftoverBuckets = range(newNumBuckets, numBuckets)
+        for i in leftoverBuckets:
+          bucketId = self.getBucketId_(publisherUrl, i)
+          bucket = model.getBucket(bucketId)
+          entities = db.run_in_transaction(emptyBucket_, bucket.key())
+          for entity in entities:
+            newBucketId = self.getItemBucketId_(entity.itemId, publisherUrl, newNumBuckets)
+            newBucket = model.getBucket(newBucketId)
+            db.run_in_transaction(addToBucket_, newBucket.key(), entity)
+      
     
 itemList = ItemList()

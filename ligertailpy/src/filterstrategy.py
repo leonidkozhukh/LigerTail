@@ -13,15 +13,15 @@ class DefaultFilterStrategy(Singleton):
   def __init__(self, id):
     self.params = None
     self.id = id
-    self.refresh = True
+    self.refreshParams = True
     
   def refreshParams(self):
-    self.refresh = True
+    self.refreshParams = True
     
   def applyFilter(self, items, filter):    
-    if not self.params or self.refresh:
+    if not self.params or self.refreshParams:
       self.params = model.getOrderingAlgorithmParams(self.id)
-      self.refresh = False
+      self.refreshParams = False
     #TODO: support timeliness
     today = datetime.datetime.today()
     for item in items:

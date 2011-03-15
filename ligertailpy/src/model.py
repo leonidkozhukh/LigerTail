@@ -28,6 +28,7 @@ DAY = HOUR * 24
   
 NUM_DELTAS = 20
 
+
 class Duration:
   def __init__(self, name, id, num_items):
     self.name = name
@@ -58,6 +59,10 @@ class Filter(db.Model):
   popularity = db.IntegerProperty(default=50)
   durationId = db.IntegerProperty(default=YEARLY.id)
   default = False
+
+  def __str__(self):
+    return 'recency: %d, popularity %d, duration %s' %(self.recency, self.popularity, DurationInfo[self.durationId].name)
+
 
   def update(self, durationId, popularity, recency):
     ''' Assumption: 0 is not a valid value for 
@@ -93,6 +98,14 @@ class StatContainer(db.Model):
   pickled_timedstats = db.BlobProperty(required=False)
   stats = {}
   timedStats = {}
+
+  def __str__(self):
+    return 'total [uniques: %d, views: %d, clicks %d, likes %d, closes %d' % (self.stats[StatType.UNIQUES],
+       self.stats[StatType.VIEWS],
+       self.stats[StatType.CLICKS],
+       self.stats[StatType.LIKES],
+       self.stats[StatType.CLOSES])
+
 
   def initStats(self):
     if self.pickled_stats:
@@ -151,6 +164,16 @@ class Item(StatContainer):
     self.initStats()
     if self.pickled_payments:
       (self.payments) = pickle.loads(self.pickled_payments)
+
+  def __str__(self):
+    id = 0
+    if self.key():
+      id = self.key().id()
+    return '''id: %d, title %s url %s
+    publisherUrl %s
+    payments %s
+    stats %s''' %(id, self.title, self.url, self.publisherUrl, self.payments, self.stats)
+    
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -178,6 +201,10 @@ class Spot(StatContainer):
   def __init__(self, *args, **kwargs):
     super(Spot, self).__init__(*args, **kwargs)
     self.initStats()
+
+
+  def __str__(self):
+    return 'publisherUrl %s, spot %d, stats %s' %(self.publisherUrl, self.spot, self.stats)
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -193,6 +220,9 @@ class PublisherSite(StatContainer):
   def __init__(self, *args, **kwargs):
     super(PublisherSite, self).__init__(*args, **kwargs)
     self.initStats()
+  
+  def __str__(self):
+    return 'publisherUrl %s, stats %s' %(self.publisherUrl, self.stats)
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -287,23 +317,21 @@ class ItemUpdateEntity(object):
   itemId = None
   bNew = False
   statType = None
+  spot = 0
   creationTime = None
   
-  def __init__(self, itemId, bNew, statType):
+  def __init__(self, itemId, bNew, statType, spot):
     self.itemId = itemId
     self.bNew = bNew
     self.statType = statType
+    self.spot = spot
     self.creationTime = datetime.datetime.utcnow()
 
-class SpotUpdateEntity(object):  
-  spot = None
-  statType = None
-  creationTime = None
-  
-  def __init__(self, spot, statType):
-    self.spot = spot
-    self.statType = statType
-    self.creationTime = datetime.datetime.utcnow()
+  def __str__(self):
+    new = ''
+    if self.bNew:
+      new = 'New,'
+    return 'itemId %d, %s, statType: %s, spot %d' %(self.itemId, new, self.statType, self.spot)
 
 
 class Bucket(db.Model):
@@ -317,6 +345,10 @@ class Bucket(db.Model):
       (self.entities) = pickle.loads(self.pickled_entities)
     else: 
       self.entities = []
+
+  def __str__(self):
+    return 'bucketId %s, numItems: %d' %(self.bucketId, len(self.entities))
+
 
   def put(self):
     # Pickle data
@@ -340,6 +372,12 @@ class Viewer(db.Model):
       else: 
         self.filter = getDefaultFilter()
   
+    def __str__(self):
+      new = ''
+      if self.isNew:
+        new = 'New'
+      return 'session %s %s, likes %s, closes %s, filter %s ' %(self.sessionId, new, self.likes, self.closes, self.filter)
+
     def put(self):
       if not self.filter.default:
         '''Stores the object, making the derived fields consistent.'''
@@ -359,6 +397,10 @@ class OrderingAlgorithmParams(db.Model):
   recency_factor = db.FloatProperty(default = 1000.0)
   price_factor = db.FloatProperty(default = 1000.0)
 
+  #TODO: add more details once alg params are flashed out
+  def __str__(self):
+    return '%s' % self.name
+
   def update(self, likes, clicks, closes,
              total_likes, total_clicks, total_closes, total_views,
              recency, price):
@@ -373,19 +415,36 @@ class OrderingAlgorithmParams(db.Model):
     self.price_factor = float(price)
     self.put()
 
-class PublisherSiteParams(db.Model):
-  publisherUrl = db.StringProperty()
-  num_item_buckets = db.IntegerProperty(default = 2)
-  total_item_updates_before_recalculating = db.IntegerProperty(default=5)
-  num_spot_buckets = db.IntegerProperty(default = 5)
-  total_spot_updates_before_recalculating = db.IntegerProperty(default=5)
-
-  def update(self, numItemBuckets, totalItemUpdates,
-             numSpotBuckets, totalSpotUpdates):
-    self.num_item_buckets = int(numItemBuckets)
-    self.total_item_updates_before_recalculating = int(totalItemUpdates)
-    self.num_spot_buckets = int(numSpotBuckets)
-    self.total_spot_updates_before_recalculating = int(totalSpotUpdates)
+class ActivityParams(db.Model):
+  activity_load = db.IntegerProperty(default = 10000000) # number of interactions per time unit
+  name = db.StringProperty(default = 'default')
+  num_buckets = db.IntegerProperty(default = 1)
+  total_updates_before_triggering = db.IntegerProperty(default=20)
+  enabled = db.BooleanProperty(default = True)
+  min_time_sec_between_jobs = db.IntegerProperty(default = 0)
+  max_time_sec_before_triggering = db.IntegerProperty(default = 60)
+  
+  def __str__(self):
+    enabled = 'DISABLED'
+    if self.enabled:
+      enabled = 'enabled'
+    
+    return '''
+      name %s, activity_load/hr: %d %s
+      num_buckets %d
+      total updates before triggering: %d
+      min_time_sec %d, max_time_sec %d''', (self.name, self.activity_load, enabled,
+      self.num_buckets, self.total_updates_before_triggering,
+      self.min_time_sec_between_jobs, self.max_time_sec_before_triggering)
+  
+  def update(self, activity, name, numBuckets, totalUpdates, enabled, minTime, maxTime):
+    self.activity_load = activity
+    self.name = name
+    self.num_buckets = int(numBuckets)
+    self.total_updates_before_triggering = int(totalUpdates)
+    self.enabled = enabled
+    self.min_time_sec_between_jobs = int(minTime)
+    self.max_time_sec_before_triggering = int(maxTime)
     self.put()
 
      
@@ -452,3 +511,18 @@ def getOrderingAlgorithmParams(id):
       params.name = id
       params.put()
     return params
+
+
+def getActivities(enabled):
+  query = ''
+  if enabled:
+    query = 'SELECT * FROM ActivityParams WHERE enabled = TRUE ORDER BY activity'
+  else:
+    query = 'SELECT * FROM ActivityParams ORDER BY activity'
+  
+  activities = db.GqlQuery(query).fetch(100);
+  if not len(activities):
+      activity = ActivityParams() #default
+      activity.put()
+      activities = [activity]
+  return activities

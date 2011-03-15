@@ -3,7 +3,6 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from itemlist import itemList
-from spotlist import spotList
 from filterstrategy import filterStrategy
 import logging
 import model
@@ -48,17 +47,14 @@ class BaseHandler(webapp.RequestHandler):
     return cgi.escape(self.request.get(name))
   
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=None):
-    if itemId > 0: # empty placeholders have itemId < 0
-      itemList.updateItem(publisherUrl, itemId, item, bNew, statType)
-    if not bNew and int(spot) > 0:
-      spotList.updateSpot(publisherUrl, int(spot), statType)
+    itemList.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
  
   def getOrderedItems(self, publisherUrl, filter):
     defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
     # use spot = 0 to record publisher site views and uniques
-    spotList.updateSpot(publisherUrl, 0, model.StatType.VIEWS)
+    itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
     if self.viewer.isNew:
-      spotList.updateSpot(publisherUrl, 0, model.StatType.UNIQUES)
+      itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
     if filter.default:
       logging.info('return default from memcache for %s', publisherUrl)
       return defaultOrderedItems

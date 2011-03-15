@@ -6,7 +6,6 @@ from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from itemlist import itemList
-from spotlist import spotList
 import admin 
 import logging
 import model
@@ -229,10 +228,6 @@ class ProcessItemUpdatesWorker(webapp.RequestHandler):
     def post(self):
       itemList.processUpdates(self.request.get('publisherUrl'))
 
-class ProcessSpotUpdatesWorker(webapp.RequestHandler):
-    def post(self):
-      spotList.processSpotUpdates(self.request.get('publisherUrl'))
-
 def main():
     application = webapp.WSGIApplication(
                                          [
@@ -249,7 +244,6 @@ def main():
                                           ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          ('/process_spot_updates', ProcessSpotUpdatesWorker),
                                           ('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
