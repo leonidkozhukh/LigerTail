@@ -60,6 +60,14 @@
     line-height: 14px;
 }
 
+#ligertail_widget_large .ligertail_widget_top_text {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;  
+    -o-text-overflow: ellipsis;  
+    -ms-text-overflow: ellipsis;
+}
+
 #ligertail_widget_large .ligertail_widget_form {
 	background-image:url(../images/input_submit.png);
 	background-repeat:no-repeat;
@@ -77,8 +85,7 @@
 }
 
 #ligertail_widget_large .ligertail_widget_text span{
-	height: 16px;
-	overflow: hidden;
+	//height: 14px;
 }
 
 #ligertail_widget_large .ligertail_widget_text .ligertail_widget_source {
@@ -87,10 +94,10 @@
 	text-transform:uppercase;
 	margin:0px 5px 0px 0px;
 	padding-right:5px;
-	border-right:1px solid #d36317;
+	border-right:2px solid #d36317;
 }
 
-#ligertail_widget_large .ligertail_widget_text p {
+#ligertail_widget_large .ligertail_widget_text .ligertail_widget_description {
 	color:#666;
 	margin-top:4px;
 	margin-bottom:0px;

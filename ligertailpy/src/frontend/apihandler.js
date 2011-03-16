@@ -26,7 +26,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
                         
     //add content to widget
      if(window.parameter["width"] == 600){                                                          
-          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><p>' + item.description + '</p></div></div>');
+          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><div class="ligertail_widget_top_text"><p class="ligertail_widget_description">' + item.description + '</p></div></div>');
      }
      else{
           jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
@@ -64,68 +64,66 @@ ApiHandler.prototype.onPriceUpdated = function(response) {
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
 	var content = "";
+	var interactions = [];
 	jQuery.each(response.items, function(i, item){
 		window.LIGERTAIL_ITEMS_LOADED++; 
 		var item_obj = jQuery.parseJSON(item);
 		
 		if(window.parameter["width"] == 600){
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span><p>' + item_obj.description + '</p></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="../frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><p class="ligertail_widget_description">' + item_obj.description + '</p></div></div>';
 		}
 		else{
 			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
+		
+		interactions[i] = {itemId: item_obj.id, statType: StatType.VIEWS, spot: window.LIGERTAIL_ITEMS_LOADED};
 	});
 	
 	if(content.length > 0){
+		jQuery(".ligertail_widget .ligertail_widget_content:visible").hide();
 		jQuery(".ligertail_widget #ligertail_widget_header").after(content);
-	
-	//add in spot #
-	//for text click: jQuery(this).parent().index();
-	
-	var interactions = [];
-	// add events to content
-	jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
-		jQuery(this).show("fast");
-		//this is a view
-		if(jQuery(this).attr('id') < 0){
-			interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).index()};
-		}
-		else{
-			interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).find(".ligertail_widget_close").attr('id')};
-		}
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
-	});
+		jQuery(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").show();
 
-	//update db, remove the current content, move stack up, & show more content
-	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
-		//this is a close
-		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES, spot: jQuery(this).attr('id')};
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
-		jQuery(this).parent().remove();
-		jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
-	});
-	
-	//update db for click
-	jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
-		//this is a click
-		interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
-		//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
-	});
-	
-	//update db for like
-	/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
-		//this is a like
-		interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id').find(".ligertail_widget_close").attr('id')};
 		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		
-		alert("need to put in fb functionality");
-	});*/
+		// add events to content
+		jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
+				jQuery(this).show("fast");
+				//this is a view
+				if(jQuery(this).attr('id') < 0){
+					interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).index()};
+				}
+				else{
+					interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).find(".ligertail_widget_close").attr('id')};
+				}
+				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		});
+
+		//update db, remove the current content, move stack up, & show more content
+		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
+				//this is a close
+				interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES, spot: jQuery(this).attr('id')};
+				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+				jQuery(this).parent().remove();
+				jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
+		});
 	
-	// show the right number of content items
-	jQuery(".ligertail_widget .ligertail_widget_content:visible").hide();
-	jQuery(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").trigger("show");
-	}
+		//update db for click
+		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
+				//this is a click
+				interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
+				//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		});
 	
+		//update db for like
+		/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
+				//this is a like
+				interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id').find(".ligertail_widget_close").attr('id')};
+				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		
+				alert("need to put in fb functionality");
+		});*/
+	}	
 }
 
 ApiHandler.prototype.onGetPaidItems = function(response) {

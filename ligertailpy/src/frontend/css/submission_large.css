@@ -1,5 +1,5 @@
 #ligertail_submission_lightbox {
-    width:691px;
+    width:991px;
     float:left;
     font-family:Tahoma, Geneva, sans-serif;
     font-size:12px;
@@ -13,10 +13,11 @@
     padding:10px;
     border-right:1px solid #ccc;
     line-height: 22px;
+    height: 266px;
 }
 
 #ligertail_submission_lightbox_right_column {
-    width:300px;
+    width:600px;
     padding:10px;
     float: left;
 }
