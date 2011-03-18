@@ -106,7 +106,7 @@ class ItemList(Singleton):
           if spot:
             logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
             spot.updateStats(entity.statType, entity.creationTime)
-          if entity.spot != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
+          if entity.spot != None and entity.statType != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
             publisherSite.updateStats(entity.statType, entity.creationTime)
           elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
             logging.info('updating publisher site stats: statType: %d', entity.statType)

@@ -46,7 +46,7 @@ class BaseHandler(webapp.RequestHandler):
   def getParam(self, name):
     return cgi.escape(self.request.get(name))
   
-  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=None):
+  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=0):
     itemList.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
  
   def getOrderedItems(self, publisherUrl, filter):

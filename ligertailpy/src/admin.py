@@ -90,7 +90,7 @@ class AdminHandler(webapp.RequestHandler):
       
       for a in activities:
         if activityMap.has_key(a.name):
-          if activityMap[a.name].updateFrom(a):
+          if activityMap[a.name] and activityMap[a.name].updateFrom(a):
             successes.append('UPDATED: %s' % a.name)
             activityMap[a.name].put()
           activityMap[a.name] = None
@@ -104,11 +104,10 @@ class AdminHandler(webapp.RequestHandler):
           
       activityManager.refreshActivities()    
       
-      if len(errors):
-        self.response.out.write(' / '.join(successes) + 
+      self.response.out.write(' / '.join(successes) + 
                                 ' / '.join(errors))
-      else:
-        self.redirect('background.html?status=updated')
+      #else:
+      #  self.redirect('background.html?status=updated')
   
     
     def retrieveActivity(self, index):

@@ -17,7 +17,7 @@ class ActivityManager(Singleton):
     self.activities = []
     self.publisherActivityLoadMap = {}
     # TODO be able to update via AI
-    self.activityDelta = model.HOURLY
+    self.activityDelta = model.MINUTELY #HOURLY
     
   def lazyLoad_(self):
     if not len(self.activities):
@@ -26,14 +26,18 @@ class ActivityManager(Singleton):
   def getPublisherActivityLoad_(self, publisherUrl):
     if not self.publisherActivityLoadMap.has_key(publisherUrl):
       publisherSite = model.getPublisherSite(publisherUrl)
-      activityLoad = publisherSite.timedStats.durations[self.activityDelta.id][1][model.StatType.VIEWS]
-      self.publisherActivityLoadMap[publisherUrl] = activityLoad
+      self.updatePublisherActivityLoad_(publisherSite)
     return self.publisherActivityLoadMap[publisherUrl]
-  
+
+  def updatePublisherActivityLoad_(self, publisherSite):        
+    activityLoad = publisherSite.timedStats.durations[self.activityDelta.id][1][model.StatType.VIEWS]
+    self.publisherActivityLoadMap[publisherSite.publisherUrl] = activityLoad
+
   def getActivityParamsForPublisherUrl_(self, publisherUrl):
     publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
     for activity in self.activities:
       if publisherActivityLoad <= activity.activity_load:
+        logging.info('ACTIVITY[%d]: %s for %s' % (publisherActivityLoad, activity.name, publisherUrl))
         return activity
     # No match found, return whatever is there 
     logging.error('No appropriate activity load found for load %d per %s' % (publisherActivityLoad, self.activityDelta.name))
@@ -77,7 +81,8 @@ class ActivityManager(Singleton):
       taskqueue.add(url='/process_item_updates', params={'publisherUrl': publisherUrl})
 
   def finishItemUpdateProcessing(self, publisherSite): 
-    self.updateJobEndTime_(publisherSite.publisherUrl);
+    self.updateJobEndTime_(publisherSite.publisherUrl)
+    self.updatePublisherActivityLoad_(publisherSite)
     # reset number of updates
     memcache.set('num_updates_%s' % publisherSite.publisherUrl, 0)
     memcache.set('worker_added_%s' % publisherSite.publisherUrl, False)

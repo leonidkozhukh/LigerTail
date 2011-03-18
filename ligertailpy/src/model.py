@@ -386,7 +386,7 @@ class Viewer(db.Model):
         db.Model.put(self)
 
 class OrderingAlgorithmParams(db.Model):
-  name = db.StringProperty(default = 'default')
+  name = db.StringProperty(default = u'default')
   likes_factor = db.FloatProperty(default=500.0)
   clicks_factor = db.FloatProperty(default=100.0)
   closes_factor = db.FloatProperty(default = -20.0)
@@ -417,13 +417,13 @@ class OrderingAlgorithmParams(db.Model):
 
 class ActivityParams(db.Model):
   activity_load = db.IntegerProperty(default = 10000000) # number of interactions per time unit
-  name = db.StringProperty(default = 'default')
+  name = db.StringProperty(default = u'default')
   num_buckets = db.IntegerProperty(default = 1)
   total_updates_before_triggering = db.IntegerProperty(default=20)
   enabled = db.BooleanProperty(default = True)
   min_time_sec_between_jobs = db.IntegerProperty(default = 0)
   max_time_sec_before_triggering = db.IntegerProperty(default = 60)
-  index = 0 #used for templates
+  index = db.IntegerProperty() #used for templates
   
   def __str__(self):
     enabled = 'DISABLED'
@@ -556,9 +556,9 @@ def getOrderingAlgorithmParams(id):
 def getActivities(enabled):
   query = ''
   if enabled:
-    query = 'SELECT * FROM ActivityParams WHERE enabled = TRUE ORDER BY activity'
+    query = 'SELECT * FROM ActivityParams WHERE enabled=TRUE ORDER BY activity_load'
   else:
-    query = 'SELECT * FROM ActivityParams ORDER BY activity'
+    query = 'SELECT * FROM ActivityParams ORDER BY activity_load'
   
   activities = db.GqlQuery(query).fetch(100);
   if not len(activities):
