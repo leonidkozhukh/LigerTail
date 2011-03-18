@@ -1,0 +1,42 @@
+#ligertail_submission_lightbox {
+    width:991px;
+    float:left;
+    font-family:Tahoma, Geneva, sans-serif;
+    font-size:12px;
+    border:1px solid #ccc;
+
+}
+
+#ligertail_submission_lightbox_left_column {
+    float:left;
+    width:350px;
+    padding:10px;
+    border-right:1px solid #ccc;
+    line-height: 22px;
+    height: 266px;
+}
+
+#ligertail_submission_lightbox_right_column {
+    width:600px;
+    padding:10px;
+    float: left;
+}
+
+.ligertail_submission_lightbox_input_form {
+    border:1px solid #ccc;
+    width:300px;
+    margin-bottom: 5px;
+}
+
+#ligertail_submission_lightbox_button_pay, #ligertail_submission_lightbox_button_free{
+	padding-top: 5px;
+}
+
+#ligertail_submission_lightbox_button_pay {
+    float:right;
+    margin-right: 30px;
+}
+
+#ligertail_submission_lightbox .ligertail_widget_content {
+    display: block;
+}

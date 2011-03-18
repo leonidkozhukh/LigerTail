@@ -231,7 +231,20 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
 	jQuery.each(response.publisherSites, function(i, site){ 
 		var site_obj = jQuery.parseJSON(site); console.log(site_obj);
+<<<<<<< HEAD
 		var data = ApiHandler.parseStats_(site_obj);
+=======
+		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
+		for(var m = 0; m < 5; m++){ 
+				for(var n = 0; n < DurationInfo[m].length; n++){ 
+							data[m][0] += n + ';' + site_obj.timedStats[m][n][0] + '\n'; 
+							data[m][1] += n + ';' + site_obj.timedStats[m][n][1] + '\n'; 
+							data[m][2] += n + ';' + site_obj.timedStats[m][n][2] + '\n'; 
+							data[m][3] += n + ';' + site_obj.timedStats[m][n][4] + '\n'; 		
+				}
+		}
+		console.log(data);	
+>>>>>>> 7cb98610ce756e17226a8c07ea3613a8fa8dbe42
 		
 		jQuery("#graphs #site_metric").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #site_duration").val() + "</duration></y_left></values></settings>");
