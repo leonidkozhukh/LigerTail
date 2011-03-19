@@ -17,18 +17,23 @@ var initialized = false;
 $(document).ready(function(){
   init();
 });
- 
+
+
+function publisherUrl() {
+	return document.getElementById("publisherUrl").value;
+
+}
+
 function init() {
   var apiHandler = new BaseApiHandler();
   var domain = document.getElementById("domain").value;
   window.api = new LTApi();
   api.init(apiHandler, domain);
-  window.publisherUrl = document.getElementById("publisherUrl").value;
 }
 
 function submitItem() {
   var item = {};
-  item.publisherUrl = publisherUrl;
+  item.publisherUrl = publisherUrl();
   item.url = "www.blah.com";
   item.title = "HELLO & BYEBYE";
   item.description = "blahblah";
@@ -41,12 +46,12 @@ function onMySubmitted(o) {
 }
 
 function getOrderedItems() {
-    api.getOrderedItems(publisherUrl);     
+    api.getOrderedItems(publisherUrl());     
 }
 
 
 function getPaidItems() {
-    api.getPaidItems(publisherUrl);     
+    api.getPaidItems(publisherUrl());     
 }
 
 function getItemStats() {
@@ -56,15 +61,15 @@ function getItemStats() {
 
 function getSpotStats() {
 	var spot = document.getElementById("spot").value - 0;
-	api.getSpotStats(spot, publisherUrl);
+	api.getSpotStats(spot, publisherUrl());
 }
 
 function getPublisherSiteStats() {
-  api.getPublisherSiteStats(publisherUrl);
+  api.getPublisherSiteStats(publisherUrl());
 }
 
 function getFilter() {
-  api.getFilter(publisherUrl);
+  api.getFilter(publisherUrl());
 }
 
 function submitFilter() {
@@ -72,7 +77,7 @@ function submitFilter() {
   filter.durationId = Duration.ETERNITY;
   filter.popularity = 50;
   filter.recency = 50;
-  api.submitFilter(publisherUrl, filter);
+  api.submitFilter(publisherUrl(), filter);
 }
 
 function submitUserInteraction() {
@@ -84,7 +89,7 @@ function submitUserInteraction() {
   interactions.push({itemId:itemId, statType: StatType.CLOSES, spot:3 });
   interactions.push({itemId:itemId, statType: StatType.CLICKS, spot:4});
   interactions.push({itemId:itemId, statType: StatType.CLICKS, spot: 1});
-  api.submitUserInteraction(publisherUrl, interactions);
+  api.submitUserInteraction(publisherUrl(), interactions);
 }
 
 function updatePrice() {

@@ -186,21 +186,10 @@ ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
 
 	jQuery("#graphs h3").after('item: <select id="item_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="item_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');
-	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
 		console.log(item_obj);
-		
-		for(var m = 0; m < 5; m++){ 
-				for(var n = 0; n < DurationInfo[m].length; n++){ 
-							data[m][0] += n + ';' + item_obj.timedStats[m][n][0] + '\n'; 
-							data[m][1] += n + ';' + item_obj.timedStats[m][n][1] + '\n'; 
-							data[m][2] += n + ';' + item_obj.timedStats[m][n][2] + '\n'; 
-							data[m][3] += n + ';' + item_obj.timedStats[m][n][4] + '\n'; 		
-				}
-		}
-
-		console.log(data);
+		var data = ApiHandler.parseStats_(item_obj);
 		
 		jQuery("#graphs #item_metric").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #item_duration").val() + "</duration></y_left></values></settings>");
@@ -221,16 +210,7 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 	jQuery("#graphs h3").after('spot: <select id="spot_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="spot_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
 	jQuery.each(response.spots, function(i, spot){ 
 		var spot_obj = jQuery.parseJSON(spot);
-		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
-		for(var m = 0; m < 5; m++){ 
-				for(var n = 0; n < DurationInfo[m].length; n++){ 
-							data[m][0] += n + ';' + spot_obj.timedStats[m][n][0] + '\n'; 
-							data[m][1] += n + ';' + spot_obj.timedStats[m][n][1] + '\n'; 
-							data[m][2] += n + ';' + spot_obj.timedStats[m][n][2] + '\n'; 
-							data[m][3] += n + ';' + spot_obj.timedStats[m][n][4] + '\n'; 		
-				}
-		}
-		console.log(data);	
+		var data = ApiHandler.parseStats_(spot_obj);
 		
 		jQuery("#graphs #spot_metric").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #spot_duration").val() + "</duration></y_left></values></settings>");
@@ -246,10 +226,14 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 	});
 }
 
+
 ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
 	jQuery.each(response.publisherSites, function(i, site){ 
 		var site_obj = jQuery.parseJSON(site); console.log(site_obj);
+<<<<<<< HEAD
+		var data = ApiHandler.parseStats_(site_obj);
+=======
 		var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 		for(var m = 0; m < 5; m++){ 
 				for(var n = 0; n < DurationInfo[m].length; n++){ 
@@ -260,6 +244,7 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 				}
 		}
 		console.log(data);	
+>>>>>>> 7cb98610ce756e17226a8c07ea3613a8fa8dbe42
 		
 		jQuery("#graphs #site_metric").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #site_duration").val() + "</duration></y_left></values></settings>");
@@ -273,4 +258,19 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 			so.write("flashcontent");
 		});							
 	});
+}
+
+ApiHandler.parseStats_ = function(obj) {	
+	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
+	var idMap = [0,1,2,4];
+	for(var m = 0; m < 5; m++){ 
+			for(var n = 0; n < DurationInfo[m].length; n++){
+				o = obj.timedStats[m][n];
+				for (var i = 0; i < idMap.length; i++) {
+					data[m][i] += n + ';' + (o[idMap[n]] != null ? o[idMap[n]] : 0) + '\n'; 
+				}
+			}
+	}
+	console.log(data);	
+	return data;
 }

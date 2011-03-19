@@ -144,7 +144,7 @@ class StatContainer(db.Model):
     else:
       self.stats[statType] += 1
     self.timedStats.update(statType, creationTime)
-
+  
 
 class Item(StatContainer):
   creationTime = db.DateTimeProperty(auto_now_add=True)
@@ -237,12 +237,28 @@ class TimedStats(object):
     self.durations = self.create_()
     self.updateTime = None
 
+  def getCompressed(self):  
+    compressed = {}
+    for durationId in range(YEARLY.id, MINUTELY.id+1):
+      compressed[durationId] = self.getCompressedForDuration_(durationId)
+    return compressed
+    
+  def getCompressedForDuration_(self, durationId):
+    d = []
+    for delta in self.durations[durationId]:
+      a = {}
+      for st in range (StatType.BEGIN, StatType.END):
+        if delta[st] > 0:
+          a[st] = delta[st];
+      d.append(a)
+    return d 
+  
   def create_(self):
     durations = {}
     for durationId in range(YEARLY.id, MINUTELY.id+1):
       durations[durationId] = self.createStatArray_(DurationInfo[durationId].num_items)
     return durations
-  
+
   def createStatArray_(self, num_deltas):
     stats = []
     for _ in range(0, num_deltas):
@@ -288,7 +304,7 @@ class TimedStats(object):
     self.updateStats_(HOURLY, statType, prevHour)
     self.updateStats_(MINUTELY, statType, prevMinute)
     self.updateTime = updateTime
-    return self.durations
+    return self.getCompressed()
 
   def updateStats_(self, duration, statType, previousTimeBucket):  
     recordedStats = self.durations[duration.id]
