@@ -75,7 +75,7 @@ LTApi.prototype.submitUserInteraction= function(publisherUrl, interactions, call
 	var str;
 	var first = true;	
 	for (var i = 0; i < interactions.length; i++) {
-		assert(interactions[i].itemId > 0);
+		assert(Math.abs(interactions[i].itemId) > 0); //itemId < 0 when empty spots are viewed
 		assert(interactions[i].statType >= StatType.UNIQUES && interactions[i].statType <= StatType.CLOSES);
 		assert(interactions[i].spot > 0);
 		if (!first) {

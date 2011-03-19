@@ -15,6 +15,11 @@ indexes:
   - name: enabled
   - name: activity
 
+- kind: ActivityParams
+  properties:
+  - name: enabled
+  - name: activity_load
+
 - kind: Item
   properties:
   - name: publisherUrl

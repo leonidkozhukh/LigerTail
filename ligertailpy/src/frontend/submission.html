@@ -1,48 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<style type="text/css">
-#ligertail_submission_lightbox {
-    width:700px;
-    float:left;
-    font-family:Tahoma, Geneva, sans-serif;
-    font-size:12px;
-    border:1px solid #ccc;
-
-}
-
-#ligertail_submission_lightbox_left_column {
-    float:left;
-    width:350px;
-    padding:10px;
-    border-right:1px solid #ccc;
-}
-
-#ligertail_submission_lightbox_right_column {
-    width:305px;
-    padding:10px;
-    float: left;
-}
-
-.ligertail_submission_lightbox_input_form {
-    border:1px solid #ccc;
-    width:305px;
-    margin-bottom: 5px;
-}
-
-#ligertail_submission_lightbox_button_pay {
-    float:right;
-    margin-right: 30px;
-}
-
-#ligertail_submission_lightbox .ligertail_widget_content {
-    display: block;
-}
-</style>
-</head>
-
-<body>
-
 <div id="ligertail_submission_lightbox"> 
 
 <div id="ligertail_submission_lightbox_left_column">
@@ -66,7 +21,7 @@
     <th align="left" scope="row"><input type="text" id="ligertail_submission_lightbox_title" class="ligertail_submission_lightbox_input_form" /></th>
   </tr>
   <tr>
-    <th align="left" scope="row">&nbsp;</th>
+    <th align="left" scope="row">*</th>
     <th align="left" scope="row">Description</th>
   </tr>
   <tr>
@@ -74,7 +29,7 @@
     <th align="left" scope="row"><input type="text" id="ligertail_submission_lightbox_description" class="ligertail_submission_lightbox_input_form" /></th>
   </tr>
   <tr>
-    <th align="left" scope="row">&nbsp;</th>
+    <th align="left" scope="row">*</th>
     <th align="left" scope="row">Email</th>
   </tr>
   <tr>
@@ -83,19 +38,25 @@
   </tr>
   <tr>
     <th align="left" scope="row">&nbsp;</th>
-    <th align="left" scope="row"><input type="image" src="../frontend/images/button_free.png"  id="ligertail_submission_lightbox_button_free" value="Submit" />        
-    <input type="image" src="../frontend/images/button_pay.png" id="ligertail_submission_lightbox_button_pay" value="Submit" /></th>
+    <th align="left" scope="row"><input type="image" src="../frontend/images/button_free.png"  id="ligertail_submission_lightbox_button_free" alt="Submit" />        
+    <input type="image" src="../frontend/images/button_pay.png" id="ligertail_submission_lightbox_button_pay" alt="Submit" /></th>
   </tr>
 </table>
 </form>
 </div>
 
 <div id="ligertail_submission_lightbox_right_column">
-  <div class="ligertail_widget" id="ligertail_widget_small">
+  <div class="ligertail_widget_sub" id="ligertail_widget_small">
     <div id="ligertail_widget_header">
             <img src="../frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" />
             <input type="text" class="ligertail_widget_form" value="Submit Your Link Here" disabled="true" />
             <input type="image" src="../frontend/images/button_submit_2.png" value="Submit" align="left" disabled="true" />
+    </div>
+    <div class="ligertail_widget_content">
+        <div class="ligertail_widget_text">
+            <span class="ligertail_widget_source">LigerTail.com</span>
+            <span class="ligertail_widget_title">submit your link above!</span>
+        </div>
     </div>
     <div class="ligertail_widget_content">
         <div class="ligertail_widget_text">
@@ -146,5 +107,3 @@
 
 
 </div>
-</body>
-</html>
