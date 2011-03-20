@@ -40,6 +40,10 @@ class ResponseItem(ResponseStats):
         self.itemInfo = itemInfo
         self.price = item.price
         self.publisherUrl = item.publisherUrl
+        if hasattr(item, 'engagement'):
+          self.engagement = item.engagement
+        if hasattr(item, 'tier'):
+          self.tier = item.tier
         self.initStatsFrom(item)
         #email
         #sessionId
@@ -56,6 +60,10 @@ class ResponseItem(ResponseStats):
               }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
+              if hasattr(o, 'engagement'):
+                ret['engagement'] = o.engagement
+              if hasattr(o, 'tier'):
+                ret['tier'] = o.tier
           if o.itemInfo == ItemInfo.FULL:
               o.populateStats(ret)
           return ret

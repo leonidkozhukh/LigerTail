@@ -16,7 +16,7 @@ class AdminHandler(webapp.RequestHandler):
         if user:
             context = {'user' : user.nickname()}
             if url == 'algorithm.html':
-              context['alg'] =  model.getOrderingAlgorithmParams('default')
+              context['alg'] =  model.getOrderingAlgorithmParams()
             elif url == 'background.html':
               activities = model.getActivities(False)
               i = 0
@@ -51,20 +51,18 @@ class AdminHandler(webapp.RequestHandler):
         self.updateActivities()
 
     def updateAlg(self):
-      params = model.getOrderingAlgorithmParams('default')
-      params.update(self.request.get('likes_factor'),
-                            self.request.get('clicks_factor'),
-                            self.request.get('closes_factor'),
-                            self.request.get('total_likes_factor'),
-                            self.request.get('total_clicks_factor'),
-                            self.request.get('total_closes_factor'),
-                            self.request.get('total_views_factor'),
-                            self.request.get('recency_factor'),
-                            self.request.get('price_factor'))
-                            
-      filterStrategy.refreshParams()
-      self.redirect('algorithm.html?status=updated')
-      
+      params = model.getOrderingAlgorithmParams()
+      err = params.update(float(self.request.get('t1_eng')),
+                          float(self.request.get('t2_eng')),
+                          int(self.request.get('num_views')),
+                          float(self.request.get('ctr_factor')),
+                          float(self.request.get('t2_t3_ratio')))
+      if (err == ''):                      
+        filterStrategy.refreshParams()
+        self.redirect('algorithm.html?status=updated')
+      else:
+        self.response.out.write(err)
+        
       
     def updateActivities(self):
       errors = []

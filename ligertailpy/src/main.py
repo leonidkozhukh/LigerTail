@@ -62,7 +62,7 @@ class UpdatePriceHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
-
+        
         if item and self._verifyTransaction(item):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))                                  
           item.put()
@@ -106,7 +106,7 @@ class GetOrderedItemsHandler(BaseHandler):
                                                    self.viewer.filter)
         if self.client.numViewableItems * 2 < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numViewableItems * 2]
-        self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
+        self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
         numViewed = 0
         spot = 1
         for item in orderedItems:
