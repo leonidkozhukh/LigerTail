@@ -215,7 +215,8 @@ class Spot(StatContainer):
 class PublisherSite(StatContainer):
   creationTime = db.DateTimeProperty(auto_now_add=True)
   publisherUrl = db.StringProperty()
-  views = db.IntegerProperty()
+  views = db.IntegerProperty(default = 0)
+  amount = db.IntegerProperty(default = 0)
   
   def __init__(self, *args, **kwargs):
     super(PublisherSite, self).__init__(*args, **kwargs)
