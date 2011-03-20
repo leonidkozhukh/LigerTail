@@ -26,7 +26,6 @@ HOUR = MIN * 60
 DAY = HOUR * 24
 
   
-NUM_DELTAS = 20
 
 
 class Duration:
@@ -401,35 +400,75 @@ class Viewer(db.Model):
         self.pickled_filter = pickle.dumps((self.filter), 2)
         db.Model.put(self)
 
+# The ordering algorithm is calculated the following way:
+# Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
+# This gives top priority to the items that are paid for, to acquire necessary stats
+#
+# Tier 1 - quality content. These are items whose stats are known (views > num_views_threshold)
+# and whose engagement is high (clicks + closes)/views.
+# The engagement is a value 0..1 (1 being the highest, when every view results in
+# a user action)
+# The engagement rate is calculated (ctr - click through rate, clr - close rate):
+# ctr * ctr_factor + clr * (1 - ctr_factor)
+# 
+# Tier 2 - better than ads. Disregarding the number of views, just high enough engagement
+# factor. (tier2_engagement_threshold < item engagement < tier1_engagement_threshold)
+#
+# Tier 3 - questionable pool. All other items who don't have enough stats, with the 
+# priority given to fewer views. This gives a chance to all items to be shown.
+# 
+# Tier 2 and Tier 3 are interleaved with the ratio tier2_tier3_ratio
+
 class OrderingAlgorithmParams(db.Model):
-  name = db.StringProperty(default = u'default')
-  likes_factor = db.FloatProperty(default=500.0)
-  clicks_factor = db.FloatProperty(default=100.0)
-  closes_factor = db.FloatProperty(default = -20.0)
-  total_likes_factor = db.FloatProperty(default = 1.0)
-  total_clicks_factor = db.FloatProperty(default = 1.0)
-  total_closes_factor = db.FloatProperty(default = -1.0)
-  total_views_factor = db.FloatProperty(default = -0.2)
-  recency_factor = db.FloatProperty(default = 1000.0)
-  price_factor = db.FloatProperty(default = 1000.0)
+  # 0 .. 1.0
+  # The absolute engagement (1.0) is when on every view an item is interacted with
+  # (either clicked or closed to see the other items)
+  tier1_engagement_threshold = db.FloatProperty(default=0.3)
+  
+  # 0 .. tier1_engagement_threshold
+  tier2_engagement_threshold = db.FloatProperty(default=0.1)
+  
+  # Number of views that is enough to make a reasonable estimate about
+  # how well the item is doing
+  num_views_threshold = db.IntegerProperty(default=50)
+  
+  # 0..1. The higher ctr_factor, the less important closes rate (clr) is
+  # since clr is multiplied by (1-ctr_factor)
+  ctr_factor = db.FloatProperty(default = 0.7)
+
+  # Defines a proportion of tier2 over tier3
+  # eg, 0.7 - 70% is for tier2, 30% for tier3
+  tier2_tier3_ratio = db.FloatProperty(default=0.51)
 
   #TODO: add more details once alg params are flashed out
   def __str__(self):
-    return '%s' % self.name
+    return 'tier1: %f, tier2: %f, num_views: %d, ctr_f: %f, tier2/tier3: %f' % (
+       self.tier1_engagement_threshold, self.tier2_engagement_threshold,
+       self.num_views_threshold, self.ctr_factor, self.tier2_tier3_ratio)
 
-  def update(self, likes, clicks, closes,
-             total_likes, total_clicks, total_closes, total_views,
-             recency, price):
-    self.likes_factor = float(likes)
-    self.clicks_factor = float(clicks)
-    self.closes_factor = float(closes)
-    self.total_likes_factor = float(total_likes)
-    self.total_clicks_factor = float(total_clicks)
-    self.total_closes_factor = float(total_closes)
-    self.total_views_factor = float(total_views)
-    self.recency_factor = float(recency)
-    self.price_factor = float(price)
+  def update(self, t1_eng, t2_eng, num_views, ctr_f, t2_t3_ratio):
+    er = ''
+    if t1_eng <= 0 or t1_eng >=1:
+      er += 'tier1_eng_threshold = (0..1), but was %f |' % t1_eng
+    if t2_eng >= t1_eng:
+      er += 'tier2_eng_threshold should be smaller than tier1_eng_threshold |'
+    if t2_eng <= 0:
+      er += 'tier2_eng_threshold must be > 0 |'
+    if num_views < 1:
+      er += 'num_views_threshold >= 1 |'
+    if ctr_f <= 0 or ctr_f > 1:
+      er += 'ctr_factor = (0..1] |'
+    if t2_t3_ratio <= 0 or t2_t3_ratio >= 1:
+      er += 'tier2: tier3 ratio should be (0..1) |'
+    if er != '':
+      return er
+    self.tier1_engagement_threshold = t1_eng
+    self.tier2_engagement_threshold = t2_eng
+    self.num_views_threshold = num_views
+    self.ctr_factor = ctr_f
+    self.tier2_tier3_ratio = t2_t3_ratio
     self.put()
+    return ''
 
 class ActivityParams(db.Model):
   activity_load = db.IntegerProperty(default = 10000000) # number of interactions per time unit
@@ -557,14 +596,10 @@ def getDefaultFilter():
     return DEFAULT_FILTER_
 
 
-def getOrderingAlgorithmParams(id):
-    params = db.GqlQuery('SELECT * FROM OrderingAlgorithmParams WHERE name=:1', id).get()
-    if (params):
-      logging.info('Found ordering algorithm params for id %s' % id)
-    else:
-      logging.info('Did not find ordering alg params for id %s. Creating' % id)
+def getOrderingAlgorithmParams():
+    params = db.GqlQuery('SELECT * FROM OrderingAlgorithmParams').get()
+    if not params:
       params = OrderingAlgorithmParams()
-      params.name = id
       params.put()
     return params
 
