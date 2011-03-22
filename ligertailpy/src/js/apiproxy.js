@@ -82,6 +82,7 @@ LTApi.prototype.submitUserInteraction= function(publisherUrl, interactions, call
 			str += ",";
 		} else {
 			str = "";
+			first = false;
 		}
 		str += interactions[i].itemId + ":" + interactions[i].statType + ":" + interactions[i].spot;		
 	}

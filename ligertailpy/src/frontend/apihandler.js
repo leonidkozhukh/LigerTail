@@ -231,8 +231,7 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
 	jQuery.each(response.publisherSites, function(i, site){ 
 		var site_obj = jQuery.parseJSON(site); console.log(site_obj);
-		var data = ApiHandler.parseStats_(site_obj);
-		
+		var data = ApiHandler.parseStats_(site_obj);		
 		jQuery("#graphs #site_metric").change(function(){
 			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #site_duration").val() + "</duration></y_left></values></settings>");
 			so.addVariable("chart_data", data[dur[jQuery("#graphs #site_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
