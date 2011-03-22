@@ -107,10 +107,29 @@ window.open("http://ligertail.com");
 </script>
 		</head>
 	<body>
-			
+
 			<script type="text/javascript" src="ligertail.js?width=600"></script>
+<script type="text/javascript" src="../web/amline/swfobject.js"></script>
+<div id="flashcontent">
+      <strong>You need to upgrade your Flash Player</strong>
+   </div>
 
-
+ <script type="text/javascript">
+// <![CDATA[        
+   var so = new SWFObject("../web/amline/amline.swf", "amline", "800", "400", "8", "#FFFFFF");
+   so.addVariable("path", "../web/amline/");
+   so.addVariable("settings_file", escape("../web/amline/chart_with_scroller.xml"));  // you can set two or more different settings files here (separated by commas)
+   so.addVariable("data_file", escape("../web/amline/amline_data.xml"));
+// so.addVariable("chart_data", "");                                       // you can pass chart data as a string directly from this file
+// so.addVariable("chart_settings", "");                                   // you can pass chart settings as a string directly from this file
+// so.addVariable("additional_chart_settings", "");                        // you can append some chart settings to the loaded ones
+// so.addVariable("loading_settings", "LOADING SETTINGS");                 // you can set custom "loading settings" text here
+// so.addVariable("loading_data", "LOADING DATA");                         // you can set custom "loading data" text here
+   so.addVariable("preloader_color", "#999999");
+   so.write("flashcontent");
+// ]]>
+   </script>
+<!-- end of amline script -->
 
 	</body>
 </html>
