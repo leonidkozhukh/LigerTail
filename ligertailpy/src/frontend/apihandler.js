@@ -111,7 +111,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		//update db for click
 		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 				//this is a click
-				interactions[0] = {itemId: jQuery(this).parent().parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().parent().find(".ligertail_widget_close").attr('id')}; 
+				interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
 				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		});
 	
