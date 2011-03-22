@@ -13,6 +13,7 @@ import response
 import payment
 import os
 import cgi
+import urllib
 import wsgiref.handlers
 import sys
 #import google.appengine.webapp.template
@@ -43,8 +44,8 @@ class SubmitItemHandler(BaseHandler):
           item.publisherUrl = self.getParam('publisherUrl')
           item.url = self.getParam('url')
           item.thumbnailUrl = self.getParam('thumbnailUrl')
-          item.title = self.getParam('title')
-          item.description = self.getParam('description')
+          item.title = self.getParam('title').replace('%u', '\\u').decode('unicode-escape')
+          item.description = self.getParam('description').replace('%u', '\\u').decode('unicode-escape')
           item.price = 0
           item.email = self.getParam('email')
           item.sessionId = self.viewer.sessionId
