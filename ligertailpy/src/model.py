@@ -215,6 +215,8 @@ class Spot(StatContainer):
 class PublisherSite(StatContainer):
   creationTime = db.DateTimeProperty(auto_now_add=True)
   publisherUrl = db.StringProperty()
+  views = db.IntegerProperty(default = 0)
+  amount = db.IntegerProperty(default = 0)
   
   def __init__(self, *args, **kwargs):
     super(PublisherSite, self).__init__(*args, **kwargs)
@@ -222,6 +224,11 @@ class PublisherSite(StatContainer):
   
   def __str__(self):
     return 'publisherUrl %s, stats %s' %(self.publisherUrl, self.stats)
+
+  def updateStats(self, statType, creationTime):
+    StatContainer.updateStats(self, statType, creationTime)
+    self.views = self.stats[StatType.VIEWS]
+  
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -580,6 +587,10 @@ def getPublisherSite(publisherUrl):
       publisher.publisherUrl = publisherUrl
       publisher.put()
     return publisher
+
+def getPublisherSites():
+    publishers = db.GqlQuery('SELECT * FROM PublisherSite ORDER BY views DESC').fetch(100)
+    return publishers
 
 def getBucket(bucketId):
   bucket = db.GqlQuery('SELECT * FROM Bucket WHERE bucketId=:1', bucketId).get()

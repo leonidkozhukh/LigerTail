@@ -66,6 +66,9 @@ class UpdatePriceHandler(BaseHandler):
         if item and self._verifyTransaction(item):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))                                  
           item.put()
+          publisherSite = model.getPublisherSite(item.publisherUrl)
+          publisherSite.amount += int(self.getParam('price'))
+          publisherSite.put()
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
           BaseHandler.sendConfirmationEmail(self, item)

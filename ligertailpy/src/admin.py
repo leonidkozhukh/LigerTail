@@ -34,6 +34,10 @@ class AdminHandler(webapp.RequestHandler):
               newActivity.max_time_sec_before_triggering = 0
               activities.append(newActivity)
               context['activities'] = activities
+            elif url =='publishers.html':
+              publishers = model.getPublisherSites()
+              context['publishers'] = publishers
+      
             path = ''
             if len(url) > 0:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', url)

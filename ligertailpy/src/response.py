@@ -86,11 +86,13 @@ class ResponseSpot(ResponseStats):
 class ResponsePublisherSite(ResponseStats):
     def initFrom(self, publisher):
         self.publisherUrl = publisher.publisherUrl
+        self.amount = publisher.amount
         self.initStatsFrom(publisher)
         
     def default(self, o):
       if isinstance(o, ResponsePublisherSite):
-          ret = {'publisherUrl' : o.publisherUrl}
+          ret = {'publisherUrl' : o.publisherUrl,
+                 'amount': o.amount}
           o.populateStats(ret)
           return ret
       return json.JSONEncoder.default(self, o)

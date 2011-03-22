@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		</head>
+	<body>
+  Logged in: {{ user }}
+<h1>Publisher stats</h1>
+  <table>
+    <tr>
+      <td>url</td>
+      <td>$</td>
+      <td>views</td>
+      <td>uniques</td>
+      <td>clicks</td>
+      <td>likes</td>
+      <td>closes</td>
+      <td>more</td>
+    </tr>
+  {% for publisher in publishers %}
+    <tr>
+      <td>
+        <b>{{publisher.publisherUrl}}</b>
+      </td>
+      <td> ${{ publisher.amount }}</td>
+      <td> {{ publisher.stats.0 }}</td>
+      <td> {{ publisher.stats.1 }}</td>
+      <td> {{ publisher.stats.2 }}</td>
+      <td> {{ publisher.stats.3 }}</td>
+      <td> {{ publisher.stats.4 }}</td>
+      <td><a href="publisher.html?publisherUrl={{publisher.publisherUrl}}">See details</a></td>
+    </tr>
+    <br/>
+{% endfor %}
+   </table>
+  </body>
+</html>
