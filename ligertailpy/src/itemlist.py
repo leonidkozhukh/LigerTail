@@ -129,7 +129,7 @@ class ItemList(Singleton):
         # It is safe at this point because item updates go into the smaller buckets.
         leftoverBuckets = range(newNumBuckets, numBuckets)
         for i in leftoverBuckets:
-          bucketId = self.getBucketId_(publisherUrl, i)
+          bucketId = self.getBucketId_(i, publisherUrl)
           bucket = model.getBucket(bucketId)
           entities = db.run_in_transaction(emptyBucket_, bucket.key())
           for entity in entities:
