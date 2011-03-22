@@ -148,6 +148,7 @@ function OpenLightboxSubmission(url){
             
             //form validation
             jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").blur(function(){ 
+                jQuery(this).val(jQuery.trim(jQuery(this).val()));                                                                                           
                 if(!ValidateURL(jQuery(this).val()))
                     jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "red");
                 else{
@@ -249,6 +250,9 @@ function OpenLightboxSubmission(url){
                 jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
                 jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', '../frontend/images/default.png');
             }
+            
+            jQuery("#ligertail_widget_header input").val("Submit Your Link Here");
+            
             jQuery(document).unbind('reveal.facebox');     
         });      
     });
