@@ -405,7 +405,7 @@ class Viewer(db.Model):
         '''Stores the object, making the derived fields consistent.'''
         # Pickle data
         self.pickled_filter = pickle.dumps((self.filter), 2)
-        db.Model.put(self)
+      db.Model.put(self)
 
 # The ordering algorithm is calculated the following way:
 # Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
@@ -577,7 +577,6 @@ def getViewer(sessionId):
         viewer.sessionId = sessionId
         viewer.isNew = True
         viewer.put()
-        viewer.filter = getDefaultFilter()
     return viewer
 
 def getPublisherSite(publisherUrl):
