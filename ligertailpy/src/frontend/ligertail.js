@@ -115,6 +115,7 @@ function OpenLightboxSubmission(url){
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){ 
+            url = jQuery.trim(url);
             if(ValidateURL(url)){
                 // disable form & call embedly
                // jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "true");
