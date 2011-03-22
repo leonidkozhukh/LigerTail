@@ -246,14 +246,14 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	});
 }
 
-ApiHandler.parseStats_ = function(obj) {	
+ApiHandler.parseStats_ = function(obj) {
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	var idMap = [0,1,2,4];
-	for(var m = 0; m < 5; m++){ 
-			for(var n = 1; n <= DurationInfo[m].length; n++){
+	for(var m = 0; m < 5; m++){
+			for(var n = 0; n < DurationInfo[m].length; n++){
 				o = obj.timedStats[m][n];
 				for (var i = 0; i < idMap.length; i++) {
-					data[m][i] += n + ';' + (o[idMap[n]] != null ? o[idMap[n]] : 0) + '\n'; 
+					data[m][i] += (n + 1) + ';' + (o[idMap[i]] != null ? o[idMap[i]] : 0) + '\n'; 
 				}
 			}
 	}
