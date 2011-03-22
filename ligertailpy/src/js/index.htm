@@ -80,9 +80,8 @@ function submitFilter() {
   api.submitFilter(publisherUrl(), filter);
 }
 
-function submitUserInteraction() {
+function submitUserInteraction(itemId) {
   interactions = [];
-  var itemId = document.getElementById("itemid").value - 0;
   interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
   interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
   interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
@@ -92,9 +91,7 @@ function submitUserInteraction() {
   api.submitUserInteraction(publisherUrl(), interactions);
 }
 
-function updatePrice() {
-    var itemId = document.getElementById("itemid").value - 0;
-    var price = document.getElementById("price").value - 0;
+function updatePrice(itemId, price) {
     ccinfo = {};
     ccinfo.itemId = itemId;
     ccinfo.price = price;
@@ -111,6 +108,52 @@ function updatePrice() {
     
     api.updatePrice(ccinfo);
 }
+
+function createItems() {
+	var item = {};
+	var num = jQuery("#submit_num").val();
+	for(var i=0; i < num; i++){
+  		item.publisherUrl = publisherUrl();
+  		item.url = "www.blah" + i + ".com";
+  		item.title += "Hi!";
+  		item.description = "blahblah" + i;
+  		item.email = "email@emal.com";
+  		api.submitItem(item); 
+ 	}
+}
+
+function createPaidItems() {
+    api.getOrderedItems(publisherUrl(), submitPayment);
+}
+
+function createInteractions() {
+  	api.getOrderedItems(publisherUrl(), submitInteractions);
+}
+
+submitPayment = function(response) {
+	var num = jQuery("#paid_num").val();
+	jQuery.each(response.items, function(i, item){
+		var item_obj = jQuery.parseJSON(item);
+		updatePrice(item_obj.itemId, num--);
+		
+		if(num <= 0)
+			return;
+	});
+
+}
+
+submitInteractions = function(response) { 
+	var num = jQuery("#interaction_num").val(); console.log(num);
+	jQuery.each(response.items, function(i, item){
+		var item_obj = jQuery.parseJSON(item);
+		submitUserInteraction(item_obj.itemId); console.log(item_obj.itemId);
+		n--;
+		if(num <= 0)
+			return;
+	});
+
+}
+
 
 
 </script>
@@ -129,12 +172,16 @@ function updatePrice() {
 <A href="#" onMouseDown="submitFilter()" ><div> submit filter</div></A>
 <div>Item id: </div><INPUT TYPE="text"  ID="itemid" VALUE=""><P>
 
-<A href="#" onMouseDown="submitUserInteraction()" ><div> submit user interaction</div></A>
+<A href="#" onMouseDown="submitUserInteraction(jQuery('#itemid').val())" ><div> submit user interaction</div></A>
 <A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
 <div>Price $</div><INPUT TYPE="text" ID="price" VALUE="1"><P>
-<A href="#" onMouseDown="updatePrice()" ><div> update price</div></A>
+<A href="#" onMouseDown="updatePrice(jQuery('#itemid').val(), jQuery('#price').val())" ><div> update price</div></A>
 
 <div>Spot: </div><INPUT TYPE="text"  ID="spot" VALUE="1"><P>
 <A href="#" onMouseDown="getSpotStats()" ><div> get spot stats</div></A>
+
+<div><a href="#" onMouseDown="createItems()">create </a><input type="text" id="submit_num" value="8" size="2" /> items</div>
+<div><a href="#" onMouseDown="createInteractions()">create </a><input type="text" id="interaction_num" value="8" size="2" /> interactions</div>
+<div><a href="#" onMouseDown="createPaidItems()">create </a><input type="text" id="paid_num" value="8" size="2" /> paid items</div>
 
 </BODY>

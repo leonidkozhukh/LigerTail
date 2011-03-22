@@ -111,7 +111,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		//update db for click
 		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 				//this is a click
-				interactions[0] = {itemId: jQuery(this).parent().parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().parent().find(".ligertail_widget_close").attr('id')}; 
+				interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
 				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		});
 	
@@ -250,7 +250,7 @@ ApiHandler.parseStats_ = function(obj) {
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	var idMap = [0,1,2,4];
 	for(var m = 0; m < 5; m++){ 
-			for(var n = 0; n < DurationInfo[m].length; n++){
+			for(var n = 1; n <= DurationInfo[m].length; n++){
 				o = obj.timedStats[m][n];
 				for (var i = 0; i < idMap.length; i++) {
 					data[m][i] += n + ';' + (o[idMap[n]] != null ? o[idMap[n]] : 0) + '\n'; 
