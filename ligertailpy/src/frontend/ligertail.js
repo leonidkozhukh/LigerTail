@@ -150,39 +150,39 @@ function OpenLightboxSubmission(url){
             jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").blur(function(){ 
                 jQuery(this).val(jQuery.trim(jQuery(this).val()));                                                                                           
                 if(!ValidateURL(jQuery(this).val()))
-                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "red");
+                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "red").find("th:last").html("URL invalid.");
                 else{
                     jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(jQuery(this).val()));
                     if(jQuery("#ligertail_submission_lightbox_form tr:first").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "black").find("th:last").html("URL");
                 }
             });
             
             jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").blur(function(){ 
-                if(jQuery(this).val().length < 3 || jQuery(this).val().length > 100)
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "red");
+                if(jQuery(this).val().length < 3 || jQuery(this).val().length > 128)
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "red").find("th:last").html("Title needs to be btwn 3 & 128 chars.");
                 else{
                     jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html(jQuery(this).val());
                     if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
-                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "black");
+                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "black").find("th:last").html("Title");
                 }
             });
 
             jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").blur(function(){
-                if(jQuery(this).val().length > 512 || jQuery(this).val().length == 0)
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "red");
+                if(jQuery(this).val().length > 512 || jQuery(this).val().length < 3)
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "red").find("th:last").html("Description needs to be btwn 3 & 512 chars.");
                 else{
                     jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html(jQuery(this).val()); 
                     if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
-                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "black");
+                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "black").find("th:last").html("Description");
                 }
             });
             
             jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").blur(function(){
                 if(!ValidateEmail(jQuery(this).val()))
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "red");
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "red").find("th:last").html("Email invalid.");
                 else if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "black");
+                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "black").find("th:last").html("Email");
             });
             
             
