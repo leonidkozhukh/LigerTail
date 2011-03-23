@@ -89,21 +89,23 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		// add events to content
 		jQuery(".ligertail_widget .ligertail_widget_content").bind("show", function(){
 				jQuery(this).show("fast");
+				var interaction = [];
 				//this is a view
 				if(jQuery(this).attr('id') < 0){
-					interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).index()};
+					interaction[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).index()};
 				}
 				else{
-					interactions[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).find(".ligertail_widget_close").attr('id')};
+					interaction[0] = {itemId: jQuery(this).attr('id'), statType: StatType.VIEWS, spot: jQuery(this).find(".ligertail_widget_close").attr('id')};
 				}
-				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
 		});
 
 		//update db, remove the current content, move stack up, & show more content
 		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
 				//this is a close
-				interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES, spot: jQuery(this).attr('id')};
-				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+				var interaction = [];
+				interaction[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.CLOSES, spot: jQuery(this).attr('id')};
+				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
 				jQuery(this).parent().remove();
 				jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});
@@ -111,15 +113,17 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		//update db for click
 		jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_title").click(function(){ 
 				//this is a click
-				interactions[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
-				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+				var interaction = [];
+				interaction[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
+				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
 		});
 	
 		//update db for like
 		/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
 				//this is a like
-				interactions[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id').find(".ligertail_widget_close").attr('id')};
-				api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+				var interaction = [];
+				interaction[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id').find(".ligertail_widget_close").attr('id')};
+				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
 		
 				alert("need to put in fb functionality");
 		});*/
