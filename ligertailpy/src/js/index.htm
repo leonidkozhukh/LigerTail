@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
   <head>
 <script src = "../js/postrequest.js">
@@ -104,7 +104,7 @@ function updatePrice(itemId, price) {
     ccinfo.cc = "4111111111111111";
     ccinfo.expiration = "1/1/15";
     ccinfo.cvs = "123";
-    
+    ccinfo.email = 'email@email.com';
     
     api.updatePrice(ccinfo);
 }
@@ -146,7 +146,7 @@ submitInteractions = function(response) {
 	var num = jQuery("#interaction_num").val(); console.log(num);
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		submitUserInteraction(item_obj.itemId);
+		submitUserInteraction(item_obj.itemId); console.log(item_obj.itemId);
 		n--;
 		if(num <= 0)
 			return;
