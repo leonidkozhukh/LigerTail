@@ -1,6 +1,7 @@
 from appengine_utilities.sessions import Session
 from django.utils import simplejson as json
 from google.appengine.api import users
+from google.appengine.api import mail
 from google.appengine.ext import webapp
 from itemlist import itemList
 from filterstrategy import filterStrategy
@@ -84,10 +85,21 @@ class BaseHandler(webapp.RequestHandler):
       if not self.viewer.filter.default:
         self.viewer.put()          
       
-  def sendConfirmationEmail(self, item):
-      logging.info('sendConfirmationEmail %s', item.email)
-      #TODO: add email
-      
+  def sendConfirmationEmail(self, email, price, item):
+      logging.info('sendConfirmationEmail %s', email)
+      if not mail.is_email_valid(email):
+        logging.error('email %s is not valid for item %s' % (email, item.key().id()))
+      else:
+        sender_address = "Ligertail.com Support <support@ligertail.com>"
+        subject = "Confirm your payment of $%s.00 dollars" % price
+        body = """
+Hello,
+This is a confirmation that we have received your payment of $%s.00 dollars
+for %s published on %s.
+""" % (price, item.title, item.publisherUrl)
+
+        mail.send_mail(sender_address, email, subject, body)    
+
   def generate(self, template_name, template_values={}):
     """Generate takes renders and HTML template along with values
        passed to that template

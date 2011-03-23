@@ -37,7 +37,7 @@ function submitItem() {
   item.url = "www.blah.com";
   item.title = "HELLO & BYEBYE";
   item.description = "blahblah";
-  item.email = "email@emal.com";
+  item.email = "misha.leder@gmail.com";
   api.submitItem(item, 'onMySubmitted');   
 }
 
@@ -95,15 +95,16 @@ function updatePrice(itemId, price) {
     ccinfo = {};
     ccinfo.itemId = itemId;
     ccinfo.price = price;
-    ccinfo.first_name = "John";
-    ccinfo.last_name = "Smith";
+    ccinfo.first_name = "Misha";
+    ccinfo.last_name = "Leder";
     ccinfo.address = "23 main street";
     ccinfo.city = "Nyork";
     ccinfo.state = "NY";
-    ccinfo.zip = "10000";
+    ccinfo.zip = "10001";
     ccinfo.cc = "4111111111111111";
     ccinfo.expiration = "1/1/15";
     ccinfo.cvs = "123";
+    ccinfo.email = 'misha.leder@gmail.com';
     
     
     api.updatePrice(ccinfo);
@@ -117,7 +118,7 @@ function createItems() {
   		item.url = "www.blah" + i + ".com";
   		item.title += "Hi!";
   		item.description = "blahblah" + i;
-  		item.email = "email@emal.com";
+  		item.email = "misha.leder@gmail.com";
   		api.submitItem(item); 
  	}
 }

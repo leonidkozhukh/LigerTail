@@ -51,10 +51,10 @@ class SubmitItemHandler(BaseHandler):
           item.sessionId = self.viewer.sessionId
           item.put()
           BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
-          BaseHandler.sendConfirmationEmail(self, item)
+          #BaseHandler.sendConfirmationEmail(self, item)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
-          self.logException()
+          self.logException(self)
         BaseHandler.writeResponse(self)
         
 class UpdatePriceHandler(BaseHandler):
@@ -65,18 +65,18 @@ class UpdatePriceHandler(BaseHandler):
         item = BaseHandler.getItem(self, self.getParam('itemId'))
         
         if item and self._verifyTransaction(item):  
-          item.updatePrice(int(self.getParam('price')), self.getParam('email'))                                  
+          item.updatePrice(int(self.getParam('price')), self.getParam('email'))
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
           publisherSite.amount += int(self.getParam('price'))
           publisherSite.put()
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
-          BaseHandler.sendConfirmationEmail(self, item)
+          BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                  
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
          
     def _verifyTransaction(self, item):
@@ -121,7 +121,7 @@ class GetOrderedItemsHandler(BaseHandler):
             #if self.viewer.isNew:
             #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
   
 
@@ -132,7 +132,7 @@ class GetPaidItemsHandler(BaseHandler):
         paidItems = BaseHandler.getPaidItems(self, self.getParam('publisherUrl'))                                            
         self.common_response.setItems(paidItems, response.ItemInfo.WITH_PRICE)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class SubmitUserInteractionHandler(BaseHandler):
@@ -164,7 +164,7 @@ class SubmitUserInteractionHandler(BaseHandler):
 
         #TODO: it's up to the client to update the ordered items
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class GetFilterHandler(BaseHandler):
@@ -173,7 +173,7 @@ class GetFilterHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         self.common_response.setFilter(self.viewer.filter)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class SubmitFilterHandler(BaseHandler):
@@ -190,7 +190,7 @@ class SubmitFilterHandler(BaseHandler):
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
         self.common_response.setFilter(self.viewer.filter)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class GetItemStatsHandler(BaseHandler):
@@ -204,7 +204,7 @@ class GetItemStatsHandler(BaseHandler):
           itemInfoType = int(s)
         self.common_response.setItems([itemWithStats], itemInfoType)
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class GetSpotStatsHandler(BaseHandler):
@@ -214,7 +214,7 @@ class GetSpotStatsHandler(BaseHandler):
         spot = model.getSpot(self.getParam('publisherUrl'), int(self.getParam('spot')))
         self.common_response.setSpots([spot])
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 class GetPublisherSiteStatsHandler(BaseHandler):
@@ -224,7 +224,7 @@ class GetPublisherSiteStatsHandler(BaseHandler):
         publisher = model.getPublisherSite(self.getParam('publisherUrl'))
         self.common_response.setPublisherSites([publisher])
       except Exception:
-        BaseHandler.logException()
+        BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
 
