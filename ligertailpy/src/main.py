@@ -63,8 +63,8 @@ class UpdatePriceHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
-        
-        if item and self._verifyTransaction(item):  
+        paymentConfig = model.getPaymentConfig()
+        if item and self._verifyTransaction(item, paymentConfig.test_mode):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
@@ -72,14 +72,15 @@ class UpdatePriceHandler(BaseHandler):
           publisherSite.put()
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
-          BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                  
+          if paymentConfig.send_email:
+            BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                  
           # TODO: initiate order recalculation since the price changed
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
          
-    def _verifyTransaction(self, item):
+    def _verifyTransaction(self, item, testmode):
         paymentInfo = {'price': self.getParam('price'),
                        'first_name': self.getParam('first_name'),
                        'last_name': self.getParam('last_name'),
@@ -93,7 +94,7 @@ class UpdatePriceHandler(BaseHandler):
                        'expiration': self.getParam('expiration'),
                        'cvs': self.getParam('cvs') };
                        
-        result = payment.verify(paymentInfo) # False for real!, False)
+        result = payment.verify(paymentInfo, testmode)
         logging.info('verifyTransaction %s', str(result))
         if result.code != u'1':
           self.common_response.set_error(result.reason_text)

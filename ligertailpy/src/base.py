@@ -95,8 +95,8 @@ class BaseHandler(webapp.RequestHandler):
         body = """
 Hello,
 This is a confirmation that we have received your payment of $%s.00 dollars
-for %s published on %s.
-""" % (price, item.title, item.publisherUrl)
+for '%s' <%s> published on %s.
+""" % (price, item.title, item.url, item.publisherUrl)
 
         mail.send_mail(sender_address, email, subject, body)    
 

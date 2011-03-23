@@ -407,6 +407,11 @@ class Viewer(db.Model):
         self.pickled_filter = pickle.dumps((self.filter), 2)
       db.Model.put(self)
 
+class PaymentConfig(db.Model):
+  send_email = db.BooleanProperty(default=False)
+  test_mode = db.BooleanProperty(default=True)
+
+
 # The ordering algorithm is calculated the following way:
 # Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
 # This gives top priority to the items that are paid for, to acquire necessary stats
@@ -610,6 +615,15 @@ def getOrderingAlgorithmParams():
     params = db.GqlQuery('SELECT * FROM OrderingAlgorithmParams').get()
     if not params:
       params = OrderingAlgorithmParams()
+      params.put()
+    return params
+
+
+
+def getPaymentConfig():
+    params = db.GqlQuery('SELECT * FROM PaymentConfig').get()
+    if not params:
+      params = PaymentConfig()
       params.put()
     return params
 

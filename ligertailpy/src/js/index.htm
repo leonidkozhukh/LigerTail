@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
   <head>
 <script src = "../js/postrequest.js">
@@ -37,7 +37,7 @@ function submitItem() {
   item.url = "www.blah.com";
   item.title = "HELLO & BYEBYE";
   item.description = "blahblah";
-  item.email = "misha.leder@gmail.com";
+  item.email = "email@emal.com";
   api.submitItem(item, 'onMySubmitted');   
 }
 
@@ -95,17 +95,16 @@ function updatePrice(itemId, price) {
     ccinfo = {};
     ccinfo.itemId = itemId;
     ccinfo.price = price;
-    ccinfo.first_name = "Misha";
-    ccinfo.last_name = "Leder";
+    ccinfo.first_name = "John";
+    ccinfo.last_name = "Smith";
     ccinfo.address = "23 main street";
     ccinfo.city = "Nyork";
     ccinfo.state = "NY";
-    ccinfo.zip = "10001";
+    ccinfo.zip = "10000";
     ccinfo.cc = "4111111111111111";
     ccinfo.expiration = "1/1/15";
     ccinfo.cvs = "123";
-    ccinfo.email = 'misha.leder@gmail.com';
-    
+    ccinfo.email = 'email@email.com';
     
     api.updatePrice(ccinfo);
 }
@@ -118,7 +117,7 @@ function createItems() {
   		item.url = "www.blah" + i + ".com";
   		item.title += "Hi!";
   		item.description = "blahblah" + i;
-  		item.email = "misha.leder@gmail.com";
+  		item.email = "email@emal.com";
   		api.submitItem(item); 
  	}
 }
@@ -147,7 +146,7 @@ submitInteractions = function(response) {
 	var num = jQuery("#interaction_num").val(); console.log(num);
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		submitUserInteraction(item_obj.itemId);
+		submitUserInteraction(item_obj.itemId); console.log(item_obj.itemId);
 		n--;
 		if(num <= 0)
 			return;

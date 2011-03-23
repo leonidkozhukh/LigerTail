@@ -37,6 +37,8 @@ class AdminHandler(webapp.RequestHandler):
             elif url =='publishers.html':
               publishers = model.getPublisherSites()
               context['publishers'] = publishers
+            elif url =='paymentsconfig.html':
+              context['paymentparams'] = model.getPaymentConfig()
       
             path = ''
             if len(url) > 0:
@@ -53,6 +55,8 @@ class AdminHandler(webapp.RequestHandler):
         self.updateAlg()
       elif url == 'update_activities':
         self.updateActivities()
+      elif url == 'update_paymentconfig':
+        self.updatePaymentConfig()
 
     def updateAlg(self):
       params = model.getOrderingAlgorithmParams()
@@ -66,7 +70,19 @@ class AdminHandler(webapp.RequestHandler):
         self.redirect('algorithm.html?status=updated')
       else:
         self.response.out.write(err)
-        
+    
+    def updatePaymentConfig(self):
+      config = model.getPaymentConfig()
+      
+      if self.request.get('test'):
+        config.test_mode = True
+      else:
+        config.test_mode = False
+      if self.request.get('email'):
+        config.send_email = True
+      else:
+        config.send_email = False
+      config.put()
       
     def updateActivities(self):
       errors = []
