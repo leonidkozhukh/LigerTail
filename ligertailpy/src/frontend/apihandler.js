@@ -18,7 +18,7 @@ function getDomain(url) {
   return clean_domain[1].replace('www.',''); 	
 }
 
-ApiHandler.prototype.onItemSubmitted = function(response) {
+ApiHandler.prototype.onItemSubmitted = function(response) {					
 	var item = jQuery.parseJSON(response.items[0]);
 	
 	//remove last item from view to make room for the new submission
@@ -45,12 +45,13 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 		domain = "https://ligertailbackend.appspot.com";
 	}
     // var url = domain + "/frontend/payment.html?itemId=" + item.id;
-	//var url = domain + "/payment.html?itemId=" + item.id;
+	var url = domain + "/payment.html?itemId=" + item.id;
     
     // TODO : make sure it opens in a new window
-	//document.location.href = url;
-	alert(domain + "/payment.html?itemId=" + item.id);
-	window.open(domain + "/payment.html?itemId=" + item.id);
+	document.location.href = url;
+	//alert(domain + "/payment.html?itemId=" + item.id);
+	//window.open(domain + "/payment.html?itemId=" + item.id);
+	
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...
