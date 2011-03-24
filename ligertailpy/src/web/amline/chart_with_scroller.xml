@@ -1,0 +1,98 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<settings> 
+  <font>Georgia</font>                                    
+  <text_color>#FFFFFF</text_color>                        
+  <digits_after_decimal>2</digits_after_decimal>          
+  
+
+     
+  <plot_area>                                             
+    <margins>                                             
+      <left>60</left>                                      
+      <top>0</top>                                         
+      <right>60</right>                                    
+      <bottom>25</bottom>                                 
+    </margins>
+  </plot_area>
+  
+
+
+  <grid>
+    <x> 
+      <enabled>false</enabled>                                                           
+    </x>
+    <y_left>
+      <enabled>false</enabled>
+    </y_left>
+  </grid>
+  
+  
+  <axes>                                 
+    <x>                        
+      <alpha>15</alpha>        
+      <width>1</width>         
+    </x>
+    <y_left>                   
+      <alpha>15</alpha>        
+      <width>1</width>         
+    </y_left>
+  </axes>  
+  
+  <balloon>
+  	<border_width>2</border_width>
+  	<border_color>#000000</border_color>
+  </balloon>
+
+
+ <legend>
+ 	<enabled>false</enabled>
+ </legend>
+  
+ <values>
+ 	<x>
+ 		<inside>true</inside>
+ 	</x>
+ 	<y_left>
+ 		<inside>true</inside>
+ 	</y_left>
+ </values>
+  
+  <graphs>  
+            
+    <graph gid="1">    
+                                       
+      <axis>left</axis>                                 
+      <title>Nominal</title> 
+      <fill_alpha>100</fill_alpha>                           
+      <color>#FF3300</color>                            
+      <color_hover>#000000</color_hover>                
+      <balloon_text_color>#000000</balloon_text_color>  
+      <bullet>round</bullet>
+      <bullet_size>1</bullet_size>                            
+      <balloon_text>
+        <![CDATA[<b>${value}</b><br>{description}]]>    
+      </balloon_text>
+      <data_labels>
+        <![CDATA[]]>                                                                                                  
+      </data_labels>   
+    </graph>
+    
+    <graph gid="2">                                                            
+      <axis>left</axis>                   
+      <title>Inflation Adjusted 2006</title>
+                  
+      <color>#000000</color>     
+      <bullet>square</bullet>
+      <bullet_alpha>100</bullet_alpha>
+      <bullet_size>5</bullet_size>
+      <balloon_text_color>#FFFFFF</balloon_text_color>                
+      <color_hover>#000000</color_hover>
+      <balloon_text_color>#000000</balloon_text_color>
+      <balloon_text>
+        <![CDATA[<b>${value}</b>]]>                                
+      </balloon_text> 
+               
+    </graph>
+  </graphs> 
+</settings>

@@ -1,0 +1,15 @@
+#layout {margin-top: expression(parseInt(this.parentNode.parentNode.offsetHeight-this.offsetHeight) < 0 ? "0" : parseInt((this.parentNode.parentNode.offsetHeight - this.offsetHeight) / 2)+"px");}
+.layout {zoom: 1;}
+.info-block .inner-wrap {height: 540px;}
+.info-block-small .inner-wrap {height: 385px;}
+.promo-block-inner {height: 100px;}
+.inner-content {margin-top: expression(parseInt(this.parentNode.offsetHeight-this.offsetHeight) < 0 ? "0" : parseInt((this.parentNode.offsetHeight - this.offsetHeight) / 2)+"px");}
+.promo-block .advantages h2 {line-height: 20px;}
+.promo-block .advantages .num {top: -10px;}
+
+.foot {height: 22px;}
+.foot .menu {width: 172px;}
+.info-block {position: relative;}
+.content {height: 391px;}
+.l-part {position: absolute;} 
+.layout-wrap {padding-top: 0; padding-bottom: 0;}

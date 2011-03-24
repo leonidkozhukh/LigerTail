@@ -32,7 +32,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
           jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
      }													
 														
-														
+													
   // TODO: handle error case
   if (!window.submitForFree) {
 	var domain = "";

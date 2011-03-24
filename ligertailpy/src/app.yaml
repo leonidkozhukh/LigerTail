@@ -28,8 +28,8 @@ handlers:
 - url: /web/images
   static_dir: web/images
   
-- url: /web/css
-  static_dir: web/css
+- url: /web/styles
+  static_dir: web/styles
   
 - url: /web/amline
   static_dir: web/amline
