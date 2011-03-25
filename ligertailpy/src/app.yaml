@@ -16,20 +16,11 @@ handlers:
   static_files: web/images/favicon.ico
   upload: web/images/favicon.ico
 
-#- url: /frontend/css
-#  static_dir: frontend/css
-  
-#- url: /frontend/images
-#  static_dir: frontend/images  
-
-#- url: /frontend/facebox
-#  static_dir: frontnend/facebox
-
 - url: /web/images
   static_dir: web/images
   
-- url: /web/css
-  static_dir: web/css
+- url: /web/styles
+  static_dir: web/styles
   
 - url: /web/amline
   static_dir: web/amline
@@ -45,6 +36,10 @@ handlers:
 - url: /webadmin
   script: main.py
   login: admin
+  
+- url: /ligertail.js
+  static_files: frontend/ligertail.js
+  upload: frontend/ligertail.js
       
 - url: /api/.*
   script: main.py

@@ -116,7 +116,7 @@
       <frequency></frequency>                                 <!-- [1] (Number) how often values should be placed, 1 - near every gridline, 2 - near every second gridline... -->
       <skip_first></skip_first>                               <!-- [true] (true / false) to skip or not first value -->
       <skip_last></skip_last>                                 <!-- [false] (true / false) to skip or not last value -->
-      <color></color>                                         <!-- [text_color] (hex color code) --> 
+      <color>#000000</color>                                         <!-- [text_color] (hex color code) --> 
       <text_size></text_size>                                 <!-- [text_size] (Number) -->
       <unit></unit>                                           <!-- [] (text) unit which will be added to values on y axis-->
       <unit_position></unit_position>                         <!-- [right] (left / right) -->

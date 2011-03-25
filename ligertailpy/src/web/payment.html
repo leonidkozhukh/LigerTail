@@ -1,262 +1,143 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-<link href="../web/css/ligertail_global.css" rel="stylesheet" type="text/css" />
-<link href="../web/css/payment.css" rel="stylesheet" type="text/css" />
+<title>Ligertail</title>
+<link rel="stylesheet" type="text/css" href="../web/styles/default.css" />
+<!--[if lte IE 6]>
+    <link rel="stylesheet" type="text/css" href="../web/styles/ie6.css" />
+    <script type="text/javascript" src="../web/scripts/png-fix.js"></script>
+    <script type="text/javascript">DD_belatedPNG.fix(".g-png");</script>
+<![endif]-->
+<!--[if IE 7 || IE8]><link rel="stylesheet" type="text/css" href="../web/styles/ie7+.css" /><![endif]-->
+<link rel="stylesheet" type="text/css" href="../web/styles/facebox.css" />
+<script type="text/javascript" src="../web/scripts/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="../web/scripts/facebox.js"></script>
+<script type="text/javascript" src="../web/scripts/onload.js"></script>
 <script type="text/javascript" src="../frontend/payment.js"></script>
-<style>
-#table-gen {
-    width: 900px;
-    margin: 0px auto;
-    border-collapse: collapse;
-    border: 1px solid #000000;
- }
-#table-gen .rowa {
-    background: #ffffff;
-    height: 25px;
-}
-#table-gen .rowb {
-    background: #c0c0c0;
-    height: 25px;
-}
-#table-gen .cell {
-    padding: 0px;
-    border: 1px solid #000000;
-}
-</style>
-
 </head>
-
 <body>
-{% include "header.html" %}
+<div class="l-part l-part-t"></div>
+<div class="l-part l-part-b"></div>
+<div class="root">
+    <div class="layout-wrap">
+        <div class="layout" id="layout">
+            
+            <ins class="layout-shadow layout-shadow-t g-png"></ins>
+            <ins class="layout-shadow layout-shadow-b g-png"></ins>
 
-<!---table class="table" id="table-gen" cellspacing="0" cellpadding="0">
-    <tr class="rowa">
-        <td class="cell">uniques</td>
-        <td class="cell">pageviews</td>
-        <td class="cell">clicks</td>
-        <td class="cell">closes</td>
-        <td class="cell">eternity</td>
-        <td class="cell">monthly</td>
-        <td class="cell">weekly</td>
-        <td class="cell">daily</td>
-        <td class="cell">hourly</td>
-        <td class="cell">minutely</td>
-    </tr>
- </table---!>
+            <!-- .content-container -->
+            <div class="content-container l-limiter">
 
+                <div class="head">
+                    <a href="../index.html"><img src="../web/images/logo-min.png" class="logo" width="138" height="38" alt="Ligertail" /></a>
+                </div>
 
-<div id="payment">
-<div id="credit_card">
-<h3>Payment Info	</h3>
-<div id="payment_price">
-<div class="pricing">$0</div>
-<input type="image" src="../frontend/images/button_pay.png" name="button_pay" id="button_pay" value="Submit" />
+                <!-- .content -->
+                <div class="content">
 
-</div>
+                    <div class="chart-panel">
 
-<form id="payment_form">
-  <table width="100%" border="0" align="left">
-    <tr>
-      <th align="left" scope="col">&nbsp;</th>
-      <th colspan="2" align="left" scope="col">First Name</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="first_name" id="first_name" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" class="error" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" class="error" scope="row">Last Name</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="last_name" id="last_name" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" class="error" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" class="error" scope="row">Email</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="email" id="email" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">Address</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="address" id="address" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">City</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="city" id="city" class="input_form" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">State</th>
-      <th align="left" scope="row">Zip</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">
-      <select name="state" id="state" class="input_form_short">
-    <option value=""></option>
-    <option value="AK">AK</option>
-    <option value="AL">AL</option>
-    <option value="AR">AR</option>
-    <option value="AZ">AZ</option>
-    <option value="CA">CA</option>
-    <option value="CO">CO</option>
-    <option value="CT">CT</option>
-    <option value="DC">DC</option>
-    <option value="DE">DE</option>
-    <option value="FL">FL</option>
-    <option value="GA">GA</option>
-    <option value="HI">HI</option>
-    <option value="IA">IA</option>
-    <option value="ID">ID</option>
-    <option value="IL">IL</option>
-    <option value="IN">IN</option>
-    <option value="KS">KS</option>
-    <option value="KY">KY</option>
-    <option value="LA">LA</option>
-    <option value="MA">MA</option>
-    <option value="MD">MD</option>
-    <option value="ME">ME</option>
-    <option value="MI">MI</option>
-    <option value="MN">MN</option>
-    <option value="MO">MO</option>
-    <option value="MS">MS</option>
-    <option value="MT">MT</option>
-    <option value="NC">NC</option>
-    <option value="ND">ND</option>
-    <option value="NE">NE</option>
-    <option value="NH">NH</option>
-    <option value="NJ">NJ</option>
-    <option value="NM">NM</option>
-    <option value="NV">NV</option>
-    <option value="NY">NY</option>
-    <option value="OH">OH</option>
-    <option value="OK">OK</option>
-    <option value="OR">OR</option>
-    <option value="PA">PA</option>
-    <option value="RI">RI</option>
-    <option value="SC">SC</option>
-    <option value="SD">SD</option>
-    <option value="TN">TN</option>
-    <option value="TX">TX</option>
-    <option value="UT">UT</option>
-    <option value="VA">VA</option>
-    <option value="VT">VT</option>
-    <option value="WA">WA</option>
-    <option value="WI">WI</option>
-    <option value="WV">WV</option>
-    <option value="WY">WY</option>
-      </select></th>
-      <th align="left" scope="row"><input type="text" name="zip" id="zip" class="input_form_short" /></th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row">Credit Card #</th>
-    </tr>
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="text" name="cc" id="cc" class="input_form" /></th>
-    </tr>
+                        <!-- .params -->
+                        <div class="params l">
+                            <div class="row">
+                                <select id="paramScope" disabled="disabled">
+                                    <option value="items">Promoted Items</option>
+                                    <option value="spots">Widget Spots</option>
+                                    <option value="sites">Publisher Site</option>
+                                </select>
+                            </div>
 
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">Expiration</th>
-      <th align="left" scope="row">CVS</th>    
-    </tr>
-    
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th align="left" scope="row">
-      <select id="expiration_month" class="input_form_short">
-      <option value=""></option>
-      <option value="1">January</option>
-      <option value="2">February</option>
-      <option value="3">March</option>
-      <option value="4">April</option>
-      <option value="5">May</option>
-      <option value="6">June</option>
-      <option value="7">July</option>
-      <option value="8">August</option>
-      <option value="9">September</option>
-      <option value="10">October</option>
-      <option value="11">November</option>
-      <option value="12">December</option>
-      </select>
-      <select id="expiration_year" class="input_form_short">
-      <option value=""></option>
-      <option value="2011">2011</option>
-      <option value="2012">2012</option>
-      <option value="2013">2013</option>
-      <option value="2014">2014</option>
-      <option value="2015">2015</option>
-      <option value="2016">2016</option>
-      <option value="2017">2017</option>
-      <option value="2018">2018</option>
-      <option value="2019">2019</option>
-      <option value="2020">2020</option>
-      <option value="2021">2021</option>
-      <option value="2022">2022</option>
-      <option value="2023">2023</option>
-      <option value="2024">2024</option>
-      <option value="2025">2025</option>
-      </select>
-      </th>
-      <th align="left" scope="row"><input type="text" name="cvs" id="cvs" class="input_form_short" /></th>
-    </tr>
+                            <div class="row">
+                                <select id="paramAnalytics" disabled="disabled">
+                                    <option value="1">Views</option>
+                                    <option value="2">Clicks</option>
+                                    <option value="3">Closes</option>
+                                </select>
 
-    <tr>
-      <th align="left" scope="row">&nbsp;</th>
-      <th colspan="2" align="left" scope="row"><input type="image" src="../frontend/images/button_pay.png" name="button_pay" id="button_pay" value="Submit" /></th>
-    </tr>
-  </table>
-  </form>
-</div>
+                                <select id="paramDuration" disabled="disabled">
+                                    <option value="mm">For One Hour</option>
+                                    <option value="hh">For One Day</option>
+                                    <option value="DD">For One Month</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--/ .params -->
 
-<div id="analytics">
-<h3>Promoted Content</h3>
-</div>
-
-<div id="graphs">
-  <h3>Analytics</h3>
-  <!-- amline script-->
+                        <a href="#payForm" id="payFormSwitch" rel="facebox" class="bulb s-button r"><span class="c">Submit Payment</span><span class="l"></span></a>
+                        <div class="veneer"></div>
+                    </div>
+                    <div class="chart">
+                    
+<!-- amline script-->
    <script type="text/javascript" src="../web/amline/swfobject.js"></script>
    <div id="flashcontent">
       <strong>You need to upgrade your Flash Player</strong>
+   </div>
  
    <script type="text/javascript">
 // <![CDATA[        
-   var so = new SWFObject("../web/amline/amline.swf", "amline", "400", "300", "8", "#FFFFFF");
+   var so = new SWFObject("../web/amline/amline.swf", "amline", "960", "272", "8", "#FFFFFF");
    so.addVariable("path", "../web/amline/");
-   so.addVariable("settings_file", escape("../web/amline/amline_settings.xml"));  // you can set two or more different settings files here (separated by commas)
-// so.addVariable("data_file", escape("../web/amline/test_data.txt"));
-// so.addVariable("chart_data", "");                                       // you can pass chart data as a string directly from this file
-// so.addVariable("chart_settings", "");                                   // you can pass chart settings as a string directly from this file
-// so.addVariable("additional_chart_settings", "");                        // you can append some chart settings to the loaded ones
-// so.addVariable("loading_settings", "LOADING SETTINGS");                 // you can set custom "loading settings" text here
-// so.addVariable("loading_data", "LOADING DATA");                         // you can set custom "loading data" text here
+   so.addVariable("settings_file", escape("../web/amline/chart_with_scroller.xml"));
+   so.addVariable("data_file", escape("../web/amline/amline_data.xml"));
    so.addVariable("preloader_color", "#999999");
-
+   so.write("flashcontent");
 // ]]>
    </script>
 <!-- end of amline script -->
 
+                    </div>
 
-</div>
-</div>
 
+                    
+
+                    <!-- .rates -->
+                    <div class="rates" id="ratePrices">
+
+                        <div class="rhead">
+                            <div class="row">
+                                <div class="cell col-link"><div class="data-entry r-indent">Promoted Items</div></div>
+                                <div class="cell col-price"><div class="data-entry r-indent">Price</div></div>
+                                <div class="cell col-startDate"><div class="data-entry">Start Date</div></div>
+                                <div class="cell col-views"><div class="data-entry">Views</div></div>
+                                <div class="cell col-clicks"><div class="data-entry">Clicks</div></div>
+                                <div class="cell col-closes"><div class="data-entry">Closes</div></div>
+                                <div class="cell col-engagement"><div class="data-entry">Engagement</div></div>
+                                <div class="veneer"></div>
+                            </div>
+                        </div>
+
+                        <div class="rbody">
+
+                        </div>
+
+                    </div>
+                    <!--/ .rates -->
+                    <div class="veneer"></div>
+                </div>
+                <!--/ .content -->
+
+            </div>
+            <!--/ .content-container -->
+
+            <!-- foot -->
+            <div class="foot l-limiter">
+                <div class="menu-wrap">
+                    <ul class="menu">
+                        <li><a href="../about.html">contact</a></li>
+                        <li><a href="../faq.html">faq</a></li>
+                        <li><a href="../terms.html">terms</a></li>
+                        <li class="last"><a href="../privacy.html">privacy</a></li>
+                    </ul>
+                </div>
+                <div class="veneer"></div>
+            </div>
+            <!--/ .foot -->
+
+        </div>
+    </div>
+</div>
 </body>
 </html>

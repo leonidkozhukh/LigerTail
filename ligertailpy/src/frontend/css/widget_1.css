@@ -95,6 +95,7 @@
 	margin:0px 5px 0px 0px;
 	padding-right:5px;
 	border-right:2px solid #d36317;
+	color: #000000;
 }
 
 #ligertail_widget_large .ligertail_widget_text .ligertail_widget_description {
@@ -174,6 +175,7 @@
 	text-transform:uppercase;
 	padding-right:3px;
 	border-right:2px solid #d36317;
+	color: #000000;
 }
 
 #ligertail_widget_small .ligertail_widget_share {

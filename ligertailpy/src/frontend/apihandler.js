@@ -18,7 +18,7 @@ function getDomain(url) {
   return clean_domain[1].replace('www.',''); 	
 }
 
-ApiHandler.prototype.onItemSubmitted = function(response) {
+ApiHandler.prototype.onItemSubmitted = function(response) {					
 	var item = jQuery.parseJSON(response.items[0]);
 	
 	//remove last item from view to make room for the new submission
@@ -32,7 +32,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
           jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
      }													
 														
-														
+													
   // TODO: handle error case
   if (!window.submitForFree) {
 	var domain = "";
@@ -130,20 +130,55 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 	var content = "";
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		//console.log(item_obj);		
-		content += '<div class="entry" id="' + item_obj.id + '"><div class="pricing">$' + item_obj.price + '</div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div></div>';
+				//console.log(item_obj);
+		content +=			'<div class="row" id="' + item_obj.id + '">' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a href="#" class="close"></a></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-startDate"><div class="data-entry">' +
+									'<div class="interact-hide"></div>' +
+									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+								'</div></div>' +
+								'<div class="cell col-views"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-closes"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-engagement"><div class="data-entry"></div></div>' +
+                                '<div class="veneer"></div>' +
+
+                                '<div class="col-holder col-holder-link col-s"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-link-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-price col-b b-separate"><div class="inner"><div class="inner2"></div></div></div>' +
+                                '<div class="col-holder col-holder-price-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-startDate col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-views col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
+                            '</div>';
+		if(i == 0)
+				jQuery(".rbody .row:first input").val('$' + (item_obj.price + 1));
 		
-		if(i == 0){
-				jQuery("#analytics .your_entry:first input").val(item_obj.price + 1);
-				jQuery("#payment_price .pricing").html("$" + (item_obj.price + 1));
-		}
+		api.getItemStats(item_obj.id, 2);
+		
 	});
 	
-	jQuery("#analytics .your_entry").after(content);
-	jQuery("#graphs #type option:last").attr('disabled', "");
+	jQuery(".rbody .row").after(content);	
 	
-	jQuery("#analytics .entry").click(function(){
-		api.getItemStats(jQuery(this).attr("id"), 2);
+	jQuery(".rbody .row:gt(0)").click(function(){
+		jQuery("#paramScope option:[value='items']").attr('id', jQuery(this).attr('id'));
+		showGraph("items", jQuery(this).attr('id'), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());										
+	});
+	
+	jQuery(".rbody .row:gt(0) .num").click(function(event){
+		event.preventDefault();
+		jQuery("#paramScope option:[value='spots']").attr('id', jQuery(this).html());
+		showGraph("spots", jQuery(this).html(), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());										
+	});
+	
+	jQuery(".rbody .row:gt(0)").hover(function(){
+			jQuery(this).addClass("row-hover");
+		},
+		function(){
+			jQuery(this).removeClass("row-hover");
 	});
 }
 
@@ -163,86 +198,101 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 	var content;
 	jQuery.each(response.items, function(i, item){
 		var item_obj = jQuery.parseJSON(item);
-		content = '<div class="your_entry"><div class="pricing">$<input size="5" type="text" class="input_form_price" id="input_form_price" value="0" /></div><div class="text"><span class="source">' + getDomain(item_obj.url) + '</span><span class="title">' + item_obj.title + '</span></div><span class="close"><img src="../frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></span></div>';
+		
+		content =			'<div class="row row-first row-active">' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num"></span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a href="#" class="close"></a></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c"><input type="text" value="" /></div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-startDate"><div class="data-entry">' +
+									'<div class="interact-hide"></div>' +
+									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+								'</div></div>' +
+								'<div class="cell col-views"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-closes"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-engagement"><div class="data-entry"></div></div>' +
+                                '<div class="veneer"></div>' +
+
+                                '<div class="col-holder col-holder-link col-s"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-link-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-price col-b b-separate"><div class="inner"><div class="inner2"></div></div></div>' +
+                                '<div class="col-holder col-holder-price-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-startDate col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-views col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
+                            '</div>';
+		
 		//console.log(item_obj);
 		
 		window.publisherUrl = item_obj.publisherUrl;
 		window.PUBLISHER_URL = item_obj.publisherUrl;										
 	});													
 	
-	jQuery("#analytics").append(content);
+	jQuery(".rbody").prepend(content);
+	window.analytics_data = {sites: [], spots: [], items: []};
+	jQuery(".params select").attr("disabled", "");
 	
-	//change price
-    jQuery("#analytics .your_entry:first input").change(function(){ 
-        jQuery("#payment_price .pricing").html("$" + jQuery(this).val());
-    });
 	
-	api.getPaidItems(window.PUBLISHER_URL);
+	jQuery(".params select").change(function(){
+		var id;
+		switch (jQuery("#paramScope").val()){
+			case 'items':
+					id = jQuery("#paramScope option:[value='items']").attr('id') != "" ? jQuery("#paramScope option:[value='items']").attr('id') : jQuery(".rbody .row:eq(1)").attr('id');
+					break;
+			case 'spots':
+					id = 1;
+					break;
+			case 'sites':
+					id = 0;
+					break;
+			default:
+					break;
+		}
+											
+		showGraph(jQuery("#paramScope").val(), id, jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());
+	});
+	
+	
 	api.getPublisherSiteStats(window.PUBLISHER_URL);
-	api.getSpotStats(1, window.PUBLISHER_URL);
+	api.getPaidItems(window.PUBLISHER_URL);
+	
+	
+	
 }
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
 
-	jQuery("#graphs h3").after('item: <select id="item_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="item_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');
 	jQuery.each(response.items, function(i, item){ 
 		var item_obj = jQuery.parseJSON(item);
-		console.log(item_obj);
-		var data = ApiHandler.parseStats_(item_obj);
+		//console.log(item_obj);
+		window.analytics_data['items'][item_obj.id] = ApiHandler.parseStats_(item_obj);
 		
-		jQuery("#graphs #item_metric").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #item_duration").val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery("#graphs #item_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});
-		
-		jQuery("#graphs #item_duration").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #item_metric").val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});
+		jQuery(".rbody #" + item_obj.id+ " .interact-hide").html(item_obj.updateTime['year'] + '-' + item_obj.updateTime['month'] + '-' + item_obj.updateTime['day']);
+		jQuery(".rbody #" + item_obj.id+ " .col-views .data-entry").html(item_obj.totalStats[1]);
+		jQuery(".rbody #" + item_obj.id+ " .col-clicks .data-entry").html(item_obj.totalStats[2]);
+		jQuery(".rbody #" + item_obj.id+ " .col-closes .data-entry").html(item_obj.totalStats[4]);
+		jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(((item_obj.totalStats[2] + item_obj.totalStats[4]) * 100 / item_obj.totalStats[1]).toFixed(2) + '%');
 	});
 	
 }
 
 ApiHandler.prototype.onGetSpotStats = function(response) { 
-	jQuery("#graphs h3").after('spot: <select id="spot_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="spot_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
+														
 	jQuery.each(response.spots, function(i, spot){ 
 		var spot_obj = jQuery.parseJSON(spot);
-		var data = ApiHandler.parseStats_(spot_obj);
-		
-		jQuery("#graphs #spot_metric").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #spot_duration").val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery("#graphs #spot_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});
-		
-		jQuery("#graphs #spot_duration").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #spot_metric").val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});							
+		window.analytics_data['spots'][spot_obj.id] = ApiHandler.parseStats_(spot_obj);
+		showGraph("spots", spot_obj.id, jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());						
 	});
 }
 
 
-ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
-	jQuery("#graphs h3").after('publisherUrl: <select id="site_metric"><option value="1">views</option><option value="2">clicks</option><option value="3">closes</option><option value="0">uniques</option></select><select id="site_duration"><option value="mm">minutely</option><option value="hh">hourly</option><option value="DD">daily</option><option value="MM">monthly</option><option value="YY">yearly</option></select>');													
+ApiHandler.prototype.onGetPublisherSiteStats = function(response) {													
 	jQuery.each(response.publisherSites, function(i, site){ 
-		var site_obj = jQuery.parseJSON(site); console.log(site_obj);
-		var data = ApiHandler.parseStats_(site_obj);		
-		jQuery("#graphs #site_metric").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery("#graphs #site_duration").val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery("#graphs #site_duration").val()]][jQuery(this).val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});
-		
-		jQuery("#graphs #site_duration").change(function(){
-			so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + jQuery(this).val() + "</duration></y_left></values></settings>");
-			so.addVariable("chart_data", data[dur[jQuery(this).val()]][jQuery("#graphs #site_metric").val()]);                                       // you can pass chart data as a string directly from this file
-			so.write("flashcontent");
-		});							
+		var site_obj = jQuery.parseJSON(site); 
+		window.analytics_data['sites'][0] = ApiHandler.parseStats_(site_obj);		
+		showGraph("sites", 0, jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());				
 	});
 }
 
@@ -257,6 +307,6 @@ ApiHandler.parseStats_ = function(obj) {
 				}
 			}
 	}
-	console.log(data);	
+	//console.log(data);	
 	return data;
 }
