@@ -78,7 +78,7 @@
                                        
       <axis>left</axis>                                 
       <fill_alpha>100</fill_alpha>                           
-      <color>#FF3300</color>                            
+      <color>#c64b22</color>                            
       <color_hover>#000000</color_hover>                
       <balloon_text_color>#000000</balloon_text_color>  
       <bullet>round</bullet>
