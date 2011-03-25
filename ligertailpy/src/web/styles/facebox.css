@@ -46,7 +46,7 @@
   opacity:0.3;
 }
 #facebox .close:hover img{
-  opacity:1.0;
+  opacity:.4;
 }
 
 #facebox .loading {

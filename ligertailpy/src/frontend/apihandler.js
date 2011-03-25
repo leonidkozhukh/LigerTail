@@ -54,7 +54,6 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 }
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
-	//receipt shown/emailed
 	console.log(response);
 }
 
@@ -132,7 +131,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 		var item_obj = jQuery.parseJSON(item);
 				//console.log(item_obj);
 		content +=			'<div class="row" id="' + item_obj.id + '">' +
-                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a href="#" class="close"></a></div></div>' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a class="close"></a></div></div>' +
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
@@ -202,7 +201,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 		var item_obj = jQuery.parseJSON(item);
 		
 		content =			'<div class="row row-first row-active">' +
-                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num"></span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a href="#" class="close"></a></div></div>' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num"></span>' + getDomain(item_obj.url) + '/ ' + item_obj.title + '<a class="close"></a></div></div>' +
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c"><input type="text" value="" /></div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +

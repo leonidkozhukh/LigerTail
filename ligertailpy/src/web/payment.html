@@ -11,9 +11,7 @@
     <script type="text/javascript">DD_belatedPNG.fix(".g-png");</script>
 <![endif]-->
 <!--[if IE 7 || IE8]><link rel="stylesheet" type="text/css" href="../web/styles/ie7+.css" /><![endif]-->
-<link rel="stylesheet" type="text/css" href="../web/styles/facebox.css" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="../frontend/facebox/facebox.js"></script>
 <!--script type="text/javascript" src="../web/scripts/onload.js"></script-->
 <script type="text/javascript" src="../frontend/payment.js"></script>
 </head>
@@ -83,6 +81,7 @@
    so.addVariable("settings_file", escape("../web/amline/chart_with_scroller.xml"));
    so.addVariable("data_file", escape("../web/amline/amline_data.xml"));
    so.addVariable("preloader_color", "#999999");
+   so.addParam("wmode", "opaque");
    so.write("flashcontent");
 // ]]>
    </script>

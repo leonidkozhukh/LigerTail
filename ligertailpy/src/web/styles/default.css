@@ -332,7 +332,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .form .input-submit {border: none; background-color: #D9DBDC; font-weight: bold; padding: 3px 8px; cursor: pointer; overflow: visible; height: 30px;}
 .form .message {color: #000;}
 
-#payForm {display: none;}
+#payForm {display: block;}
 #facebox .content {margin-bottom: 0;}
 
 /* @foot */
