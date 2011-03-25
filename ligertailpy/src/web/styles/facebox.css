@@ -18,7 +18,7 @@
   box-shadow:0 0 18px rgba(0,0,0,0.4);
 }
 
-#facebox .content {
+#facebox .lightbox_content {
   display:table;
   width: 370px;
   padding: 10px;
@@ -28,10 +28,10 @@
   border-radius:4px;
 }
 
-#facebox .content > p:first-child{
+#facebox .lightbox_content > p:first-child{
   margin-top:0;
 }
-#facebox .content > p:last-child{
+#facebox .lightbox_content > p:last-child{
   margin-bottom:0;
 }
 

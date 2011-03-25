@@ -250,7 +250,9 @@ function openPaymentLightbox(id){
                         jQuery("#payForm input, select").trigger('blur');
                     }
             });
-        });              
+        });
+        
+        jQuery.facebox({ ajax: "payment_form.html"});              
     });                                                    
 }
 

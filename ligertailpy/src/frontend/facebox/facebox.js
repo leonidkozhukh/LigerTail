@@ -93,7 +93,7 @@
             <tr> \
               <td class="b"/> \
               <td class="body"> \
-                <div class="content"> \
+                <div class="lightbox_content"> \
                 </div> \
                 <div class="footer"> \
                   <a href="#" class="close"> \
@@ -117,7 +117,7 @@
       if ($('#facebox .loading').length == 1) return true
       showOverlay()
 
-      $('#facebox .content').empty()
+      $('#facebox .lightbox_content').empty()
       $('#facebox .body').children().hide().end().
         append('<div class="loading"><img src="'+$.facebox.settings.loadingImage+'"/></div>')
 
@@ -135,8 +135,8 @@
 
     reveal: function(data, klass) {
       $(document).trigger('beforeReveal.facebox')
-      if (klass) $('#facebox .content').addClass(klass)
-      $('#facebox .content').append(data)
+      if (klass) $('#facebox .lightbox_content').addClass(klass)
+      $('#facebox .lightbox_content').append(data)
       $('#facebox .loading').remove()
       $('#facebox .body').children().fadeIn('normal')
       $('#facebox').css('left', $(window).width() / 2 - ($('#facebox table').width() / 2))
@@ -310,7 +310,7 @@
   $(document).bind('close.facebox', function() {
     $(document).unbind('keydown.facebox')
     $('#facebox').fadeOut(function() {
-      $('#facebox .content').removeClass().addClass('content')
+      $('#facebox .lightbox_content').removeClass().addClass('content')
       hideOverlay()
       $('#facebox .loading').remove()
     })

@@ -5,7 +5,7 @@ html, body, div, h1, h2, h3, h4, h5, h6, ul, ol, li, p, a, span, small, img, blo
 html, body {height:100%;}
 body {
     font-size: 14px;
-    line-height: 20px;
+    line-height: 17px;
     vertical-align: baseline;
     font-family: Arial, sans-serif;
     text-align: center;
@@ -18,7 +18,7 @@ input, textarea {font-size: 14px; line-height: 24px; font-family:Arial, sans-ser
 /* @headings */
 h1, h2, h3, h4, h5, h6 {font-weight: normal; font-family: Helvetica, Arial;}
 h1 {font-size: 34px; line-height: 35px; word-spacing: -4px; color: #666; font-weight: bold; margin-bottom: 10px;}
-    h1 em {color: #F25733;}
+    h1 em {color: #F25733; font-style: normal;}
 h2 {font: bold 24px/24px Helvetica, Arial; color: #4D4D4D; margin-bottom: 5px;}
 
 /* @links */
@@ -28,15 +28,22 @@ a img {border:none;}
 
 /* @lists */
 ul, ol {list-style:none;}
+ul.list {margin-bottom: 10px; margin-top:3px;}
+ul.list li {padding-left: 30px; background:url(../images/bg/list-item.png) no-repeat left 9px; margin-bottom: 3px;}
+
+ol.list {margin-bottom: 10px; margin-top:3px; margin-left: 25px; list-style:decimal}
+ol.list li {margin-bottom: 3px;}
 
 /* @other */
 p {font-size: 15px; line-height: 20px; margin-bottom: 15px;}
 p.important {font-size: 17px; line-height: 22px; margin-bottom: 10px;}
+p.simple {margin-bottom:0;}
 code {font-family: Helvetica, Arial, sans-serif; font-size: 12px; white-space:pre-line;}
-em {font-style: normal;}
+em {}
+h4.em {text-decoration: underline; font-size: 12px; margin: 1.33em 0px;}
 span.tip {font-family:Helvetica,Arial; font-size: 11px; padding: 0 8px; color: #fff; background-color: #F25733; display: inline-block; }
 strong.important {color: #666;}
-select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
+select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 /* @special */
 .veneer {
@@ -63,7 +70,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .root {position: relative; width: 100%; height: 100%; display: table;}
 .layout-wrap {padding-top: 42px; padding-bottom: 42px; display: table-cell; vertical-align: middle; overflow: hidden;}
 .layout {background-color: #fff; position: relative;}
-.web_content {}
+.content {}
     /* shadow */
     .layout-shadow {height: 42px; width: 100%; left: 0; position: absolute; background-repeat: repeat-x; background-position: 0 0;}
     .layout-shadow-t {top: -42px; background-image: url(../images/bg/layout-shadow-t.png);}
@@ -76,7 +83,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 
 /* @head */
 .head {text-align: center; position: relative; padding: 25px 0;}
-.head .logo {}
+.head .logo {position: relative; z-index:1}
 
 /* @menu */
 .head .menu {font-size: 15px; color: #4D4B4B; font-weight: bold; right: 0; top: 25px; position: absolute; overflow: hidden;}
@@ -85,7 +92,9 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .head .menu li.last {padding-right: 0; background-image: none;}
 
 /* @content */
-.web_content {margin-bottom: 25px; min-height: 391px;}
+.content {margin-bottom: 25px;}
+.page-wide .content {min-height: 544px;}
+.page-index .content {min-height: 349px;}
 
 /* @info-block */
 .info-block {display: table; height: 540px; width: 465px;}
@@ -134,8 +143,6 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .promo-block .advantages li {float: left; width: 33%; position: relative;}
 .promo-block .advantages .num {left: -65px; top: -10px; font: bold 95px/95px Helvetica, Arial; color: #fff; vertical-align: baseline; z-index: 1; position:absolute;}
 .promo-block .advantages .entry1 .num {left: -60px;}
-/*.promo-block .advantages .entry1 p {margin-right: 120px;}*/
-/*.promo-block .advantages .entry2 p {margin-right: 110px;}*/
 .promo-block .advantages .entry3 p {margin-right: 80px;}
 
 /* @buttons */
@@ -155,7 +162,6 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
     .s-input-text-rate .c {margin: 0 7px; padding: 0 0; text-align: center;}
     .s-input-text-rate, .s-input-text-rate .c, .s-input-text-rate .l {height: 18px; line-height: 18px; display: inline-block; background-image: url(../images/s-rates-param.png);}
     .s-input-text-rate input {
-        margin: 0;
         background: transparent;
         border: 0;
         outline: 0;
@@ -172,22 +178,27 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 
 /* @chart */
 .chart {}
-.chart-panel {margin-top: -65px; padding-bottom: 5px; position: relative;}
+.chart-panel {margin-top: -65px; padding-bottom: 5px; position: relative; zoom: 1;}
+.chart-panel select {font-size: 11px; }
     /* @params */
     .chart-panel .params {padding-top: 10px;}
     .chart-panel .params .row {margin-bottom: 10px;}
     .chart-panel .params .row select {min-width: 160px; margin-right: 10px;}
 
 
-/* @datatable */
+/* @rates */
 .rates {font-family: 'Helvetica Neue', Helvetica, sans-serif; margin: 0 0 10px; width: 100%;}
 .rates .row {position: relative; zoom: 1;}
 .rates .cell {float: left;}
-.rates .cell .r-indent {margin-right: 20px; margin-right: 0;}
+.rates .cell .r-indent {margin-right: 0;}
 .rates .data-entry {padding: 8px 5px; position: relative; text-align: center;}
     .rates .cell .data-entry {text-align: center;}
     .rates .col-link .data-entry {text-align: left; padding-left: 0;}
-    .rates .rbody .col-link .data-entry {padding-left: 12px;}
+    .rates .rbody .col-link .data-entry {padding-left: 12px; white-space:nowrap;}
+    .rates .rbody .col-link .data-entry .text {overflow:hidden;}
+    .rates .rbody .row .col-link .data-entry .cell-limiter {width: 60px; height: 35px; right: 0; top: 0; background:url(../images/bg/datatable-dataEntry-limiter.png) no-repeat; position: absolute;}
+    .rates .rbody .row-hover .col-link .data-entry .cell-limiter {background-image:url(../images/bg/datatable-dataEntry-hover-limiter.png);}
+    .rates .rbody .row-active .col-link .data-entry .cell-limiter {background-image:url(../images/bg/datatable-dataEntry-active-limiter.png);}
 
     /* @cols */
     .col-link, .col-holder-link {width: 300px; }
@@ -203,9 +214,9 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
         .col-holder-startDate {left: 387px;}
         .col-startDate {margin-left: 17px;}
 
-	.col-views, .col-holder-views {width: 154px;}
+    .col-views, .col-holder-views {width: 154px;}
         .col-holder-views {left: 487px;}
-
+        
     .col-clicks, .col-holder-clicks {width: 108px;}
         .col-holder-clicks {left: 641px;}
 
@@ -246,7 +257,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
             position: absolute;
         }
 
-        /* col-holder */
+        /* col-holher */
         .col-holder {height: 100%; top: 0; z-index: 1; position: absolute;}
         .col-holder .inner {height: 100%; left: 0; top: 0; position: absolute;}
         .col-holder .inner2 {height: 100%; left: 0; top: 0; position: absolute;}
@@ -288,7 +299,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
         background-image: none;
     }
 
-    .row-hover .b-separate .inner {background-image: none;}
+    .row-hover .b-separate .inner {/*background-image: none;*/}
     .row-hover .b-separate {background-image: none;}
 
     /* @active */
@@ -304,6 +315,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
         .row-active .interact-hide,
         .row-active .col-views,
         .row-active .col-clicks,
+        .row-active .col-clicks,
         .row-active .col-closes,
         .row-active .col-engagement/*,
         .row-active .col-holder-startDate,
@@ -318,8 +330,36 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
         .row-active .col-holder-closes .inner,
         .row-active .col-holder-engagement .inner {background: url(../images/bg/datatable-cell-b.png) no-repeat left bottom;}
 
-
 .interact-show {display: none;}
+
+
+/* @text-block */
+.text-block.fixed .text-block-inner {height: 450px; overflow:auto}
+.text-block {position:relative; color: #666666;}
+.text-block-inner {padding: 20px 45px 20px 28px;}
+.text-block h1 {font-size: 22px; color: #333333;}
+.text-block h1 .note {font-size: 12px; padding-left: 15px; word-spacing: normal;}
+.text-block h3 {font-size: 14px; color: #333333; font-weight: bold;}
+    .faq-questions {float: left; width: 50%;}
+    .faq-questions h3 {margin-top: 3px;}
+    .faq-questions-right {float: right;}
+    .faq-questions ul {margin-bottom: 3px;margin-top:2px; padding-right:50px;}
+    .faq-questions ul li {margin-bottom: 3px;}
+    .faq-questions a {color: #666666;}
+    .faq-answers {margin-top: 15px;}
+
+    .text-block-document h3 {margin-bottom: 5px; margin-top: 13px;}
+    .text-block-document {font-size: 12px;}
+    .text-block-document p {font-size: 12px; margin-bottom: 10px;}
+    .text-block-document p+ul,.text-block-document p+ol {margin-top:-7px;}
+
+.text-block-top-border {width: 100%; height: 1px; top: 0; left: 0; background:url(../images/bg/text-block-top.png) repeat-x;}
+.text-block-right-border {width: 1px; height: 100%; top: 0; right: 0; background:url(../images/bg/text-block-left.png) repeat-y;}
+.text-block-bottom-border {width: 100%; height: 1px; background:url(../images/bg/text-block-top.png) repeat-x;}
+.text-block-left-border {width: 1px; height: 100%; left: 0; top: 0; background:url(../images/bg/text-block-left.png) repeat-y;}
+    .text-block-top-border,
+    .text-block-right-border,
+    .text-block-left-border {position:absolute;}
 
 
 /* @pay-form */
@@ -333,7 +373,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .form .message {color: #000;}
 
 #payForm {display: block;}
-#facebox .content {margin-bottom: 0;}
+#facebox .lightbox_content {margin-bottom: 0;}
 
 /* @foot */
 .foot {padding: 20px 0 20px; text-align: center; position: relative;}
