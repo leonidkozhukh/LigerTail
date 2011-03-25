@@ -4,18 +4,23 @@
   <font>Georgia</font>                                    
   <text_color>#FFFFFF</text_color>                        
   <digits_after_decimal>2</digits_after_decimal>          
-  
+  <data_type>csv</data_type>
+  <csv_separator>;</csv_separator>  
 
      
   <plot_area>                                             
     <margins>                                             
-      <left>60</left>                                      
+      <left>0</left>                                      
       <top>0</top>                                         
-      <right>60</right>                                    
-      <bottom>25</bottom>                                 
+      <right>0</right>                                    
+      <bottom>0</bottom>                                 
     </margins>
   </plot_area>
   
+  <background>
+  	<color>#C9C9C9</color>
+  	<alpha>15</alpha>
+  </background>
 
 
   <grid>
@@ -55,6 +60,7 @@
  	</x>
  	<y_left>
  		<inside>true</inside>
+ 		<color>#C9C9C9</color>
  	</y_left>
  </values>
   

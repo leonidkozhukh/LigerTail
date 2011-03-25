@@ -13,3 +13,4 @@
 .content {height: 391px;}
 .l-part {position: absolute;} 
 .layout-wrap {padding-top: 0; padding-bottom: 0;}
+.chart-panel .params .row select {width: 160px;}

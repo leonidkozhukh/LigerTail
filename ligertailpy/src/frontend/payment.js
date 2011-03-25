@@ -39,7 +39,7 @@ LoadFile("../js/postrequest.js", "js");
 LoadFile("../js/json2.js", "js");
 LoadFile("../js/apiproxy.js", "js");
 LoadFile("../frontend/apihandler.js", "js");
-LoadFile("../web/css/payment.css", "css");
+
 
 
 
@@ -79,13 +79,33 @@ function init(publisherUrl) {
   window.publisherUrl = publisherUrl;
 }
 
+function showGraph(scope, id, analytics, duration){
+    if(scope != null && id != null){
+        so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + duration + "</duration></y_left></values></settings>");
+        so.addVariable("chart_data", window.analytics_data[scope][id][dur[duration]][analytics]); 
+        //console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
+        console.log(window.analytics_data[scope][id][dur[duration]][analytics]);
+        
+        jQuery("#paramScope option:[value='" + scope + "']").attr('selected', 'selected');
+        jQuery("#paramAnalytics option:[value='" + analytics + "']").attr('selected', 'selected');
+        jQuery("#paramDuration option:[value='" + duration + "']").attr('selected', 'selected');
+    }
+    else{  console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
+         //error message
+    }
+    so.write("flashcontent");
+}
+
 function initAll(){
-    window.PUBLISHER_URL = "http://www.ligertail.com/payments";
+    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
     
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
     api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+   
+   
+   /* done on button click
     
     //load credit card validation
     //first
@@ -226,7 +246,7 @@ function initAll(){
              jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
         }
     });
-    
+    */
     jQuery("#payment_price input").click(function(){
         jQuery("#payment_form").trigger("sub");
     });
