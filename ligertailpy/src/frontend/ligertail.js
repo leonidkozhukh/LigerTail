@@ -253,7 +253,7 @@ function OpenLightboxSubmission(url){
             
             jQuery("#ligertail_widget_header input").val("Submit Your Link Here");
             
-            jQuery(document).unbind('reveal.facebox');     
+            jQuery(document).unbind('reveal.facebox');
         });      
     });
 }

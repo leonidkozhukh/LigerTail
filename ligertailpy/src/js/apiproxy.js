@@ -100,13 +100,13 @@ LTApi.prototype.getFilter= function(publisherUrl, callback) {
 
 LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	assert(publisherUrl);
-	assert(filter.duration == Duration.ETERNITY);
+	assert(filter.durationId == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
 	assert(filter.popularity > 0 && filter.popularity <= 100);
 	
 	var data = this.serialize({
 		"publisherUrl": publisherUrl,
-		"filter.duration": filter.duration,
+		"filter.durationId": filter.durationId,
 		"filter.recency": filter.recency,
 		"filter.popularity": filter.popularity} );
 	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : '_apiHandler.onFilterSubmitted');
@@ -142,7 +142,11 @@ LTApi.prototype.serialize = function(obj) {
 		    } else {
 		          first = false;
 		    }
-	    	str += escape(prop) + "=" + escape(obj[prop]);
+	    	var val = obj[prop];
+	    	if (prop == 'publisherUrl') {
+	    	  val = LTApi.stripPublisherUrl(val);
+	    	}
+	    	str += escape(prop) + "=" + escape(val);
 	     }
 	}
 	return str;
@@ -151,6 +155,35 @@ LTApi.prototype.serialize = function(obj) {
     return value;
   });*/
 };
+
+//TODO: cache results
+LTApi.stripPublisherUrl = function(url) {
+	var original = url;
+	if (url.search('http') != 0) {
+	  url = 'http://' + url;
+	}
+	var regex ='^((http[s]?):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$';
+	var re = new RegExp(regex);
+	re.global = true;
+	
+	var m = re.exec(url);
+	var pureDomain = ''
+	if (m == null) {
+		url += '/index.html';
+	    m = re.exec(url);
+	}
+	if (m == null) {
+		return original;
+	} else {
+	  pureDomain = m[3];
+	  file = m[6];
+	  if (file.search('index.') == -1) {
+		 pureDomain += '/' + file
+	  }
+	}
+	return pureDomain;
+}
+
 /*
 function stacktrace() { 
 	  function join(args) {
