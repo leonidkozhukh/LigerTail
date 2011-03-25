@@ -59,6 +59,21 @@ function getItemStats() {
   api.getItemStats(itemId, InfoType.FULL); // InfoType.SHORT
 }
 
+function openPaymentPage() {
+	  var itemId = document.getElementById("itemid").value - 0;
+	  var domain = "";
+	  if (window.document.location.hostname == "localhost") {
+	    domain = "http://" + window.document.location.hostname;   
+	      if (window.document.location.port) {
+	        domain += ":" + window.document.location.port;
+	    }
+	  } else {
+	    domain = "https://ligertailbackend.appspot.com";
+	  }
+	  var url = domain + "/payment.html?itemId=" + itemId;
+	  window.open(url, "blah");
+	}
+
 function getSpotStats() {
 	var spot = document.getElementById("spot").value - 0;
 	api.getSpotStats(spot, publisherUrl());
@@ -174,6 +189,7 @@ submitInteractions = function(response) {
 
 <A href="#" onMouseDown="submitUserInteraction(jQuery('#itemid').val())" ><div> submit user interaction</div></A>
 <A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
+<A href='#' onMouseDown="openPaymentPage()"><div> open payment page</div></A>
 <div>Price $</div><INPUT TYPE="text" ID="price" VALUE="1"><P>
 <A href="#" onMouseDown="updatePrice(jQuery('#itemid').val(), jQuery('#price').val())" ><div> update price</div></A>
 

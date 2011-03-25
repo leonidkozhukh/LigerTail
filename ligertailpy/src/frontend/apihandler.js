@@ -44,13 +44,9 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 	} else {
 		domain = "https://ligertailbackend.appspot.com";
 	}
-    // var url = domain + "/frontend/payment.html?itemId=" + item.id;
-	//var url = domain + "/payment.html?itemId=" + item.id;
-    
+	var url = domain + "/payment.html?itemId=" + item.id;
     // TODO : make sure it opens in a new window
-	//document.location.href = url;
-	alert(domain + "/payment.html?itemId=" + item.id);
-	window.open(domain + "/payment.html?itemId=" + item.id);
+	document.location.href = url;
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...

@@ -142,7 +142,11 @@ LTApi.prototype.serialize = function(obj) {
 		    } else {
 		          first = false;
 		    }
-	    	str += escape(prop) + "=" + escape(obj[prop]);
+	    	var val = obj[prop];
+	    	if (prop == 'publisherUrl') {
+	    	  val = LTApi.stripPublisherUrl(val);
+	    	}
+	    	str += escape(prop) + "=" + escape(val);
 	     }
 	}
 	return str;
@@ -151,6 +155,35 @@ LTApi.prototype.serialize = function(obj) {
     return value;
   });*/
 };
+
+//TODO: cache results
+LTApi.stripPublisherUrl = function(url) {
+	var original = url;
+	if (url.search('http') != 0) {
+	  url = 'http://' + url;
+	}
+	var regex ='^((http[s]?):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$';
+	var re = new RegExp(regex);
+	re.global = true;
+	
+	var m = re.exec(url);
+	var pureDomain = ''
+	if (m == null) {
+		url += '/index.html';
+	    m = re.exec(url);
+	}
+	if (m == null) {
+		return original;
+	} else {
+	  pureDomain = m[3];
+	  file = m[6];
+	  if (file.search('index.') == -1) {
+		 pureDomain += '/' + file
+	  }
+	}
+	return pureDomain;
+}
+
 /*
 function stacktrace() { 
 	  function join(args) {
