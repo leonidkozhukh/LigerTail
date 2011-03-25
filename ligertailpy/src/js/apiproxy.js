@@ -100,13 +100,13 @@ LTApi.prototype.getFilter= function(publisherUrl, callback) {
 
 LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	assert(publisherUrl);
-	assert(filter.duration == Duration.ETERNITY);
+	assert(filter.durationId == Duration.ETERNITY);
 	assert(filter.recency > 0 && filter.recency <= 100);
 	assert(filter.popularity > 0 && filter.popularity <= 100);
 	
 	var data = this.serialize({
 		"publisherUrl": publisherUrl,
-		"filter.duration": filter.duration,
+		"filter.durationId": filter.durationId,
 		"filter.recency": filter.recency,
 		"filter.popularity": filter.popularity} );
 	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : '_apiHandler.onFilterSubmitted');
