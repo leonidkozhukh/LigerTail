@@ -163,21 +163,23 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 				jQuery(".rbody .row:first input").val('$' + (item_obj.price + 1));
 		
 		api.getItemStats(item_obj.id, 2);
-		
+		api.getSpotStats((i+1), window.PUBLISHER_URL);
 	});
 	
-	jQuery(".rbody .row").after(content);	
+	jQuery(".rbody .row").after(content);
+	jQuery(".rbody .row:last").addClass("row-last");
 	
-	jQuery(".rbody .row:gt(0)").click(function(){
-		jQuery("#paramScope option:[value='items']").attr('id', jQuery(this).attr('id'));
-		showGraph("items", jQuery(this).attr('id'), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());										
+	jQuery(".rbody .row:gt(0)").click(function(event){
+		if(jQuery(event.target).hasClass('num')){
+			jQuery("#paramScope option:[value='spots']").attr('id', jQuery(event.target).html());
+			showGraph("spots", jQuery(event.target).html(), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());
+		}
+		else{
+			jQuery("#paramScope option:[value='items']").attr('id', jQuery(this).attr('id'));
+			showGraph("items", jQuery(this).attr('id'), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());			
+		}							
 	});
 	
-	jQuery(".rbody .row:gt(0) .num").click(function(event){
-		event.preventDefault();
-		jQuery("#paramScope option:[value='spots']").attr('id', jQuery(this).html());
-		showGraph("spots", jQuery(this).html(), jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());										
-	});
 	
 	jQuery(".rbody .row:gt(0)").hover(function(){
 			jQuery(this).addClass("row-hover");
@@ -246,7 +248,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 					id = jQuery("#paramScope option:[value='items']").attr('id') != "" ? jQuery("#paramScope option:[value='items']").attr('id') : jQuery(".rbody .row:eq(1)").attr('id');
 					break;
 			case 'spots':
-					id = 1;
+					id = jQuery("#paramScope option:[value='spots']").attr('id') != "" ? jQuery("#paramScope option:[value='spots']").attr('id') : jQuery(".rbody .row:eq(1) .num").html();
 					break;
 			case 'sites':
 					id = 0;
@@ -258,7 +260,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 		showGraph(jQuery("#paramScope").val(), id, jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());
 	});
 	
-	
+    
 	api.getPublisherSiteStats(window.PUBLISHER_URL);
 	api.getPaidItems(window.PUBLISHER_URL);
 	
@@ -287,8 +289,7 @@ ApiHandler.prototype.onGetSpotStats = function(response) {
 														
 	jQuery.each(response.spots, function(i, spot){ 
 		var spot_obj = jQuery.parseJSON(spot);
-		window.analytics_data['spots'][spot_obj.id] = ApiHandler.parseStats_(spot_obj);
-		showGraph("spots", spot_obj.id, jQuery("#paramAnalytics").val(), jQuery("#paramDuration").val());						
+		window.analytics_data['spots'][spot_obj.spot] = ApiHandler.parseStats_(spot_obj);				
 	});
 }
 
@@ -305,10 +306,10 @@ ApiHandler.parseStats_ = function(obj) {
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	var idMap = [0,1,2,4];
 	for(var m = 0; m < 5; m++){
-			for(var n = 0; n < DurationInfo[m].length; n++){
+			for(var n = DurationInfo[m].length - 1; n > 0; n--){
 				o = obj.timedStats[m][n];
 				for (var i = 0; i < idMap.length; i++) {
-					data[m][i] += (n + 1) + ';' + (o[idMap[i]] != null ? o[idMap[i]] : 0) + '\n'; 
+					data[m][i] += Math.abs(n - DurationInfo[m].length) + ';' + (o[idMap[i]] != null ? o[idMap[i]] : 0) + '\n'; 
 				}
 			}
 	}

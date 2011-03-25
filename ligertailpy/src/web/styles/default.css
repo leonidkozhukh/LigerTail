@@ -63,7 +63,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .root {position: relative; width: 100%; height: 100%; display: table;}
 .layout-wrap {padding-top: 42px; padding-bottom: 42px; display: table-cell; vertical-align: middle; overflow: hidden;}
 .layout {background-color: #fff; position: relative;}
-.content {}
+.web_content {}
     /* shadow */
     .layout-shadow {height: 42px; width: 100%; left: 0; position: absolute; background-repeat: repeat-x; background-position: 0 0;}
     .layout-shadow-t {top: -42px; background-image: url(../images/bg/layout-shadow-t.png);}
@@ -85,7 +85,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .head .menu li.last {padding-right: 0; background-image: none;}
 
 /* @content */
-.content {margin-bottom: 25px; min-height: 391px;}
+.web_content {margin-bottom: 25px; min-height: 391px;}
 
 /* @info-block */
 .info-block {display: table; height: 540px; width: 465px;}
@@ -120,7 +120,7 @@ select {color: #4D4D4D; font-size: 11px; font-family: 'Helvetica Neue', Helvetic
 .presentation-code .code-inner code {padding-left: 10px;}
 
 /* @presentation-pic */
-.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow.png) no-repeat left top;}
+.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow-small.png) no-repeat left top;}
 .info-block .presentation-pic-placeholder {width: 300px; height: 250px; top: -16px; left: -5px; position: relative; margin-left: auto; margin-right: auto;}
 
 

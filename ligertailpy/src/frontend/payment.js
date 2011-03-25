@@ -81,10 +81,10 @@ function init(publisherUrl) {
 
 function showGraph(scope, id, analytics, duration){
     if(scope != null && id != null){
-        so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + duration + "</duration></y_left></values></settings>");
+        //so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + duration + "</duration></y_left></values></settings>");
         so.addVariable("chart_data", window.analytics_data[scope][id][dur[duration]][analytics]); 
         //console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
-        console.log(window.analytics_data[scope][id][dur[duration]][analytics]);
+        //console.log(window.analytics_data[scope][id][dur[duration]][analytics]);
         
         jQuery("#paramScope option:[value='" + scope + "']").attr('selected', 'selected');
         jQuery("#paramAnalytics option:[value='" + analytics + "']").attr('selected', 'selected');
@@ -96,18 +96,26 @@ function showGraph(scope, id, analytics, duration){
     so.write("flashcontent");
 }
 
-function initAll(){
-    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
-    
-    //initialize communication with ligertail
-    init(window.PUBLISHER_URL);
-    var urlParams = getUrlParameters();
-    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
-   
-   
-   /* done on button click
-    
-    //load credit card validation
+function openPaymentLightbox(){
+                               
+    jQuery.facebox(function($) {
+       $.get('blah.html', function(data) { $.facebox(data) });
+    });
+    /*jQuery.facebox(function(){     
+        
+       
+        jQuery.facebox({ ajax: "../web/payment_form.html"});
+     });  
+        //make sure lightbox form loads before embed.ly is called        
+        jQuery(document).bind('reveal.facebox', function(event){ 
+            url = jQuery.trim(url);
+                                                 
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
+            
+            //error checking & submission handling            
+            
+            //form validation
+            //load credit card validation
     //first
     jQuery("#payment_form #first_name").blur(function(){
         if(jQuery(this).val().length == 0)
@@ -246,19 +254,97 @@ function initAll(){
              jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
         }
     });
-    */
-    jQuery("#payment_price input").click(function(){
-        jQuery("#payment_form").trigger("sub");
+            
+            
+            jQuery("#ligertail_submission_lightbox_form").submit(function(event){
+                event.preventDefault();
+                
+                var item = {}; 
+                item.publisherUrl = window.PUBLISHER_URL;
+                item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
+                item.title = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val();
+                item.description = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val();
+                item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
+
+                //if url same as original, use embedly img
+                if(item.url == url)
+                    item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
+                else
+                    item.thumbnailUrl = "../frontend/images/default.png";
+
+                if(ValidateURL(item.url) && 
+                    (item.title.length > 3 && item.title.length < 100) && 
+                    item.description.length > 0 && item.description.length < 512 &&
+                    ValidateEmail(item.email)){
+                    
+                        api.submitItem(item); 
+                        //console.log(item);
+                        
+                        jQuery(document).trigger('close.facebox');
+                        
+                        
+                        
+                        //error here: not removing last item in widget
+                        
+                        //redirect to submit confirmation later
+                }
+                else{
+                        //console.log(item);
+                        jQuery("#ligertail_submission_lightbox_form input").trigger("blur");
+                }
+            });
+            
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_free").click(function(event){
+                event.preventDefault();
+                window.submitForFree = true;                                                                                                  
+                jQuery("#ligertail_submission_lightbox_form").submit(); 
+                
+            });
+            
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(event){ 
+                event.preventDefault();
+                window.submitForFree = false;               
+                jQuery("#ligertail_submission_lightbox_form").submit();
+            });
+            
+        });  
+        
+        jQuery(document).bind('close.facebox', function(){
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val("");    
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val("");
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("");
+            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val("");                                              
+            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html("ligertail.com");
+            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
+            if(window.parameter["width"] == 600){
+                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
+                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', '../frontend/images/default.png');
+            }
+            
+            jQuery("#ligertail_widget_header input").val("Submit Your Link Here");
+            
+            jQuery(document).unbind('reveal.facebox');     
+        });      
+    });                           
+         */                      
+}
+
+function initAll(){
+    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
+    
+    //initialize communication with ligertail
+    init(window.PUBLISHER_URL);
+    var urlParams = getUrlParameters();
+    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+    
+    jQuery("#payFormSwitch").click(function(){
+            openPaymentLightbox();                                
     });
     
-    //change price
-    //done after item is loaded in apihandler
-    
-    //load paid content    
-    //load statistics for content item
-    //this is done in apihandler
-   
-    
+    jQuery(".rbody .row-first input").live('keypress', function(event){
+        if(event.keyCode == 13)
+            openPaymentLightbox();
+    });
     
 }
 
