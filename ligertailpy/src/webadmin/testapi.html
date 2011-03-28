@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <script src = "../js/postrequest.js">
+  </script>
+  <script src="../js/jquery.min.js">
+  </script>
+  <script src="../js/jsunitcore.js">
+  </script>
+  <script src = "../js/json2.js">
+  </script>
+  <script src = "../js/apiproxy.js">
+  </script>
+  <script src = "../js/baseapihandler.js">
+  </script>
+ </head>
+  <body>
+<h1>Api Test</h1>    
+  Logged in: {{ user }}<br/>
+
+  Please wait for all tests to complete. If they don't complete, something is not working. Try again.
+   <br/> 
+ <body>
+  <input type='BUTTON' value = "Test All" onclick='init()'/>
+  <br/>
+  </br>
+  <b>number of tests left:</b> <span class ='numTestsLeft' id='numTestsLeft'></span><br/>
+  <b>status:</b><div color='red' class='status' id='status'>Please start tests</div>
+  <b>output:</b> <div class='output' id='output'></div>
+  <script language="javascript">
+  function init (){
+	 try {
+     var apiHandler = new BaseApiHandler();
+     lttest = {};
+     lttest.api = new LTApi();
+     lttest.api.init(apiHandler);
+     lttest.numTestsLeft = 2;     
+     lttest.numLoaded = 0;
+     lttest.itemsPaid = 0;
+     print('Starting testing. Num tests: ' + lttest.numTestsLeft);
+	   status('please wait...');
+     testNormalizeUrl();
+     testApi();
+     waitTillAllDone();
+	 } catch (e) {
+		 status(e);
+	 }
+	} 
+  
+  function waitTillAllDone() {
+	  jQuery('#numTestsLeft').html(lttest.numTestsLeft);
+	  if (lttest.numTestsLeft) {
+		  setTimeout(waitTillAllDone, 1000);
+	  } else {
+		  status("All tests PASSED!!!");
+	  }
+	  
+  }
+  
+  function testApi() {
+	  print('testApi');
+	  lttest.currentItem = 0;
+	  setTimeout(submitItem, 1000);
+   }
+
+  
+    function testNormalizeUrl() {
+    	print('testNormalizeUrl');
+    	try {
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('www.foo.com'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('www.foo.com/'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('www.foo.com/index.htm'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('www.foo.com/index.html?param=3'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('www.foo.com/index.html?param1=3&param2=5'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('http://www.foo.com'));
+        assertEquals('www.foo.com', LTApi.normalizePublisherUrl('https://www.foo.com/'));
+        lttest.numTestsLeft -=1;              
+        print('Done testNormalizeUrl');
+    	} catch (e) {
+ 		     status(e);
+ 		   }
+
+    }
+    
+    function createItem(n) {
+    	  var item = {};
+    	  item.publisherUrl = publisherUrl();
+   		  item.url = "www.url" + n + ".com";
+   		  item.title = "i" + n;
+   		  item.description = "Item" + n + " description";
+   		  item.email = "email@emal.com";
+   		  return item;
+    }
+    
+    function publisherUrl() {
+    	if (window.urlId == undefined) {
+    		window.urlId = Math.floor(Math.random()*100000);
+    	}
+    	return "http://test.ligertail.com/test"+window.urlId;
+    }
+    
+    function submitItem() {
+        var item = createItem(lttest.currentItem);
+        lttest.api.submitItem(item, 'onItemSubmitted');
+        lttest.currentItem += 1;
+        if (lttest.currentItem < 10) {
+            setTimeout(submitItem, 2000);
+        }
+    }
+
+    function onItemSubmitted(response) {
+    	if (response.error) {
+    		status(response.error);
+    		return;
+    	}
+    	var item = jQuery.parseJSON(response.items[0]);
+    	lttest[item.title] = item;
+    	lttest.numLoaded += 1;
+    	print('num items loaded ' + lttest.numLoaded);
+    	if (lttest.numLoaded == 10) {
+    		  setTimeout(updatePrice, 0);
+    	}
+    }
+    
+    function updatePrice() {
+      // pay for 3 items
+      for (var i = 0; i < 3; i++) {
+    	  var v = i ? (i==1 ? 'bb' : 'cc') : 'aa';
+	    	ccinfo = {};
+	      ccinfo.itemId = lttest['i' + i].id;
+	      ccinfo.price = i+1;
+	      ccinfo.first_name = "John" + v;
+	      ccinfo.last_name = "Smith" + v;
+	      ccinfo.address = "23" + i +  "main street";
+	      ccinfo.city = "Nyork";
+	      ccinfo.state = "NY";
+	      ccinfo.zip = "10000";
+	      ccinfo.cc = "4111111111111111";
+	      ccinfo.expiration = "1/" + (i+1) + "/15";
+	      ccinfo.cvs = "123";
+	      ccinfo.email = 'email' + v + '@email.com';
+      
+	      lttest.api.updatePrice(ccinfo, 'onPriceUpdated');
+      }
+    }
+    
+    function onPriceUpdated(response) {
+    	  	if (response.error == '') {
+    	  		print('paid for item ' + lttest.itemsPaid);
+    	  		lttest.itemsPaid += 1;
+    	  		if (lttest.itemsPaid == 3) {
+    	  		  setTimeout(getPaidItems, 0);
+    	  		}
+     	  	}
+    	  	else {
+    	  		status("UpdatePrice: " + response.error);
+    	  	}
+    }
+
+    function getPaidItems() {
+    	print ('getPaidItems');
+      lttest.api.getPaidItems(publisherUrl(), 'onGetPaidItems');     
+
+    }
+
+    function onGetPaidItems(response) {
+        if (response.error) {
+            status(response.error);
+            return;
+          }
+          try {
+            assertEquals(3, response.items.length);
+	          its = []
+	          jQuery.each(response.items, function(i, item){
+	              its.push( jQuery.parseJSON(item));
+	          });
+            assertEquals('i2', its[0].title);
+            assertEquals('i1', its[1].title);
+            assertEquals('i0', its[2].title);
+            setTimeout(submitUserInteractions, 0);
+          } catch (e) {
+            status(e);
+          }
+    	
+    }
+    
+    function submitUserInteractions() {
+    	  print('submitUserInteractions');
+        // Submit user interactions.
+        interactions = [];
+        for (var i = 0; i < 30; i++) {
+          interactions.push({itemId: lttest['i4'].id, statType: StatType.VIEWS, spot: 3});
+          if (i < 10) {
+            interactions.push({itemId: lttest['i5'].id , statType: StatType.VIEWS, spot: 4});
+            if (i < 4) {
+              interactions.push({itemId: lttest['i5'].id, statType: StatType.CLICKS, spot: 4});
+              if (i < 2) {
+                  interactions.push({itemId: lttest['i5'].id, statType: StatType.CLOSES, spot: 4});            	  
+              }
+            }
+          }
+        }
+        lttest.api.submitUserInteraction(publisherUrl(), interactions, 'onNullResponse');
+        setTimeout(getOrderedItems, 10000);
+
+    }
+    
+    function getOrderedItems() {
+    	print('getOrderedItems');
+      lttest.api.getOrderedItems(publisherUrl(), 'onGetOrderedItems');    
+    }
+    
+    function onGetOrderedItems(response) {
+    	if (response.error) {
+    		status(response.error);
+    		return;
+    	}
+    	
+    	print('number of ordered items ' + response.items.length);
+    	if (response.items.length < 10) {
+    		setTimeout(getOrderedItems, 3000);
+    		return;
+    	}
+    	its = []
+    	jQuery.each(response.items, function(i, item){
+    		  its.push( jQuery.parseJSON(item));
+    	});
+    	try {
+	    	assertEquals('i2', its[0].title); // tier0
+	    	assertEquals('i1', its[1].title);
+	    	assertEquals('i0', its[2].title);
+	    	assertEquals('i5', its[3].title); // tier2
+	    	setTimeout(publisherStats, 0);
+      } catch (e) {
+        status(e);
+      }
+    }
+    
+    function publisherStats() {
+    	print('publisherStats');
+        // get publisher stats
+        // verify amount = 3 + 2 + 1
+    	  lttest.api.getPublisherSiteStats(publisherUrl(), 'onPublisherStats');
+    }
+    
+    function onPublisherStats(response) {
+    	if (response.error) {
+    		status(response.error);
+    		return;
+    	}
+    	try {
+		    var site = jQuery.parseJSON(response.publisherSites[0]);
+		    assertStats(site, StatType.CLICKS, 4);
+		    assertStats(site, StatType.CLOSES, 2);              
+		    assertEquals(6, site.amount);
+		    setTimeout(itemStats, 0);
+    	}
+    	catch (e) {
+            status(e);
+    	}
+    }
+    
+    function itemStats() {
+    	print('itemStats');
+  	  lttest.api.getItemStats(lttest['i5'].id, InfoType.FULL, 'onItemStats');  	  
+    }
+    
+    function onItemStats(response) {
+    	if (response.error) {
+    		status(response.error);
+    		return;
+    	}
+    	try {
+	    	var it = jQuery.parseJSON(response.items[0]);
+	    	assertStats(it, StatType.VIEWS, 10);
+	    	assertStats(it, StatType.CLICKS, 4);
+	    	assertStats(it, StatType.CLOSES, 2);
+	    	setTimeout(getSpotStats, 0);
+    	} catch (e) {
+    		status(e);
+    	}
+    }
+
+    function getSpotStats() {
+        print('spotStats');
+        lttest.api.getSpotStats(4, publisherUrl(), 'onGetSpotStats');
+    }
+
+
+    function onGetSpotStats(response) {
+        if (response.error) {
+            status(response.error);
+            return;
+          }
+          try {
+            var it = jQuery.parseJSON(response.spots[0]);
+            assertStats(it, StatType.VIEWS, 10);
+            assertStats(it, StatType.CLICKS, 4);
+            assertStats(it, StatType.CLOSES, 2);
+            setTimeout(submitFilter, 0);
+          } catch (e) {
+            status(e);
+          }
+    }
+    
+    function submitFilter() {
+        print('submitFilter');
+        var filter = {};
+        filter.durationId = Duration.ETERNITY;
+        filter.popularity = 40;
+        filter.recency = 60;
+        lttest.api.submitFilter(publisherUrl(), filter, 'onSubmitFilter');
+    }
+    
+    function onSubmitFilter() {
+    	  print('getFilter');
+        lttest.api.getFilter(publisherUrl(), 'onGetFilter');
+    }
+    
+    function onGetFilter(response) {
+    	if (response.error) {
+    		status(response.error);
+    		return;
+    	}
+    	try {
+        var filter = jQuery.parseJSON(response.filter);
+        assertEquals(40, filter.popularity);
+        assertEquals(60, filter.recency);
+        assertEquals(Duration.ETERNITY, filter.durationId);
+        lttest.numTestsLeft -=1; 
+        print('Done testApi');
+        
+    	} catch (e) {
+        status(e);
+    	}
+    }
+    
+    function assertStats(obj, type, num) {
+        assertEquals(num, obj.timedStats[0][0][type]);
+        assertEquals(num, obj.totalStats[type]);
+   }
+    
+    
+    function onNullResponse(response) {
+    	if (response.error) {
+    		status(response.error);
+    	}
+    	
+    }
+    
+    function print(s) {
+      jQuery("#output").html(jQuery('#output').html() + '<br\>' + s);
+    }
+    function status(e) {
+    	var s = '';
+    	if (e.jsUnitMessage != undefined) {
+    		s = e.jsUnitMessage;
+    	} else {
+    		s = e;
+    	}
+      jQuery("#status").html(s);
+    }    
+   </script>
+ </body>
+</html>

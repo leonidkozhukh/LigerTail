@@ -144,7 +144,7 @@ LTApi.prototype.serialize = function(obj) {
 		    }
 	    	var val = obj[prop];
 	    	if (prop == 'publisherUrl') {
-	    	  val = LTApi.stripPublisherUrl(val);
+	    	  val = LTApi.normalizePublisherUrl(val);
 	    	}
 	    	str += escape(prop) + "=" + escape(val);
 	     }
@@ -157,8 +157,9 @@ LTApi.prototype.serialize = function(obj) {
 };
 
 //TODO: cache results
-LTApi.stripPublisherUrl = function(url) {
-	var original = url;
+LTApi.normalizePublisherUrl = function(url) {
+	var original = url = url.toLowerCase();
+	
 	if (url.search('http') != 0) {
 	  url = 'http://' + url;
 	}
@@ -169,7 +170,10 @@ LTApi.stripPublisherUrl = function(url) {
 	var m = re.exec(url);
 	var pureDomain = ''
 	if (m == null) {
-		url += '/index.html';
+		if (url.charAt(url.length-1) != '/') {
+			url += '/';
+		}
+		url += 'index.html';
 	    m = re.exec(url);
 	}
 	if (m == null) {

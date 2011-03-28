@@ -41,6 +41,7 @@ class DefaultFilterStrategy(Singleton):
       item.engagement = engagement
       if views < self.params.num_views_threshold and item.price > 0:
         tier0.append(item)
+        item.tier = 0
         continue
       if views >= self.params.num_views_threshold and engagement >= self.params.tier1_engagement_threshold:
         tier1.append(item)
@@ -53,7 +54,9 @@ class DefaultFilterStrategy(Singleton):
       if views < self.params.num_views_threshold:
         item.tier = 3
         tier3.append(item)
-        
+        continue
+      else:
+        logging.info('item %s did not make it into the alg' % item.title);
     sortedTier0 = sorted(tier0, key = lambda item : item.price, reverse=True)
     sortedTier1 = sorted(tier1, key = lambda item : item.engagement, reverse=True)
     sortedTier2 = sorted(tier2, key = lambda item : item.engagement, reverse=True)
