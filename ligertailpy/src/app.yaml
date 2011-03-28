@@ -18,9 +18,12 @@ handlers:
 
 - url: /web/images
   static_dir: web/images
-  
+    
 - url: /web/styles
   static_dir: web/styles
+ 
+- url: /web/scripts
+  static_dir: web/scripts
   
 - url: /web/amline
   static_dir: web/amline

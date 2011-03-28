@@ -34,13 +34,14 @@ function LoadFile(filename, filetype){
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
-LoadFile("../js/jquery.min.js", "js");
-LoadFile("../js/postrequest.js", "js");
-LoadFile("../js/json2.js", "js");
-LoadFile("../js/apiproxy.js", "js");
-LoadFile("../frontend/apihandler.js", "js");
+    LoadFile("../js/jquery.min.js", "js");
+    LoadFile("../js/postrequest.js", "js");
+    LoadFile("../js/json2.js", "js");
+    LoadFile("../js/apiproxy.js", "js");
+    LoadFile("../frontend/apihandler.js", "js");
 
-
+    LoadFile("../web/scripts/facebox.js", "js");
+    LoadFile("../web/styles/facebox.css", "css");
 
 
     $(document).ready(function(){
@@ -81,10 +82,7 @@ function init(publisherUrl) {
 
 function showGraph(scope, id, analytics, duration){
     if(scope != null && id != null){
-        so.addVariable("additional_chart_settings", "<settings><values><y_left><duration>" + duration + "</duration></y_left></values></settings>");
         so.addVariable("chart_data", window.analytics_data[scope][id][dur[duration]][analytics]); 
-        //console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
-        console.log(window.analytics_data[scope][id][dur[duration]][analytics]);
         
         jQuery("#paramScope option:[value='" + scope + "']").attr('selected', 'selected');
         jQuery("#paramAnalytics option:[value='" + analytics + "']").attr('selected', 'selected');
@@ -96,139 +94,146 @@ function showGraph(scope, id, analytics, duration){
     so.write("flashcontent");
 }
 
-function initAll(){
-    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
+function openPaymentLightbox(id){                
+    jQuery.facebox(function(){             
+        jQuery(document).bind('reveal.facebox', function(event){ 
+            //fill in $ amount                                                
+            jQuery("#pay_amount").val(jQuery(".rbody .row-first input").val().replace('$', ''));                                               
+        
+            //form validation
+            //load credit card validation
+            //$ amount
+            jQuery("#payForm #pay_amount").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(0) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(0) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(0) label").css("color", "gray");
+            });
     
-    //initialize communication with ligertail
-    init(window.PUBLISHER_URL);
-    var urlParams = getUrlParameters();
-    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
-   
-   
-   /* done on button click
+            //email
+            jQuery("#payForm #pay_email").blur(function(){
+                if(!ValidateEmail(jQuery(this).val()))
+                    jQuery("#payForm .row:eq(1) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(1) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(1) label").css("color", "gray");
+            });
     
-    //load credit card validation
-    //first
-    jQuery("#payment_form #first_name").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(1)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(1)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(1)").css("color", "black");
-    });
+            //first
+            jQuery("#payForm #pay_first_name").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(2) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(2) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(2) label").css("color", "gray");
+            });
             
-    //last
-    jQuery("#payment_form #last_name").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(3)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(3)").css("color", "black");
-    });
+            //last
+            jQuery("#payForm #pay_last_name").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(3) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(3) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(3) label").css("color", "gray");
+            });
     
-    //email
-    jQuery("#payment_form #email").blur(function(){
-        if(!ValidateEmail(jQuery(this).val()))
-            jQuery("#payment_form tr:nth-child(5)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(5)").css("color", "black");
-    });
+            //address
+            jQuery("#payForm #pay_address").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(4) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(4) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(4) label").css("color", "gray");
+            });
     
-    //address
-    jQuery("#payment_form #address").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(7)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(7)").css("color", "black");
-    });
+            //city
+            jQuery("#payForm #pay_city").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(5) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(5) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(5) label").css("color", "gray");
+            });
     
-    //city
-    jQuery("#payment_form #city").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(9)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(9)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(9)").css("color", "black");
-    });
+            //state
+            jQuery("#payForm #pay_state").blur(function(){
+                if(jQuery(this).val().length != 2)
+                    jQuery("#payForm .row:eq(6) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(6) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(6) label").css("color", "gray");
+            });
     
-    //state
-    jQuery("#payment_form #state").blur(function(){
-        if(jQuery(this).val().length != 2)
-            jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(11) th:nth-child(2)").css("color", "black");
-    });
+            //zip
+            jQuery("#payForm #pay_zip").blur(function(){
+                if(jQuery(this).val().length != 5)
+                    jQuery("#payForm .row:eq(7) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(7) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(7) label").css("color", "gray");
+            });
     
-    //zip
-    jQuery("#payment_form #zip").blur(function(){
-        if(jQuery(this).val().length != 5)
-            jQuery("#payment_form tr:nth-child(11) th:last").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(11) th:last").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(11) th:last").css("color", "black");
-    });
+            //cc #
+            jQuery("#payForm #pay_cc_number").blur(function(){
+                if(jQuery(this).val().length != 16)
+                    jQuery("#payForm .row:eq(8) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(8) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(8) label").css("color", "gray");
+            });
     
-    //cc #
-    jQuery("#payment_form #cc").blur(function(){
-        if(jQuery(this).val().length != 16)
-            jQuery("#payment_form tr:nth-child(13)").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(13)").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(13)").css("color", "black");
-    });
+            //exp
+            jQuery("#payForm #pay_card_expiration_month").blur(function(){
+                if(jQuery(this).val().length == 0)
+                    jQuery("#payForm .row:eq(9) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(9) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(9) label").css("color", "gray");
+            });
     
-    //exp
-    jQuery("#payment_form #expiration_month").blur(function(){
-        if(jQuery(this).val().length == 0)
-            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(15) th:first").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "black");
-    });
+            jQuery("#payForm #pay_card_expiration_year").blur(function(){
+                if(jQuery(this).val().length != 4)
+                    jQuery("#payForm .row:eq(10) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(10) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(10) label").css("color", "gray");
+            });
     
-    jQuery("#payment_form #expiration_year").blur(function(){
-        if(jQuery(this).val().length != 4)
-            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(15) th:first").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(15) th:first").css("color", "black");
-    });
-    
-    //cvs
-    jQuery("#payment_form #cvs").blur(function(){
-        if(jQuery(this).val().length != 3)
-            jQuery("#payment_form tr:nth-child(15) th:last").css("color", "red");
-        else if(jQuery("#payment_form tr:nth-child(15) th:last").css("color") == "rgb(255, 0, 0)")
-            jQuery("#payment_form tr:nth-child(15) th:last").css("color", "black");
-    });
+            //cvs
+            jQuery("#payForm #pay_cvs").blur(function(){
+                if(jQuery(this).val().length != 3)
+                    jQuery("#payForm .row:eq(11) label").css("color", "red");
+                else if(jQuery("#payForm .row:eq(11) label").css("color") == "rgb(255, 0, 0)")
+                    jQuery("#payForm .row:eq(11) label").css("color", "gray");
+            });
     
 
-    //catch submission
-    //add error message to form
-    //or
-    //redirect to receipt page
-    jQuery("#payment_form").bind("sub submit", function(){
-        event.preventDefault();
-        //console.log("submitted");
+            //catch submission
+            //add error message to form
+            jQuery("#payForm").submit(function(event){
+                event.preventDefault();
         
-        var price = jQuery("#payment_price .pricing").html().replace("$", "");
-        var first_name = jQuery("#payment_form #first_name").val();
-        var last_name = jQuery("#payment_form #last_name").val();
-        var address = jQuery("#payment_form #address").val();
-        var city = jQuery("#payment_form #city").val();
-        var state = jQuery("#payment_form #state").val();
-        var zip = jQuery("#payment_form #zip").val();
-        var cc = jQuery ("#payment_form #cc").val();
-        var expiration_month = jQuery("#payment_form #expiration_month").val();
-        var expiration_year = jQuery("#payment_form #expiration_year").val();
-        var cvs = jQuery("#payment_form #cvs").val();
+                var price = jQuery("#payForm #pay_amount").val();
+                var email = jQuery("#payForm #pay_email").val();
+                var first_name = jQuery("#payForm #pay_first_name").val();
+                var last_name = jQuery("#payForm #pay_last_name").val();
+                var address = jQuery("#payForm #pay_address").val();
+                var city = jQuery("#payForm #pay_city").val();
+                var state = jQuery("#payForm #pay_state").val();
+                var zip = jQuery("#payForm #pay_zip").val();
+                var cc = jQuery ("#payForm #pay_cc_number").val();
+                var expiration_month = jQuery("#payForm #pay_card_expiration_month").val();
+                var expiration_year = jQuery("#payForm #pay_card_expiration_year").val();
+                var cvs = jQuery("#payForm #pay_cvs").val();
         
-        if(price > 0 && first_name.length > 0 && last_name.length > 0 && 
-             address.length > 0 && city.length > 0 && state.length == 2 && 
-             zip.length == 5 && cc.length == 16 && expiration_month.length > 0 && 
-             expiration_year.length == 4 && cvs. length == 3){
+                if(price > 0 && ValidateEmail(email) && first_name.length > 0 && last_name.length > 0 && 
+                   address.length > 0 && city.length > 0 && state.length == 2 && 
+                   zip.length == 5 && cc.length == 16 && expiration_month.length > 0 && 
+                   expiration_year.length == 4 && cvs. length == 3){
                                                               
-             //disable form & show waiting dialog, then submit
-             jQuery("#payment_price, #payment_form :input").attr('disabled', true);
+                        //disable form & show waiting dialog, then submit
+                        jQuery("#payForm .row:last").remove();
+                        jQuery("#payForm").append('<div class="row last-row">' +
+                            '<div class="message" id="payFormMessage">Thanks for your purchase! Please check your email.</div>' +
+                            '<div class="veneer"></div>' +
+                            '</div>');
           
-             var paymentInfo = {
+                        var paymentInfo = {
                            "price": price,
+                           "email": email,
                            "first_name": first_name,
                            "last_name": last_name,
-                           "itemId": urlParams['itemId'],
+                           "itemId": id,
                            "address": address,
                            "city": city,
                            "state": state,
@@ -236,29 +241,37 @@ function initAll(){
                            "cc": cc,
                            "expiration": expiration_month + '/' + expiration_year,
                            "cvs": cvs,                      
-             };
-             console.log(paymentInfo);
-             api.updatePrice(paymentInfo);
-          
-        }
-        else{
-             //show errors
-             jQuery("#payment_form .input_form, .input_form_short").trigger('blur');
-        }
+                           };
+             
+                        api.updatePrice(paymentInfo);    
+                    }
+                   else{
+                        //show errors
+                        jQuery("#payForm input, select").trigger('blur');
+                    }
+            });
+        });
+        
+        jQuery.facebox({ ajax: "payment_form.html"});              
+    });                                                    
+}
+
+function initAll(){
+    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
+    
+    //initialize communication with ligertail
+    init(window.PUBLISHER_URL);
+    var urlParams = getUrlParameters();
+    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+    
+    jQuery("#payFormSwitch").click(function(){
+            openPaymentLightbox(urlParams['itemId']);                                
     });
-    */
-    jQuery("#payment_price input").click(function(){
-        jQuery("#payment_form").trigger("sub");
+    
+    jQuery(".rbody .row-first input").live('keypress', function(event){
+        if(event.keyCode == 13)
+            openPaymentLightbox(urlParams['itemId']);
     });
-    
-    //change price
-    //done after item is loaded in apihandler
-    
-    //load paid content    
-    //load statistics for content item
-    //this is done in apihandler
-   
-    
     
 }
 
