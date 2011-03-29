@@ -37,7 +37,7 @@ class ActivityManager(Singleton):
     publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
     for activity in self.activities:
       if publisherActivityLoad <= activity.activity_load:
-        logging.info('ACTIVITY[%d]: %s for %s' % (publisherActivityLoad, activity.name, publisherUrl))
+        #logging.info('ACTIVITY[%d]: %s for %s' % (publisherActivityLoad, activity.name, publisherUrl))
         return activity
     # No match found, return whatever is there 
     logging.error('No appropriate activity load found for load %d per %s' % (publisherActivityLoad, self.activityDelta.name))
