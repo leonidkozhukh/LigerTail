@@ -106,7 +106,7 @@ function openPaymentLightbox(id){
             //load credit card validation
             //$ amount
             jQuery("#payForm #pay_amount").blur(function(){
-                if(jQuery(this).val().length == 0)
+                if(jQuery(this).val() > 0)
                     jQuery("#payForm .row:eq(0) label").css("color", "red");
                 else if(jQuery("#payForm .row:eq(0) label").css("color") == "rgb(255, 0, 0)")
                     jQuery("#payForm .row:eq(0) label").css("color", "gray");
@@ -162,7 +162,7 @@ function openPaymentLightbox(id){
     
             //zip
             jQuery("#payForm #pay_zip").blur(function(){
-                if(jQuery(this).val().length != 5)
+                if(jQuery(this).val() < 100000 && jQuery(this.val()) > 10000)
                     jQuery("#payForm .row:eq(7) label").css("color", "red");
                 else if(jQuery("#payForm .row:eq(7) label").css("color") == "rgb(255, 0, 0)")
                     jQuery("#payForm .row:eq(7) label").css("color", "gray");
@@ -264,7 +264,14 @@ function initAll(){
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
     var urlParams = getUrlParameters();
-    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+    if(urlParams['itemId'])
+        api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+    else{
+         so.amError('flashcontent', 'No itemId set!');
+         so.write('flashcontent');
+    }
+        
+        //so.addVariable("additional_chart_settings", "");
     
     jQuery("#payFormSwitch").click(function(){
             openPaymentLightbox(urlParams['itemId']);                                
