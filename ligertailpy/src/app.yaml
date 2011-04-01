@@ -36,7 +36,7 @@ handlers:
   secure: always
   script: main.py
 
-- url: /webadmin
+- url: /admin
   script: main.py
   login: admin
   
