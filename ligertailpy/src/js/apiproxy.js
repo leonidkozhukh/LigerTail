@@ -34,7 +34,9 @@ var InfoType = {
 };
 
 function LTApi() {
-	var i = 1;
+	if (!postRequest) {
+		throw "postrequest not initialized";
+	}
 }
 
 LTApi.prototype.init = function(apiHandler, domain) {
@@ -256,7 +258,7 @@ assert = function(cond) {
 }
 
 LTApi.getDefaultDomain = function() {
-  var domain = "http://" + window.document.location.hostname;
+  var domain = window.document.location.protocol + "//" + window.document.location.hostname;
   if (window.document.location.port) {
     domain += ":" + window.document.location.port;
   }

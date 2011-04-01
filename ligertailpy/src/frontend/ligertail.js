@@ -1,3 +1,4 @@
+
 (function(window, document, version, callback) {
     var j, d;
     var loaded = false;
@@ -14,8 +15,43 @@
         document.documentElement.childNodes[0].appendChild(script)
     }
 })(window, document, "1.4", function($, jquery_loaded) {
-                                                        
+
+	function LoadFile(filename, filetype){
+	    if (filetype == "js"){ //if filename is an external JavaScript file
+	          var fileref = document.createElement('script');
+	          fileref.setAttribute("type", "text/javascript");
+	          fileref.setAttribute("src", filename);
+	     }
+	     else if (filetype == "css"){ //if filename is an external CSS file
+	         var fileref = document.createElement("link");
+	          fileref.setAttribute("rel", "stylesheet");
+	          fileref.setAttribute("type", "text/css");
+	          fileref.setAttribute("href", filename);
+	     }
+
+	     if (typeof fileref != "undefined")
+	          document.getElementsByTagName("head")[0].appendChild(fileref);
+	}
+	
+	
     var initialized = false;
+
+    LoadFile("../js/jquery.min.js", "js");
+    LoadFile("../js/postrequest.js", "js");
+    LoadFile("../js/json2.js", "js");
+    LoadFile("../js/apiproxy.js", "js");
+    LoadFile("../frontend/apihandler.js", "js");
+
+    LoadFile("../frontend/facebox/facebox.js", "js");
+    LoadFile("../frontend/facebox/facebox.css", "css");
+    LoadFile("../frontend/css/widget_1.css", "css");
+
+    $(document).ready(function(){
+        tryToInit();                  
+     });
+
+ });    
+    //LOAD PUBLISHER-SET PARAMETERS
 
 function LoadFile(filename, filetype){
     if (filetype == "js"){ //if filename is an external JavaScript file
@@ -33,17 +69,6 @@ function LoadFile(filename, filetype){
      if (typeof fileref != "undefined")
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
-    LoadFile("../js/jquery.min.js", "js");
-    LoadFile("../js/postrequest.js", "js");
-    LoadFile("../js/json2.js", "js");
-    LoadFile("../js/apiproxy.js", "js");
-    LoadFile("../frontend/apihandler.js", "js");
-
-    LoadFile("../frontend/facebox/facebox.js", "js");
-    LoadFile("../frontend/facebox/facebox.css", "css");
-    LoadFile("../frontend/css/widget_1.css", "css");
-    
-    //LOAD PUBLISHER-SET PARAMETERS
 
 function SetupParameters(){
     ///////////////////////////////
@@ -390,15 +415,15 @@ function initAll(){
                    
                    
 }
-    
 
+function tryToInit() {
+    try {
+        var test = new ApiHandler();
+        var test1 = new LTApi();
+    } catch (e) {
+        setTimeout("tryToInit()", 100);
+        return;
+    };
+    initAll();
+}
 
-    $(document).ready(function(){
-       initAll();                  
-    });
-    
-
-});
-
-//TODO:
-//if api initialization problem persists, use payment.js pattern
