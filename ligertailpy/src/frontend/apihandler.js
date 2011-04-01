@@ -54,7 +54,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 }
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
-	console.log(response);
+	//console.log(response);
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {

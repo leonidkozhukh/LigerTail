@@ -55,8 +55,6 @@ class DefaultFilterStrategy(Singleton):
         item.tier = 3
         tier3.append(item)
         continue
-      else:
-        logging.info('item %s did not make it into the alg' % item.title);
     sortedTier0 = sorted(tier0, key = lambda item : item.price, reverse=True)
     sortedTier1 = sorted(tier1, key = lambda item : item.engagement, reverse=True)
     sortedTier2 = sorted(tier2, key = lambda item : item.engagement, reverse=True)
