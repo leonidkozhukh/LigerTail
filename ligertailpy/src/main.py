@@ -64,7 +64,8 @@ class UpdatePriceHandler(BaseHandler):
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
         paymentConfig = model.getPaymentConfig()
-        if item and self._verifyTransaction(item, paymentConfig.test_mode):  
+        testMode = paymentConfig.test_mode or item.publisherUrl.find('test.ligertail.com/test') == 0
+        if item and self._verifyTransaction(item, testMode):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
