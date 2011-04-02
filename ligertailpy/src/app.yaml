@@ -4,6 +4,10 @@ runtime: python
 api_version: 1
 
 handlers:
+
+- url: .+/ 
+  script: slashmurderer.py
+  
 - url: /js
   static_dir: js
   secure: optional
@@ -36,7 +40,7 @@ handlers:
   secure: always
   script: main.py
 
-- url: /webadmin
+- url: /admin
   script: main.py
   login: admin
   
