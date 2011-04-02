@@ -5,7 +5,9 @@ api_version: 1
 
 handlers:
 
- 
+- url: .+/ 
+  script: slashmurderer.py
+  
 - url: /js
   static_dir: js
   secure: optional
