@@ -29,6 +29,7 @@
     border:1px solid #ccc;
     width:300px;
     margin-bottom: 5px;
+    line-height: 24px;
 }
 
 #ligertail_submission_lightbox_button_pay, #ligertail_submission_lightbox_button_free{

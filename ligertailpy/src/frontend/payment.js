@@ -267,8 +267,8 @@ function initAll(){
     if(urlParams['itemId'])
         api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
     else{
-         so.amError('flashcontent', 'No itemId set!');
-         so.write('flashcontent');
+        // so.amError('flashcontent', 'No itemId set!');
+        // so.write('flashcontent');
     }
         
         //so.addVariable("additional_chart_settings", "");
