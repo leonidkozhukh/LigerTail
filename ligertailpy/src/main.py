@@ -249,8 +249,8 @@ def main():
                                           ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          ('/admin', admin.AdminHandler),
-                                          ('/admin/(.*)', admin.AdminHandler),
+                                          (r'/admin|/admin/(.*)', admin.AdminHandler),
+                                          #('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           
