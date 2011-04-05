@@ -64,8 +64,7 @@ class UpdatePriceHandler(BaseHandler):
         # TODO: assert https
         item = BaseHandler.getItem(self, self.getParam('itemId'))
         paymentConfig = model.getPaymentConfig()
-        testMode = paymentConfig.test_mode or item.publisherUrl.find('test.ligertail.com/test') == 0
-        if item and self._verifyTransaction(item, testMode):  
+        if item and self._verifyTransaction(item, paymentConfig.test_mode):  
           item.updatePrice(int(self.getParam('price')), self.getParam('email'))
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
@@ -250,7 +249,7 @@ def main():
                                           ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          ('/admin/(.*)', admin.AdminHandler),
+                                          (r'/admin|/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           

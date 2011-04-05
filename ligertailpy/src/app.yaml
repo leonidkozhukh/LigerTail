@@ -4,9 +4,6 @@ runtime: python
 api_version: 1
 
 handlers:
-
-- url: .+/ 
-  script: slashmurderer.py
   
 - url: /js
   static_dir: js
@@ -44,6 +41,10 @@ handlers:
   script: main.py
   login: admin
   
+- url: /admin/.*
+  script: main.py
+  login: admin
+
 - url: /ligertail.js
   static_files: frontend/ligertail.js
   upload: frontend/ligertail.js
