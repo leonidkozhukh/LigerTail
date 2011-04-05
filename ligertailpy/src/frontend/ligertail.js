@@ -233,7 +233,7 @@ function OpenLightboxSubmission(url){
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
-                    item.description.length > 0 && item.description.length < 512 &&
+                    item.description.length > 3 && item.description.length < 512 &&
                     ValidateEmail(item.email)){
                     
                         api.submitItem(item); 
