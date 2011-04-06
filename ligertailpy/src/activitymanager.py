@@ -16,9 +16,12 @@ class ActivityManager(Singleton):
   def __init__(self):
     self.activities = []
     self.publisherActivityLoadMap = {}
-    # TODO be able to update via AI
-    self.activityDelta = model.MINUTELY #HOURLY
+    # TODO be able to update via UI
+    self.activityDelta = model.HOURLY
     
+  def getActivityPeriod(self):
+    return self.activityDelta.name
+  
   def lazyLoad_(self):
     if not len(self.activities):
       self.activities = model.getActivities(True)
