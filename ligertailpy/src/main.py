@@ -255,7 +255,8 @@ def main():
                                           ('/api/submit_error', SubmitErrorHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          (r'/admin|/admin/(.*)', admin.AdminHandler),
+                                          ('/admin', admin.AdminHandler),
+                                          ('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           
