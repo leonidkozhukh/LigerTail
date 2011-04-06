@@ -4,6 +4,7 @@ runtime: python
 api_version: 1
 
 handlers:
+  
 - url: /js
   static_dir: js
   secure: optional
@@ -36,10 +37,14 @@ handlers:
   secure: always
   script: main.py
 
-- url: /webadmin
+- url: /admin
   script: main.py
   login: admin
   
+- url: /admin/.*
+  script: main.py
+  login: admin
+
 - url: /ligertail.js
   static_files: frontend/ligertail.js
   upload: frontend/ligertail.js

@@ -8,7 +8,7 @@
 }
 
 .ligertail_widget a:visited {
-	color: #D97021;
+	color: #000000;
 }
 
 .ligertail_widget .ligertail_widget_source a, .ligertail_widget_title a {
@@ -188,7 +188,7 @@
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
 	border:none;
-	padding: 7px;
+	padding:12px 0 0 5px;
 	width: 185px;
 	height: 25px;
 	float: left;

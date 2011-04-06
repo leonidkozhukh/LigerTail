@@ -27,6 +27,8 @@
     width:300px;
     margin-bottom: 5px;
     color: #000000;
+    line-height: 16px;
+    padding: 4px 0px 4px 0px;
 }
 
 #ligertail_submission_lightbox_button_pay, #ligertail_submission_lightbox_button_free{

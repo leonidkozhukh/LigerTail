@@ -41,7 +41,7 @@ class AdminHandler(webapp.RequestHandler):
               context['paymentparams'] = model.getPaymentConfig()
       
             path = ''
-            if len(url) > 0:
+            if url and len(url) > 0:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', url)
             else:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', 'index.html')
