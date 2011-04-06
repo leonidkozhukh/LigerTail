@@ -49,3 +49,7 @@ BaseApiHandler.prototype.onGetSpotStats = function(response) {
 BaseApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	debug(response);
 }
+
+BaseApiHandler.prototype.onSubmitError = function(response) {
+	debug(response);
+}

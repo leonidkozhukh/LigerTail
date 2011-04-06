@@ -297,6 +297,9 @@ ApiHandler.prototype.onGetPublisherSiteStats = function(response) {
 	});
 }
 
+ApiHandler.prototype.onSubmitError = function(response) {
+}
+
 ApiHandler.parseStats_ = function(obj) {
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	var idMap = [0,1,2,4];
