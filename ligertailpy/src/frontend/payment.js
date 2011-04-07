@@ -4,7 +4,7 @@
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "../js/jquery.min.js"; 
+        script.src = "http://ligertail.com/js/jquery.min.js"; 
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -36,14 +36,14 @@
 var initialized = false;
 
 
-    LoadFile("../js/jquery.min.js", "js");
-    LoadFile("../js/postrequest.js", "js");
-    LoadFile("../js/json2.js", "js");
-    LoadFile("../js/apiproxy.js", "js");
-    LoadFile("../frontend/apihandler.js", "js");
+    LoadFile("http://ligertail.com/js/jquery.min.js", "js");
+    LoadFile("http://ligertail.com/js/postrequest.js", "js");
+    LoadFile("http://ligertail.com/js/json2.js", "js");
+    LoadFile("http://ligertail.com/js/apiproxy.js", "js");
+    LoadFile("http://ligertail.com/frontend/apihandler.js", "js");
 
-    LoadFile("../web/scripts/facebox.js", "js");
-    LoadFile("../web/styles/facebox.css", "css");
+    LoadFile("http://ligertail.com/web/scripts/facebox.js", "js");
+    LoadFile("http://ligertail.com/web/styles/facebox.css", "css");
 
 
     $(document).ready(function(){

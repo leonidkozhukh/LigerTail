@@ -5,7 +5,7 @@ function postRequest(domain, command, type, data, callback) {
 		  data: data,
 		  dataType: "jsonp",
 		  jsonpCallback: callback,
-		  contentType: "application/x-www-form-urlencoded",
+		  contentType: "application/x-www-form-urlencoded"
 	});
 }
 

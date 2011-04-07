@@ -98,7 +98,7 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 /* @info-block */
 .info-block {display: table; height: 540px; width: 465px;}
-.info-block-small {height: 387px;}
+.info-block-small {height: 387px; zoom: 1;}
 .inner-wrap {display: table-cell; padding: 0 1px; text-align: center; vertical-align: middle; position: relative; background:url(../images/bg/info-block-pad.png) no-repeat left top;}
 .info-block-small .inner-wrap {background: url(../images/bg/info-block-pad-small.png) no-repeat left top;}
 .info-block-presentation .inner-wrap {background-image: url(../images/bg/info-block-pad-presentation.png);}
@@ -334,7 +334,7 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 
 /* @text-block */
-.text-block.fixed .text-block-inner {height: 450px; overflow:auto}
+.text-block.fixed .text-block-inner {height: 450px; overflow:auto; overflow-x:hidden;}
 .text-block {position:relative; color: #666666;}
 .text-block-inner {padding: 20px 45px 20px 28px;}
 .text-block h1 {font-size: 22px; color: #333333;}

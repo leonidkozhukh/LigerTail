@@ -77,10 +77,10 @@
 
   $.extend($.facebox, {
     settings: {
-      opacity      : 0.7,
+      opacity      : 0.4,
       overlay      : true,
-      loadingImage : '../frontend/facebox/loading.gif',
-      closeImage   : '../frontend/facebox/closelabel.gif',
+      loadingImage : 'http://ligertail.com/frontend/facebox/loading.gif',
+      closeImage   : 'http://ligertail.com/frontend/facebox/closelabel.gif',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
       faceboxHtml  : '\
     <div id="facebox" style="display:none;"> \
@@ -97,7 +97,7 @@
                 </div> \
                 <div class="footer"> \
                   <a href="#" class="close"> \
-                    <img src="../frontend/facebox/closelabel.gif" title="close" class="close_image" /> \
+                    <img src="http://ligertail.com/frontend/facebox/closelabel.gif" title="close" class="close_image" /> \
                   </a> \
                 </div> \
               </td> \
