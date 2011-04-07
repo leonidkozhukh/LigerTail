@@ -34,6 +34,7 @@ class AdminHandler(webapp.RequestHandler):
               newActivity.max_time_sec_before_triggering = 0
               activities.append(newActivity)
               context['activities'] = activities
+              context['timePeriod'] = activityManager.getActivityPeriod()
             elif url =='publishers.html':
               publishers = model.getPublisherSites()
               context['publishers'] = publishers

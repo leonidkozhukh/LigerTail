@@ -228,6 +228,11 @@ class GetPublisherSiteStatsHandler(BaseHandler):
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
 
+class SubmitErrorHandler(BaseHandler):
+    def post(self):
+        BaseHandler.initFromRequest(self, self.request)
+        logging.error('Client Error for %s \n%s' % (self.getParam('publisherUrl'), self.getParam('stack')));
+
 
 class ProcessItemUpdatesWorker(webapp.RequestHandler):
     def post(self):
@@ -247,9 +252,11 @@ def main():
                                           ('/api/get_item_stats', GetItemStatsHandler),
                                           ('/api/get_spot_stats', GetSpotStatsHandler),
                                           ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
+                                          ('/api/submit_error', SubmitErrorHandler),
                                           # tasks
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          (r'/admin|/admin/(.*)', admin.AdminHandler),
+                                          ('/admin', admin.AdminHandler),
+                                          ('/admin/(.*)', admin.AdminHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           

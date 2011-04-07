@@ -1,4 +1,5 @@
 var _apiHandler = null;
+var _apiProxy = null;
 
 var StatType = {
 	UNIQUES : 0, 
@@ -34,9 +35,12 @@ var InfoType = {
 };
 
 function LTApi() {
+	_apiProxy = this;
 	if (!postRequest) {
 		throw "postrequest not initialized";
 	}
+	this.inError = false;
+	this.currentPublisherUrl = window.document.location.href;
 }
 
 LTApi.prototype.init = function(apiHandler, domain) {
@@ -134,6 +138,17 @@ LTApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
 	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : '_apiHandler.onGetPublisherSiteStats');
 };
 
+LTApi.prototype.submitError = function(publisherUrl, trace) {
+	if (this.inError) {
+		return;
+	}
+	this.inError = true;
+	var data = this.serialize({"publisherUrl":publisherUrl, "stack":trace});
+	postRequest(this.domain, 'submit_error', 'POST', data, '_apiHandler.onSubmitError');
+	this.inError = false;
+};
+
+
 LTApi.prototype.serialize = function(obj) {
 	var first = true;
 	var str = "";
@@ -147,6 +162,7 @@ LTApi.prototype.serialize = function(obj) {
 	    	var val = obj[prop];
 	    	if (prop == 'publisherUrl') {
 	    	  val = LTApi.normalizePublisherUrl(val);
+	    	  this.currentPublisherUrl = val;
 	    	}
 	    	str += escape(prop) + "=" + escape(val);
 	     }
@@ -215,7 +231,7 @@ Function.prototype.trace = function()
         trace.push(current.signature());
         current = current.caller;
     }
-    return trace.join('\n');
+    return trace;
 }
 Function.prototype.signature = function()
 {
@@ -243,7 +259,7 @@ Function.prototype.getName = function()
     var definition = this.toString().split("\n")[0];
     //return definition;
     // TODO: Show args
-    var exp = new RegExp('/^function ([^\s(]+).+/|>');
+    var exp = new RegExp(/^function ([^\s(]+).+/);
     if(exp.test(definition))
         return definition.split("\n")[0].replace(exp, "$1") || "anonymous";
     return "anonymous";
@@ -252,8 +268,10 @@ Function.prototype.getName = function()
 
 assert = function(cond) {
 	if (!cond) {
-		alert("Invalid condition:\n " + arguments.callee.trace());
-		blah/0;
+		var publisherUrl = _apiProxy.currentPublisherUrl;
+		var trace = arguments.callee.trace();
+		
+		_apiProxy.submitError(publisherUrl, trace);
 	}
 }
 

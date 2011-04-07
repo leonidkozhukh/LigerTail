@@ -169,7 +169,13 @@ submitInteractions = function(response) {
 
 }
 
+function functionWithAssert(arg1, arg2) {
+	  assert(arg1 == arg2);	
+}
 
+function submitError() {
+    functionWithAssert("foo", "bar");
+}
 
 </script>
 </head>
@@ -179,6 +185,7 @@ submitInteractions = function(response) {
 <div>PublisherUrl </div><INPUT TYPE="text" ID="publisherUrl" VALUE="www.nytimes3.com"><P>
 
 <A href="#" onMouseDown="init()"><div>init api</div></A>
+<A href="#" onMouseDown="submitError()"><div>submit error</div></A>
 <A href="#" onMouseDown="getPublisherSiteStats()" ><div> get publisher site stats</div></A>
 <A href="#" onMouseDown="submitItem()" ><div> submit item</div></A>
 <A href="#" onMouseDown="getOrderedItems()" ><div> get ordered items</div></A>
