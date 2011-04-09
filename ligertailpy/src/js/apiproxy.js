@@ -160,7 +160,7 @@ LTApi.prototype.serialize = function(obj) {
 		          first = false;
 		    }
 	    	var val = obj[prop];
-	    	if (prop == 'publisherUrl') {
+	    	if (prop == 'publisherUrl' && !this.inError) {
 	    	  val = LTApi.normalizePublisherUrl(val);
 	    	  this.currentPublisherUrl = val;
 	    	}
@@ -177,7 +177,9 @@ LTApi.prototype.serialize = function(obj) {
 //TODO: cache results
 LTApi.normalizePublisherUrl = function(url) {
 	var original = url = url.toLowerCase();
-	
+	url = url.replace('#','');
+	url = url.replace('!', '');
+	url = url.replace(',', '');
 	if (url.search('http') != 0) {
 	  url = 'http://' + url;
 	}
@@ -195,12 +197,15 @@ LTApi.normalizePublisherUrl = function(url) {
 	    m = re.exec(url);
 	}
 	if (m == null) {
+		assert(m);
 		return original;
 	} else {
 	  pureDomain = m[3];
+	  path = m[4];
 	  file = m[6];
+	  pureDomain += path;
 	  if (file.search('index.') == -1) {
-		 pureDomain += '/' + file
+		 pureDomain += file
 	  }
 	}
 	return pureDomain;
