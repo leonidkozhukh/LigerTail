@@ -33,6 +33,7 @@ class MainHandler(webapp.RequestHandler):
             path = os.path.join(os.path.dirname(__file__), 'web', url)
         else:
             path = os.path.join(os.path.dirname(__file__), 'web', 'index.html')
+        self.response.headers["Access-Control-Allow-Origin"] = '*'
         self.response.out.write(template.render(path, {}))
         
 class SubmitItemHandler(BaseHandler):
