@@ -136,7 +136,7 @@ function OpenLightboxSubmission(url){
         if(window.parameter["width"] == 600)
             jQuery.facebox({ ajax: "http://ligertail.com/frontend/submission_large.html"});
         else
-            jQuery.facebox({ ajax: "http://ligertail.com/frontend/submission.html"});
+            jQuery.facebox({ ajax: "http://localhost:8081/frontend/submission.html"});
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){
@@ -234,22 +234,12 @@ function OpenLightboxSubmission(url){
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length < 100) && 
-                    item.description.length > 3 && item.description.length < 512 &&
-                    ValidateEmail(item.email)){
-                    
-                        api.submitItem(item); 
-                        //console.log(item);
-                        
-                        jQuery(document).trigger('close.facebox');
-                        
-                        
-                        
-                        //error here: not removing last item in widget
-                        
-                        //redirect to submit confirmation later
+                    item.description.length >= 3 && item.description.length < 512 &&
+                    ValidateEmail(item.email)){                   
+                        api.submitItem(item);                        
+                        jQuery(document).trigger('close.facebox');                     
                 }
                 else{
-                        //console.log(item);
                         jQuery("#ligertail_submission_lightbox_form input").trigger("blur");
                 }
             });

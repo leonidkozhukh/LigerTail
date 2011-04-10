@@ -18,6 +18,13 @@ function getDomain(url) {
   return clean_domain[1].replace('www.',''); 	
 }
 
+function checkLink(url) {
+   if(url.indexOf("http://") == -1 && url.indexOf("https://") == -1)
+	   return "http://" + url;	
+   else
+   	   return url;
+}
+
 ApiHandler.prototype.onItemSubmitted = function(response) {					
 	var item = jQuery.parseJSON(response.items[0]);
 	
@@ -26,10 +33,10 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
                         
     //add content to widget
      if(window.parameter["width"] == 600){                                                          
-          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="http://ligertail.com/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item.url +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item.url + '">' + getDomain(item.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span><div class="ligertail_widget_top_text"><p class="ligertail_widget_description">' + item.description + '</p></div></div>');
+          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="http://ligertail.com/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + checkLink(item.url) +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span><div class="ligertail_widget_top_text"><p class="ligertail_widget_description">' + item.description + '</p></div></div>');
      }
      else{
-          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item.url + '">' + item.title + '</a></span></div><div class="close"><img src="http://ligertail.com/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
+          jQuery(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span></div><div class="close"><img src="http://ligertail.com/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>');
      }													
 														
 													
@@ -65,10 +72,10 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		var item_obj = jQuery.parseJSON(item);
 		
 		if(window.parameter["width"] == 600){
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="http://ligertail.com/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + item_obj.url +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source"><a target="_blank" href="' + item_obj.url + '">' + getDomain(item_obj.url) + '</a></span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><p class="ligertail_widget_description">' + item_obj.description + '</p></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="http://ligertail.com/frontend/images/button_close.png" width="18" height="18" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + checkLink(item_obj.url) +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item_obj.url) + '">' + item_obj.title + '</a></span></div><p class="ligertail_widget_description">' + item_obj.description + '</p></div></div>';
 		}
 		else{
-			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + item_obj.url + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="http://ligertail.com/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
+			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item_obj.url) + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="http://ligertail.com/frontend/images/button_close.png" alt="Delete" width="18" height="18" border="0" /></div></div>';
 		}
 		
 		interactions[i] = {itemId: item_obj.id, statType: StatType.VIEWS, spot: window.LIGERTAIL_ITEMS_LOADED};
