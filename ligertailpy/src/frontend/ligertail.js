@@ -233,7 +233,7 @@ function OpenLightboxSubmission(url){
                     item.thumbnailUrl = "http://ligertail.com/frontend/images/default.png";
 
                 if(ValidateURL(item.url) && 
-                    (item.title.length > 3 && item.title.length < 100) && 
+                    (item.title.length > 3 && item.title.length <= 128) && 
                     item.description.length >= 3 && item.description.length < 512 &&
                     ValidateEmail(item.email)){                   
                         api.submitItem(item);                        
