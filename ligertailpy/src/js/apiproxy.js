@@ -177,9 +177,6 @@ LTApi.prototype.serialize = function(obj) {
 //TODO: cache results
 LTApi.normalizePublisherUrl = function(url) {
 	var original = url = url.toLowerCase();
-	url = url.replace('#','');
-	url = url.replace('!', '');
-	url = url.replace(',', '');
 	if (url.search('http') != 0) {
 	  url = 'http://' + url;
 	}
@@ -197,7 +194,9 @@ LTApi.normalizePublisherUrl = function(url) {
 	    m = re.exec(url);
 	}
 	if (m == null) {
-		assert(m);
+		if (url.search('http://localhost') != 0) {
+		  assert(m);
+		}
 		return original;
 	} else {
 	  pureDomain = m[3];
@@ -281,6 +280,7 @@ assert = function(cond) {
 }
 
 LTApi.getDefaultDomain = function() {
+  return "http://ligertailbackend.appspot.com/api";
   var domain = window.document.location.protocol + "//" + window.document.location.hostname;
   if (window.document.location.port) {
     domain += ":" + window.document.location.port;

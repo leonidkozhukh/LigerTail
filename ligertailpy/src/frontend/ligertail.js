@@ -134,9 +134,9 @@ function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
         
         if(window.parameter["width"] == 600)
-            jQuery.facebox({ ajax: "http://ligertail.com/frontend/submission_large.html"});
+            jQuery.facebox({ ajax: "http://ligertailbackend.appspot.com/submission_large.html"});
         else
-            jQuery.facebox({ ajax: "http://ligertail.com/frontend/submission.html"});
+            jQuery.facebox({ ajax: "http://ligertailbackend.appspot.com/submission.html"});
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){
