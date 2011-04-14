@@ -27,6 +27,9 @@ function publisherUrl() {
 function init() {
   var apiHandler = new BaseApiHandler();
   var domain = document.getElementById("domain").value;
+  if (!domain.length) {
+	  domain = null;
+  }
   window.api = new LTApi();
   api.init(apiHandler, domain);
 }

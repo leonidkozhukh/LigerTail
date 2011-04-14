@@ -1,11 +1,24 @@
 
+var LGDOMAIN = 'http://ligertailbackend.appspot.com';
+var LGVISIBLEDOMAIN = 'http://ligertail.com';
 (function(window, document, version, callback) {
     var j, d;
     var loaded = false;
+    if (!window.ligertail) {
+    	window.ligertail = {};
+    }
+    if (window.ligertail.domain) {
+    	LGDOMAIN = window.ligertail.domain;
+    	LGVISIBLEDOMAIN = window.ligertail.visibleDomain ? window.ligertail.visibleDomain : window.ligertail.domain;
+    } else {
+    	window.ligertail.domain = LGDOMAIN;
+    	window.ligertail.visibleDomain = LGVISIBLEDOMAIN;
+    }
+    
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://ligertail.com/js/jquery.min.js";
+        script.src = LGDOMAIN + "/js/jquery.min.js";
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -36,15 +49,15 @@
 	
     var initialized = false;
 
-    LoadFile("http://ligertail.com/js/jquery.min.js", "js");
-    LoadFile("http://ligertail.com/js/postrequest.js", "js");
-    LoadFile("http://ligertail.com/js/json2.js", "js");
-    LoadFile("http://ligertail.com/js/apiproxy.js", "js");
-    LoadFile("http://ligertail.com/frontend/apihandler.js", "js");
+    LoadFile(LGDOMAIN + "/js/jquery.min.js", "js");
+    LoadFile(LGDOMAIN + "/js/postrequest.js", "js");
+    LoadFile(LGDOMAIN + "/js/json2.js", "js");
+    LoadFile(LGDOMAIN + "/js/apiproxy.js", "js");
+    LoadFile(LGDOMAIN + "/frontend/apihandler.js", "js");
 
-    LoadFile("http://ligertail.com/frontend/facebox/facebox.js", "js");
-    LoadFile("http://ligertail.com/frontend/facebox/facebox.css", "css");
-    LoadFile("http://ligertail.com/frontend/css/widget_1.css", "css");
+    LoadFile(LGDOMAIN + "/frontend/facebox/facebox.js", "js");
+    LoadFile(LGDOMAIN + "/frontend/facebox/facebox.css", "css");
+    LoadFile(LGDOMAIN + "/frontend/css/widget_1.css", "css");
 
     $(document).ready(function(){
         tryToInit();                  
@@ -126,17 +139,17 @@ function ValidateEmail(str) {
 function OpenLightboxSubmission(url){
     jQuery(document).bind('init.facebox', function(){
         if(window.parameter["width"] == 600)                                             
-             LoadFile("http://ligertail.com/frontend/css/submission_large.css", "css");  
+             LoadFile(LGDOMAIN + "/frontend/css/submission_large.css", "css");  
         else
-             LoadFile("http://ligertail.com/frontend/css/submission.css", "css");                                                    
+             LoadFile(LGDOMAIN + "/frontend/css/submission.css", "css");                                                    
     });
         
     jQuery.facebox(function(){     
         
         if(window.parameter["width"] == 600)
-            jQuery.facebox({ ajax: "http://ligertailbackend.appspot.com/submission_large.html"});
+            jQuery.facebox({ ajax: LGDOMAIN + "/submission_large.html"});
         else
-            jQuery.facebox({ ajax: "http://ligertailbackend.appspot.com/submission.html"});
+            jQuery.facebox({ ajax: LGDOMAIN + "/submission.html"});
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){
@@ -230,7 +243,7 @@ function OpenLightboxSubmission(url){
                 if(item.url == url)
                     item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
-                    item.thumbnailUrl = "http://ligertail.com/frontend/images/default.png";
+                    item.thumbnailUrl = LGDOMAIN + "/frontend/images/default.png";
 
                 if(ValidateURL(item.url) && 
                     (item.title.length > 3 && item.title.length <= 128) && 
@@ -268,7 +281,7 @@ function OpenLightboxSubmission(url){
             jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
             if(window.parameter["width"] == 600){
                 jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
-                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', 'http://ligertail.com/frontend/images/default.png');
+                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', LGDOMAIN + '/frontend/images/default.png');
             }
             jQuery("#ligertail_submission_lightbox_form tr").css("color", "black");
             jQuery("#ligertail_widget_header input").val("Submit Your Link Here");
@@ -286,9 +299,9 @@ function init(publisherUrl) {
   }
   
   var initialized = true;
-  var apiHandler = new ApiHandler();
+  var apiHandler = new ApiHandler(LGDOMAIN);
   window.api = new LTApi();
-  api.init(apiHandler);
+  api.init(apiHandler, LGDOMAIN);
   window.publisherUrl = publisherUrl;
 }
 
@@ -355,19 +368,19 @@ function initAll(){
     //load header, footer, and default content then bind events
     //this should be a switch statement
     if(window.parameter["width"] == 600){
-        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="http://ligertail.com/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
-        var footer = '<div id="ligertail_widget_footer"><img src="http://ligertail.com/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
+        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LGDOMAIN + '/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
+        var footer = '<div id="ligertail_widget_footer"><img src="' + LGDOMAIN + '/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="http://ligertail.com/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="http://ligertail.com/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="' + LGDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LGDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_close"></div><div class="ligertail_widget_image"><img src="http://ligertail.com/fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_close"></div><div class="ligertail_widget_image"><img src="' + LGDOMAIN + '/fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
         }
         else{
             content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
@@ -380,9 +393,9 @@ function initAll(){
     //events...
     //clicking on header logo
     if(window.parameter["width"] == 600)
-         $("#ligertail_widget_footer img:first").click(function(){ window.open("http://ligertail.com"); });                                
+         $("#ligertail_widget_footer img:first").click(function(){ window.open(LGVISIBLEDOMAIN); });                                
     else
-         $("#ligertail_widget_header img:first").click(function(){ window.open("http://ligertail.com"); });
+         $("#ligertail_widget_header img:first").click(function(){ window.open(LGVISIBLEDOMAIN); });
     
     //input box hover
     $("#ligertail_widget_header input").hover(function(){ 
@@ -413,8 +426,8 @@ function initAll(){
 
 function tryToInit() {
     try {
-        var test = new ApiHandler();
-        var test1 = new LTApi();
+        var test = new ApiHandler(LGDOMAIN);
+        var test1 = new LTApi(LGDOMAIN);
     } catch (e) {
         setTimeout("tryToInit()", 100);
         return;
