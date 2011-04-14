@@ -1,10 +1,10 @@
 (function(window, document, version, callback) {
     var j, d;
-    var loaded = false;
+    var loaded = false;	
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://ligertail.com/js/jquery.min.js"; 
+        script.src = "../js/jquery.min.js"; 
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -36,14 +36,14 @@
 var initialized = false;
 
 
-    LoadFile("http://ligertail.com/js/jquery.min.js", "js");
-    LoadFile("http://ligertail.com/js/postrequest.js", "js");
-    LoadFile("http://ligertail.com/js/json2.js", "js");
-    LoadFile("http://ligertail.com/js/apiproxy.js", "js");
-    LoadFile("http://ligertail.com/frontend/apihandler.js", "js");
+    LoadFile("../js/jquery.min.js", "js");
+    LoadFile("../js/postrequest.js", "js");
+    LoadFile("../js/json2.js", "js");
+    LoadFile("../js/apiproxy.js", "js");
+    LoadFile("../frontend/apihandler.js", "js");
 
-    LoadFile("http://ligertail.com/web/scripts/facebox.js", "js");
-    LoadFile("http://ligertail.com/web/styles/facebox.css", "css");
+    LoadFile("../web/scripts/facebox.js", "js");
+    LoadFile("../web/styles/facebox.css", "css");
 
 
     $(document).ready(function(){
@@ -76,7 +76,7 @@ function init(publisherUrl) {
   }
   
   var initialized = true;
-  var apiHandler = new ApiHandler();
+  var apiHandler = new ApiHandler(LTApi.getDefaultDomain());
   window.api = new LTApi();
   api.init(apiHandler);
   window.publisherUrl = publisherUrl;
@@ -259,7 +259,7 @@ function openPaymentLightbox(id){
 }
 
 function initAll(){
-    window.PUBLISHER_URL = "http://www.ligertail.com/payment.html";
+    window.PUBLISHER_URL = window.document.location.href;
     
     //initialize communication with ligertail
     init(window.PUBLISHER_URL);
@@ -286,8 +286,9 @@ function initAll(){
 
 function tryToInit() {
     try {
-        var test = new ApiHandler();
-        var test1 = new LTApi();
+    	var domain = LTApi.getDefaultDomain();
+        var test = new ApiHandler(domain);
+        var test1 = new LTApi(domain);
     } catch (e) {
         setTimeout("tryToInit()", 100);
         return;

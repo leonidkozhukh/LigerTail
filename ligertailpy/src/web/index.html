@@ -12,12 +12,29 @@
 <!--[if IE 7]><link rel="stylesheet" type="text/css" href="../web/styles/ie7+.css" /><![endif]-->
 <!--[if IE 8]><![endif]-->
 <script type='text/javascript'>
-
+setLigertailDomain();
 (function() {
     var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
     wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://ca17395') + '.luckyorange.com/w.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
   })();
+
+function setLigertailDomain() {
+      if (!window.ligertail) {
+        window.ligertail = {};
+      }
+ 	    var hostname = window.document.location.hostname;
+	    if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
+	      hostname = 'ligertailbackend.appspot.com';
+	      window.ligertail.visibleDomain = 'ligertail.com';
+	    }
+	    var domain = window.document.location.protocol + "//" + hostname;
+	    if (window.document.location.port) {
+	      domain += ":" + window.document.location.port;
+	    }
+	    window.ligertail.domain = domain;
+	  
+}
 </script>      
 </head>
 <body class="page-index">

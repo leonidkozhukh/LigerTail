@@ -44,8 +44,10 @@ function LTApi() {
 }
 
 LTApi.prototype.init = function(apiHandler, domain) {
-	if (!domain) {
+	if (!domain || domain.length == 0) {
 	  domain = LTApi.getDefaultDomain();
+	} else {
+	  domain += '/api';
 	}
 	this.domain = domain;
 	_apiHandler = apiHandler;
@@ -280,8 +282,12 @@ assert = function(cond) {
 }
 
 LTApi.getDefaultDomain = function() {
-  return "http://ligertailbackend.appspot.com/api";
-  var domain = window.document.location.protocol + "//" + window.document.location.hostname;
+  //return "http://ligertailbackend.appspot.com/api"; 
+  var hostname = window.document.location.hostname;
+  if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
+	  hostname = 'ligertailbackend.appspot.com';
+  }
+  var domain = window.document.location.protocol + "//" + hostname;
   if (window.document.location.port) {
     domain += ":" + window.document.location.port;
   }
