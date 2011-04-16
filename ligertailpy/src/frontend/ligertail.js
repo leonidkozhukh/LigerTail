@@ -157,12 +157,12 @@ function OpenLightboxSubmission(url){
             jQuery("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_pay").attr("src", LTDOMAIN + "/frontend/images/button_pay.png");
             jQuery("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_free").attr("src", LTDOMAIN + "/frontend/images/button_free.png");
             if(window.parameter["width"] == 600){                                             
-                 jQyery("#ligertail_submission_lightbox_right_column #ligertail_widget_footer img").attr("src", LTDOMAIN + "/frontend/images/logo_footer.png");
-                 jQyery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_1.png");
+                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_footer img").attr("src", LTDOMAIN + "/frontend/images/logo_footer.png");
+                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_1.png");
             }
             else{
-                 jQyery("#ligertail_submission_lightbox_right_column #ligertail_widget_header img").attr("src", LTDOMAIN + "/frontend/images/logo_header.png");
-                 jQyery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_2.png");
+                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header img").attr("src", LTDOMAIN + "/frontend/images/logo_header.png");
+                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_2.png");
             }
         
             //form validation
