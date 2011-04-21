@@ -36,6 +36,14 @@ class MainHandler(webapp.RequestHandler):
         self.response.headers["Access-Control-Allow-Origin"] = '*'
         self.response.out.write(template.render(path, {}))
         
+    def options(self):
+        self.response.headers['Access-Control-Allow-Origin'] = '*'
+        self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        self.response.headers['Access-Control-Max-Age'] = 1000
+        self.response.headers['Access-Control-Allow-Headers'] = '*'
+        return self.response
+
+        
 class SubmitItemHandler(BaseHandler):
     def post(self):
         try:

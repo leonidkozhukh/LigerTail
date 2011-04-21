@@ -34,6 +34,14 @@ class BaseHandler(webapp.RequestHandler):
   viewer = None
   client = {}
   jsonp_callback = None
+
+  def options(self):
+      self.response.headers['Access-Control-Allow-Origin'] = '*'
+      self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+      self.response.headers['Access-Control-Max-Age'] = 1000
+      self.response.headers['Access-Control-Allow-Headers'] = '*'
+      return self.response
+
   
   def initFromRequest(self, req):
     self.common_response.reset()

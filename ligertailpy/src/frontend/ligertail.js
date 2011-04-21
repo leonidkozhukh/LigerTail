@@ -18,7 +18,7 @@ var LTVISIBLEDOMAIN = 'http://ligertail.com';
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = LTDOMAIN + "/js/jquery.min.js";
+        script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"; //LTDOMAIN + "/js/jquery.min.js";
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -56,36 +56,23 @@ function loadScript(sScriptSrc, oCallback) {
 	}
 	oHead.appendChild(oScript);
 }	
-	
-	
-function loadStaticFile(filename, filetype){
-     if (filetype == "css"){ //if filename is an external CSS file
-         var fileref = document.createElement("link");
-          fileref.setAttribute("rel", "stylesheet");
-          fileref.setAttribute("type", "text/css");
-          fileref.setAttribute("href", filename);
-     }
-
-     if (typeof fileref != "undefined")
-          document.getElementsByTagName("head")[0].appendChild(fileref);
-}
-	
+		
 	
 var initialized = false;
 
-loadScripts([LTDOMAIN + "/js/jquery.min.js",
+loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
              LTDOMAIN + "/js/postrequest.js", 
              LTDOMAIN + "/js/json2.js",
              LTDOMAIN + "/js/apiproxy.js",
-             LTDOMAIN + "/frontend/apihandler.js"],
+             LTDOMAIN + "/frontend/apihandler.js",
+             LTDOMAIN + "/frontend/facebox/facebox.js"],
 			["postrequest_loaded",
 			 "json2_loaded",
 			 "apiproxy_loaded",
 			 "apihandler_loaded"]);
 
-loadStaticFile(LGDOMAIN + "/frontend/facebox/facebox.js", "js");
-loadStaticFile(LGDOMAIN + "/frontend/facebox/facebox.css", "css");
-loadStaticFile(LGDOMAIN + "/frontend/css/widget_1.css", "css");
+loadStaticFile(LTDOMAIN + "/frontend/facebox/facebox.css", "css");
+loadStaticFile(LTDOMAIN + "/frontend/css/widget_1.css", "css");
 
 //    $(document).ready(function(){
 //        tryToInit();                  
@@ -110,6 +97,19 @@ loadStaticFile(LGDOMAIN + "/frontend/css/widget_1.css", "css");
 //     if (typeof fileref != "undefined")
 //          document.getElementsByTagName("head")[0].appendChild(fileref);
 //}
+
+function loadStaticFile(filename, filetype){
+    if (filetype == "css"){ //if filename is an external CSS file
+        var fileref = document.createElement("link");
+         fileref.setAttribute("rel", "stylesheet");
+         fileref.setAttribute("type", "text/css");
+         fileref.setAttribute("href", filename);
+    }
+
+    if (typeof fileref != "undefined")
+         document.getElementsByTagName("head")[0].appendChild(fileref);
+}
+
 
 function SetupParameters(){
     ///////////////////////////////
@@ -167,9 +167,9 @@ function ValidateEmail(str) {
 function OpenLightboxSubmission(url){
     jQuery(document).bind('init.facebox', function(){
         if(window.parameter["width"] == 600)                                            
-             LoadFile(LTDOMAIN + "/frontend/css/submission_large.css", "css");  
+             loadStaticFile(LTDOMAIN + "/frontend/css/submission_large.css", "css");  
         else
-             LoadFile(LTDOMAIN + "/frontend/css/submission.css", "css");
+             loadStaticFile(LTDOMAIN + "/frontend/css/submission.css", "css");
     });
         
     jQuery.facebox(function(){     
