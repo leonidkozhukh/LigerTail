@@ -324,3 +324,5 @@ ApiHandler.parseStats_ = function(obj) {
 	//console.log(data);	
 	return data;
 }
+
+function apihandler_loaded() {}

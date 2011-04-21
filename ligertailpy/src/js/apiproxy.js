@@ -295,3 +295,5 @@ LTApi.getDefaultDomain = function() {
   domain += "/api";
   return domain;
 }
+
+function apiproxy_loaded() {}

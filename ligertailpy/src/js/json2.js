@@ -476,3 +476,5 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
         };
     }
 })();
+
+function json2_loaded() {}

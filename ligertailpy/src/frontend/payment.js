@@ -36,7 +36,6 @@
 var initialized = false;
 
 
-    LoadFile("../js/jquery.min.js", "js");
     LoadFile("../js/postrequest.js", "js");
     LoadFile("../js/json2.js", "js");
     LoadFile("../js/apiproxy.js", "js");

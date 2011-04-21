@@ -29,50 +29,37 @@ var LGVISIBLEDOMAIN = 'http://ligertail.com';
     }
 })(window, document, "1.4", function($, jquery_loaded) {
 
-	function LoadFile(filename, filetype){
-	    if (filetype == "js"){ //if filename is an external JavaScript file
-	          var fileref = document.createElement('script');
-	          fileref.setAttribute("type", "text/javascript");
-	          fileref.setAttribute("src", filename);
-	     }
-	     else if (filetype == "css"){ //if filename is an external CSS file
-	         var fileref = document.createElement("link");
-	          fileref.setAttribute("rel", "stylesheet");
-	          fileref.setAttribute("type", "text/css");
-	          fileref.setAttribute("href", filename);
-	     }
-
-	     if (typeof fileref != "undefined")
-	          document.getElementsByTagName("head")[0].appendChild(fileref);
+function loadScripts(scripts, scriptFunctions) {
+	numScripts = scripts.length;
+	for (var i = 0, script; script = scripts[i]; i++) {
+		loadScript(script, function() {
+			numScripts -= 1;
+			if (numScripts == 0) {
+				tryToInit(scriptFunctions);
+			}
+		});
 	}
+}	
+	
+function loadScript(sScriptSrc, oCallback) {
+	var oHead = document.documentElement.childNodes[0];
+	var oScript = document.createElement('script');
+	oScript.type = 'text/javascript';
+	oScript.src = sScriptSrc;
+	// most browsers
+	oScript.onload = oCallback;
+	// IE 6 & 7
+	oScript.onreadystatechange = function() {
+		if (this.readyState == 'complete' || this.readyState == 'loaded') {
+			oCallback();
+		}
+	}
+	oHead.appendChild(oScript);
+}	
 	
 	
-    var initialized = false;
-
-    LoadFile(LGDOMAIN + "/js/jquery.min.js", "js");
-    LoadFile(LGDOMAIN + "/js/postrequest.js", "js");
-    LoadFile(LGDOMAIN + "/js/json2.js", "js");
-    LoadFile(LGDOMAIN + "/js/apiproxy.js", "js");
-    LoadFile(LGDOMAIN + "/frontend/apihandler.js", "js");
-
-    LoadFile(LGDOMAIN + "/frontend/facebox/facebox.js", "js");
-    LoadFile(LGDOMAIN + "/frontend/facebox/facebox.css", "css");
-    LoadFile(LGDOMAIN + "/frontend/css/widget_1.css", "css");
-
-    $(document).ready(function(){
-        tryToInit();                  
-     });
-
- });    
-    //LOAD PUBLISHER-SET PARAMETERS
-
-function LoadFile(filename, filetype){
-    if (filetype == "js"){ //if filename is an external JavaScript file
-          var fileref = document.createElement('script');
-          fileref.setAttribute("type", "text/javascript");
-          fileref.setAttribute("src", filename);
-     }
-     else if (filetype == "css"){ //if filename is an external CSS file
+function loadStaticFile(filename, filetype){
+     if (filetype == "css"){ //if filename is an external CSS file
          var fileref = document.createElement("link");
           fileref.setAttribute("rel", "stylesheet");
           fileref.setAttribute("type", "text/css");
@@ -82,6 +69,47 @@ function LoadFile(filename, filetype){
      if (typeof fileref != "undefined")
           document.getElementsByTagName("head")[0].appendChild(fileref);
 }
+	
+	
+var initialized = false;
+
+loadScripts([LGDOMAIN + "/js/jquery.min.js",
+             LGDOMAIN + "/js/postrequest.js", 
+             LGDOMAIN + "/js/json2.js",
+             LGDOMAIN + "/js/apiproxy.js",
+             LGDOMAIN + "/frontend/apihandler.js"],
+			["postrequest_loaded",
+			 "json2_loaded",
+			 "apiproxy_loaded",
+			 "apihandler_loaded"]);
+
+loadStaticFile(LGDOMAIN + "/frontend/facebox/facebox.js", "js");
+loadStaticFile(LGDOMAIN + "/frontend/facebox/facebox.css", "css");
+loadStaticFile(LGDOMAIN + "/frontend/css/widget_1.css", "css");
+
+//    $(document).ready(function(){
+//        tryToInit();                  
+//     });
+
+ });    
+    //LOAD PUBLISHER-SET PARAMETERS
+
+//function LoadFile(filename, filetype){
+//    if (filetype == "js"){ //if filename is an external JavaScript file
+//          var fileref = document.createElement('script');
+//          fileref.setAttribute("type", "text/javascript");
+//          fileref.setAttribute("src", filename);
+//     }
+//     else if (filetype == "css"){ //if filename is an external CSS file
+//         var fileref = document.createElement("link");
+//          fileref.setAttribute("rel", "stylesheet");
+//          fileref.setAttribute("type", "text/css");
+//          fileref.setAttribute("href", filename);
+//     }
+//
+//     if (typeof fileref != "undefined")
+//          document.getElementsByTagName("head")[0].appendChild(fileref);
+//}
 
 function SetupParameters(){
     ///////////////////////////////
@@ -424,14 +452,14 @@ function initAll(){
                    
 }
 
-function tryToInit() {
-    try {
-        var test = new ApiHandler(LGDOMAIN);
-        var test1 = new LTApi(LGDOMAIN);
-    } catch (e) {
-        setTimeout("tryToInit()", 100);
-        return;
-    };
+function tryToInit(scriptFunctions) {
+	for (var i = 0, f; f = scriptFunctions[i]; i++) {
+		if (!(typeof(eval(f)) === 'function')) {
+			setTimeout(function () {
+				tryToInit(scriptFunctions);
+				}, 50);
+		} 
+	}
     initAll();
 }
 
