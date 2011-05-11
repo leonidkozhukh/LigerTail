@@ -1,5 +1,4 @@
 
-//var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
 var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 (function(window, document, version, callback) {
@@ -62,15 +61,13 @@ function loadScript(sScriptSrc, oCallback) {
 var initialized = false;
 
 loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
-			 LTDOMAIN + "/js/easyxdm.min.js",
+             LTDOMAIN + "/js/postrequest.js", 
              LTDOMAIN + "/js/json2.js",
-			 LTDOMAIN + "/js/postrequest.js", 
              LTDOMAIN + "/js/apiproxy.js",
              LTDOMAIN + "/frontend/apihandler.js",
              LTDOMAIN + "/frontend/facebox/facebox.js"],
 			["postrequest_loaded",
 			 "json2_loaded",
-			 "easyxdm_loaded",
 			 "apiproxy_loaded",
 			 "apihandler_loaded"]);
 
@@ -116,7 +113,7 @@ function loadStaticFile(filename, filetype){
 
 function SetupParameters(){
     ///////////////////////////////
-    var file_name = "ligertail.js";
+    var file_name = "ligertail_iframe.js";
     ///////////////////////////////
         scripts = document.getElementsByTagName("script"); 
         var i, j, src, parts, basePath, options = {};
@@ -350,7 +347,7 @@ function init(publisherUrl) {
 function initAll(){
     var CONTENT_HEIGHT_SMALL = 23; //header=39 footer=20
     var CONTENT_HEIGHT_LARGE = 91;//header=49 footer=35
-    window.PUBLISHER_URL = location.href;
+    window.PUBLISHER_URL = location.href; //"http://ligertail.com"; //location.href;
     window.LIGERTAIL_ITEMS_LOADED = 0; //helps keep track of spot #s, can be used later for loading additional items
     
     //initialize widget parameters

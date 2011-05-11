@@ -57,25 +57,25 @@ LTApi.prototype.submitItem = function(item, callback) {
 	assert(item.publisherUrl && item.url && item.email && item.title && item.description);
 	item.price = 0;
 	var data = this.serialize(item);
-	postRequest(this.domain, 'submit_item', 'POST', data, callback ? callback : '_apiHandler.onItemSubmitted');
+	postRequest(this.domain, 'submit_item', 'POST', data, callback ? callback : 'ApiHandler.prototype.onItemSubmitted');
 };
 
 LTApi.prototype.updatePrice = function(ccinfo, callback) {
 	var data = this.serialize(ccinfo);
-	postRequest(this.domain, 'update_price', 'POST', data, callback ? callback : '_apiHandler.onPriceUpdated');
+	postRequest(this.domain, 'update_price', 'POST', data, callback ? callback : 'ApiHandler.prototype.onPriceUpdated');
 };
 
 
 LTApi.prototype.getOrderedItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_ordered_items', 'POST', data, callback ? callback : '_apiHandler.onGetOrderedItems');
+	postRequest(this.domain, 'get_ordered_items', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetOrderedItems');
 };
 
 LTApi.prototype.getPaidItems = function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_paid_items', 'POST', data, callback ? callback : '_apiHandler.onGetPaidItems');
+	postRequest(this.domain, 'get_paid_items', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetPaidItems');
 };
 
 LTApi.prototype.submitUserInteraction= function(publisherUrl, interactions, callback) {
@@ -95,14 +95,14 @@ LTApi.prototype.submitUserInteraction= function(publisherUrl, interactions, call
 		str += interactions[i].itemId + ":" + interactions[i].statType + ":" + interactions[i].spot;		
 	}
 	var data = this.serialize({"publisherUrl": publisherUrl, "interactions": str});
-	postRequest(this.domain, 'submit_user_interaction', 'POST', data, callback ? callback : '_apiHandler.onUserInteractionSubmitted');
+	postRequest(this.domain, 'submit_user_interaction', 'POST', data, callback ? callback : 'ApiHandler.prototype.onUserInteractionSubmitted');
 };
 
 
 LTApi.prototype.getFilter= function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl": publisherUrl});
-	postRequest(this.domain, 'get_filter', 'POST', data, callback ? callback : '_apiHandler.onGetFilter');
+	postRequest(this.domain, 'get_filter', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetFilter');
 };
 
 
@@ -117,27 +117,27 @@ LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 		"filter.durationId": filter.durationId,
 		"filter.recency": filter.recency,
 		"filter.popularity": filter.popularity} );
-	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : '_apiHandler.onFilterSubmitted');
+	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : 'ApiHandler.prototype.onFilterSubmitted');
 };
 
 LTApi.prototype.getItemStats= function(itemId, infoType, callback) {
 	assert(itemId > 0);
 	var data = this.serialize({"itemId":itemId, "infoType":infoType});
-	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : '_apiHandler.onGetItemStats');
+	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetItemStats');
 };
 
 LTApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
 	assert(publisherUrl);
 	assert(spot > 0);
 	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
-	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : '_apiHandler.onGetSpotStats');
+	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetSpotStats');
 };
 
 
 LTApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
 	assert(publisherUrl);
 	var data = this.serialize({"publisherUrl":publisherUrl});
-	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : '_apiHandler.onGetPublisherSiteStats');
+	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetPublisherSiteStats');
 };
 
 LTApi.prototype.submitError = function(publisherUrl, trace) {
@@ -146,7 +146,7 @@ LTApi.prototype.submitError = function(publisherUrl, trace) {
 	}
 	this.inError = true;
 	var data = this.serialize({"publisherUrl":publisherUrl, "stack":trace});
-	postRequest(this.domain, 'submit_error', 'POST', data, '_apiHandler.onSubmitError');
+	postRequest(this.domain, 'submit_error', 'POST', data, 'ApiHandler.prototype.onSubmitError');
 	this.inError = false;
 };
 

@@ -1,5 +1,4 @@
 
-//var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
 var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 (function(window, document, version, callback) {
@@ -62,15 +61,13 @@ function loadScript(sScriptSrc, oCallback) {
 var initialized = false;
 
 loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
-			 LTDOMAIN + "/js/easyxdm.min.js",
              LTDOMAIN + "/js/json2.js",
-			 LTDOMAIN + "/js/postrequest.js", 
+             LTDOMAIN + "/js/postrequest.js", 
              LTDOMAIN + "/js/apiproxy.js",
              LTDOMAIN + "/frontend/apihandler.js",
              LTDOMAIN + "/frontend/facebox/facebox.js"],
 			["postrequest_loaded",
 			 "json2_loaded",
-			 "easyxdm_loaded",
 			 "apiproxy_loaded",
 			 "apihandler_loaded"]);
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script>
+//Parse URL Queries
+function url_query( query ) {
+  query = query.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var expr = "[\\?&]"+query+"=([^&#]*)";
+  var regex = new RegExp( expr );
+  var results = regex.exec( window.location.href );
+  if( results !== null ) {
+    return results[1];
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+  } else {
+    return false;
+  }
+}
+ 
+function setLigertailDomain() {
+	var sameDomain = url_query('sameDomain');
+	if( sameDomain ) {
+    window.ligertail = {};
+    var hostname = window.document.location.hostname;
+    if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
+      hostname = 'ligertailbackend.appspot.com';
+      window.ligertail.visibleDomain = 'ligertail.com';
+    }
+    var domain = window.document.location.protocol + "//" + hostname;
+    if (window.document.location.port) {
+      domain += ":" + window.document.location.port;
+    }
+    window.ligertail.domain = domain;
+  }
+};
+
+  
+setLigertailDomain();
+
+</script>
+</head>
+<body>
+<script type="text/javascript" src="../frontend/ligertail_iframe.js?width=300"></script>
+</body>
+
+</html>

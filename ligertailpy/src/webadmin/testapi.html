@@ -20,7 +20,7 @@
 
   Please wait for all tests to complete. If they don't complete, something is not working. Try again.
    <br/> 
- <body>
+  <body>
   <input type='BUTTON' value = "Test All" onclick='init()'/>
   <br/>
   </br>
@@ -231,7 +231,7 @@
       jQuery.each(response.items, function(i, item){
           its.push( jQuery.parseJSON(item));
       });
-    	
+
     	print('number of ordered items ' + response.items.length);
     	print('4th item is (i5?)' + its[3].title);
     	if (response.items.length < 10 || its[3].title != 'i5') {
@@ -248,7 +248,7 @@
         status(e);
       }
     }
-    
+
     function publisherStats() {
     	print('publisherStats');
         // get publisher stats

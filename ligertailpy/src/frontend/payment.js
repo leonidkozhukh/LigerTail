@@ -89,7 +89,7 @@ function showGraph(scope, id, analytics, duration){
         jQuery("#paramAnalytics option:[value='" + analytics + "']").attr('selected', 'selected');
         jQuery("#paramDuration option:[value='" + duration + "']").attr('selected', 'selected');
     }
-    else{  console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
+    else{  //console.log({'scope': scope, 'id': id, 'analytics': analytics, 'duration': duration});
          //error message
     }
     so.write("flashcontent");
