@@ -55,9 +55,9 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 		domain = domain.replace('http://', 'https://');
 	}
 	var url = domain + "/payment.html?itemId=" + item.id;
-	window.open(url, 'mywindow');
+	//window.open(url, 'mywindow');
     // TODO : make sure it opens in a new window
-	//document.location.href = url;
+	document.location.href = url;
   }
   else{
 	//sucks for the advertiser; will include payment url for item in submission email later on...
