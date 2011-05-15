@@ -4,7 +4,7 @@
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "../js/jquery.min.js"; 
+        script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"; 
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -15,41 +15,70 @@
     }
 })(window, document, "1.4", function($, jquery_loaded) {
 
-	function LoadFile(filename, filetype){
-	    if (filetype == "js"){ //if filename is an external JavaScript file
-	          var fileref = document.createElement('script');
-	          fileref.setAttribute("type", "text/javascript");
-	          fileref.setAttribute("src", filename);
-	     }
-	     else if (filetype == "css"){ //if filename is an external CSS file
-	         var fileref = document.createElement("link");
-	          fileref.setAttribute("rel", "stylesheet");
-	          fileref.setAttribute("type", "text/css");
-	          fileref.setAttribute("href", filename);
-	     }
 
-	     if (typeof fileref != "undefined")
-	          document.getElementsByTagName("head")[0].appendChild(fileref);
-	}
-	
+	function loadScripts(scripts, scriptFunctions) {
+		numScripts = scripts.length;
+		for (var i = 0, script; script = scripts[i]; i++) {
+			loadScript(script, function() {
+				numScripts -= 1;
+				if (numScripts == 0) {
+					tryToInit(scriptFunctions);
+				}
+			});
+		}
+	}	
+		
+	function loadScript(sScriptSrc, oCallback) {
+		var oHead = document.documentElement.childNodes[0];
+		var oScript = document.createElement('script');
+		oScript.type = 'text/javascript';
+		oScript.src = sScriptSrc;
+		// most browsers
+		oScript.onload = oCallback;
+		// IE 6 & 7
+		oScript.onreadystatechange = function() {
+			if (this.readyState == 'complete' || this.readyState == 'loaded') {
+				oCallback();
+			}
+		}
+		oHead.appendChild(oScript);
+	}	
+			
 		
 var initialized = false;
 
 
-    LoadFile("../js/postrequest.js", "js");
-    LoadFile("../js/json2.js", "js");
-    LoadFile("../js/apiproxy.js", "js");
-    LoadFile("../frontend/apihandler.js", "js");
+loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
+			 "../js/json2.js",
+			 "../js/postrequest_orig.js", 
+             "../js/apiproxy.js",
+             "../frontend/apihandler.js",
+             "../web/scripts/facebox.js"],
+			["postrequest_loaded",
+			 "json2_loaded",
+			 "apiproxy_loaded",
+			 "apihandler_loaded"]);
 
-    LoadFile("../web/scripts/facebox.js", "js");
-    LoadFile("../web/styles/facebox.css", "css");
+loadStaticFile(LTDOMAIN + "../web/styles/facebox.css", "css");
 
 
-    $(document).ready(function(){
-       tryToInit();                  
-    });
+//    $(document).ready(function(){
+//       tryToInit();                  
+//    });
 
 });
+
+function loadStaticFile(filename, filetype){
+    if (filetype == "css"){ //if filename is an external CSS file
+        var fileref = document.createElement("link");
+         fileref.setAttribute("rel", "stylesheet");
+         fileref.setAttribute("type", "text/css");
+         fileref.setAttribute("href", filename);
+    }
+
+    if (typeof fileref != "undefined")
+         document.getElementsByTagName("head")[0].appendChild(fileref);
+}
 
 function getUrlParameters() {
     var map = {};
@@ -283,15 +312,22 @@ function initAll(){
     
 }
 
-function tryToInit() {
-    try {
-    	var domain = LTApi.getDefaultDomain();
-        var test = new ApiHandler(domain);
-        var test1 = new LTApi(domain);
-    } catch (e) {
-        setTimeout("tryToInit()", 100);
-        return;
-    };
+var LT_MAX_NUM_TRIES = 10;
+function tryToInit(scriptFunctions, numtries) {
+	if (numtries == undefined) {
+		numtries = 0;
+	}
+	if (numtries == LT_MAX_NUM_TRIES) {
+		return; // FAILED
+	}
+	for (var i = 0, f; f = scriptFunctions[i]; i++) {
+		if (!(typeof(eval(f)) === 'function')) {
+			setTimeout(function () {
+				tryToInit(scriptFunctions, numtries + 1);
+				}, 50 * numtries);
+			return;
+		} 
+	}
     initAll();
 }
 
