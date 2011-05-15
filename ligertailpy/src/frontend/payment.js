@@ -48,7 +48,7 @@
 var initialized = false;
 
 
-loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
+loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js",
 			 "../js/json2.js",
 			 "../js/postrequest_orig.js", 
              "../js/apiproxy.js",
@@ -59,7 +59,7 @@ loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js", //LTDOMAI
 			 "apiproxy_loaded",
 			 "apihandler_loaded"]);
 
-loadStaticFile(LTDOMAIN + "../web/styles/facebox.css", "css");
+loadStaticFile("../web/styles/facebox.css", "css");
 
 
 //    $(document).ready(function(){
