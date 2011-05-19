@@ -51,7 +51,8 @@ function createRemote() {
                 }
             }, /** The interface configuration */ {
                 remote: {
-                    postRequest: {}
+                    postRequest: {},
+                    openFacebox: {}
                 },
                 local: {}
             });
@@ -65,6 +66,13 @@ function postRequest(domain, command, type, data, callback) {
     	var a = 0;
     	//console.log(errorObj); 
     });   
+}
+
+function openFacebox(domain, url) {
+	createRemote().openFacebox(domain, url, function(response){
+		jQuery.facebox(response);	
+	}, 
+	function(errorObj){});
 }
 
 

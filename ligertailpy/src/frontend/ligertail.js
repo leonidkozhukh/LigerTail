@@ -1,4 +1,5 @@
 
+// !!! NOTE: switch the domain for development!
 //var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
 var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
@@ -164,7 +165,7 @@ function OpenLightboxSubmission(url){
         if(window.parameter["width"] == 600)
             jQuery.facebox({ ajax: LTDOMAIN + "/submission_large.html"});
         else
-            jQuery.facebox({ ajax: LTDOMAIN + "/submission.html"});
+            openFacebox(LTDOMAIN, "submission.html");//jQuery.facebox({ ajax: LTDOMAIN + "/submission.html"});
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){
