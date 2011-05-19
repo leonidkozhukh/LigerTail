@@ -188,7 +188,7 @@
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
 	border:none;
-	padding:13px 0 0 7px;
+	padding: 13px 0 0 7px;
 	width: 185px;
 	height: 25px;
 	float: left;
@@ -196,8 +196,14 @@
 	font-weight: bold;
 	font-size: 9px;
 	margin-left: 5px;
+    border: 0;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    #ligertail_widget_small .ligertail_widget_form {padding-top: 13px;}
+}
+
+*+html #ligertail_widget_small .ligertail_widget_content {padding-top:3px}
 
 
 #ligertail_widget_small #ligertail_widget_footer {
