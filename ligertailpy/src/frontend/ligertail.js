@@ -1,4 +1,5 @@
 
+// !!! NOTE: switch the domain for development!
 //var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
 var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
