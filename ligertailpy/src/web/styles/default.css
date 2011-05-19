@@ -40,7 +40,7 @@ p.important {font-size: 17px; line-height: 22px; margin-bottom: 10px;}
 p.simple {margin-bottom:0;}
 code {font-family: Helvetica, Arial, sans-serif; font-size: 12px; white-space:pre-line;}
 em {}
-h4.em {text-decoration: underline; font-size: 12px; margin: 1.33em 0px;}
+h4.em {text-decoration: underline; font-size: 12px;}
 span.tip {font-family:Helvetica,Arial; font-size: 11px; padding: 0 8px; color: #fff; background-color: #F25733; display: inline-block; }
 strong.important {color: #666;}
 select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
@@ -97,8 +97,8 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 .page-index .content {min-height: 349px;}
 
 /* @info-block */
-.info-block {display: table; height: 540px; width: 465px;}
-.info-block-small {height: 387px; zoom: 1;}
+.info-block {display: table; height: 540px; width: 465px; zoom: 1;}
+.info-block-small {height: 387px;}
 .inner-wrap {display: table-cell; padding: 0 1px; text-align: center; vertical-align: middle; position: relative; background:url(../images/bg/info-block-pad.png) no-repeat left top;}
 .info-block-small .inner-wrap {background: url(../images/bg/info-block-pad-small.png) no-repeat left top;}
 .info-block-presentation .inner-wrap {background-image: url(../images/bg/info-block-pad-presentation.png);}
@@ -130,7 +130,7 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 /* @presentation-pic */
 .presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow-small.png) no-repeat left top;}
-.info-block .presentation-pic-placeholder {width: 300px; height: 250px; top: -16px; left: -5px; position: relative; margin-left: auto; margin-right: auto;}
+.info-block .presentation-pic-placeholder {width: 318px; height: 250px; top: -16px; left: -5px; position: relative; margin-left: auto; margin-right: auto;}
 
 
 /* @promo-block */
@@ -404,3 +404,13 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 .contact-emails {padding-top: 10px; font-size: 12px;}
 .contact-emails .first {margin-right: 15px; display: inline-block;}
+
+.sh-box {position: relative; float: left; width:318px; overflow: hidden; top: -6px; left:-1px;}
+.sh-box-inner {margin-right:18px;min-height: 240px;}
+.sh-shadow-right {position: absolute; width: 18px; height: 100%; top: -18px; right: 0; background:url(../images/bg/sh-shadow-right.png) no-repeat 0 18px;}
+.sh-shadow-bottom {position: static; /*overflow:hidden;*/ height: 18px; bottom: 0; left: 0; background:url(../images/bg/sh-shadow-bottom.png) no-repeat;}
+.sh-shadow-bottom-right {float: right; position: static; width: 18px; height: 18px; bottom: 0; right: 0; background:url(../images/bg/sh-shadow-bottom-right.png) no-repeat;}
+
+*+html .sh-shadow-right {top: -19px;}
+*+html .sh-shadow-bottom {top: -1px; position: relative;}
+*+html .sh-shadow-bottom-right {position: relative; top: -1px;}

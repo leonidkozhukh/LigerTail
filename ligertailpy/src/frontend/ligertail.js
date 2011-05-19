@@ -162,9 +162,9 @@ function OpenLightboxSubmission(url){
     jQuery.facebox(function(){     
         
         if(window.parameter["width"] == 600)
-            jQuery.facebox({ ajax: LTDOMAIN + "/submission_large.html"});
+            openFacebox(LTDOMAIN, "submission_large.html");
         else
-            jQuery.facebox({ ajax: LTDOMAIN + "/submission.html"});
+            openFacebox(LTDOMAIN, "submission.html");
         
         //make sure lightbox form loads before embed.ly is called        
         jQuery(document).bind('reveal.facebox', function(event){
@@ -225,6 +225,7 @@ function OpenLightboxSubmission(url){
             url = jQuery.trim(url);
             if(ValidateURL(url)){
                 // disable form & call embedly
+               jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
                jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "true");
                 
                 jQuery.ajax({
@@ -251,8 +252,8 @@ function OpenLightboxSubmission(url){
                        },
                        error: function(e){ jQuery("#ligertail_submission_lightbox_form input").attr("disabled", ""); }        
                 });
-            }                                               
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
+            }
+            else{ jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("http://"); }                                               
             
             //submission handling     
             jQuery("#ligertail_submission_lightbox_form").submit(function(event){
