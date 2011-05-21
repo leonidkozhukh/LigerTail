@@ -79,11 +79,11 @@ class UpdatePriceHandler(BaseHandler):
           publisherSite = model.getPublisherSite(item.publisherUrl)
           publisherSite.amount += int(self.getParam('price'))
           publisherSite.put()
+          itemList.refreshCacheForDefaultOrderedItems(item.publisherUrl)
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
           if paymentConfig.send_email:
-            BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                  
-          # TODO: initiate order recalculation since the price changed
+            BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                   
         self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
       except Exception:
         BaseHandler.logException(self)
