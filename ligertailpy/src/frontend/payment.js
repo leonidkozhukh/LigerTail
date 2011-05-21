@@ -1,84 +1,3 @@
-(function(window, document, version, callback) {
-    var j, d;
-    var loaded = false;	
-    if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"; 
-        script.onload = script.onreadystatechange = function() {
-            if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
-                callback((j = window.jQuery).noConflict(1), loaded = true);
-                j(script).remove();
-            }
-        };
-        document.documentElement.childNodes[0].appendChild(script)
-    }
-})(window, document, "1.4", function($, jquery_loaded) {
-
-
-	function loadScripts(scripts, scriptFunctions) {
-		numScripts = scripts.length;
-		for (var i = 0, script; script = scripts[i]; i++) {
-			loadScript(script, function() {
-				numScripts -= 1;
-				if (numScripts == 0) {
-					tryToInit(scriptFunctions);
-				}
-			});
-		}
-	}	
-		
-	function loadScript(sScriptSrc, oCallback) {
-		var oHead = document.documentElement.childNodes[0];
-		var oScript = document.createElement('script');
-		oScript.type = 'text/javascript';
-		oScript.src = sScriptSrc;
-		// most browsers
-		oScript.onload = oCallback;
-		// IE 6 & 7
-		oScript.onreadystatechange = function() {
-			if (this.readyState == 'complete' || this.readyState == 'loaded') {
-				oCallback();
-			}
-		}
-		oHead.appendChild(oScript);
-	}	
-			
-		
-var initialized = false;
-
-
-loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js",
-			 "../js/json2.js",
-			 "../js/postrequest_orig.js", 
-             "../js/apiproxy.js",
-             "../frontend/apihandler.js",
-             "../web/scripts/facebox.js"],
-			["postrequest_loaded",
-			 "json2_loaded",
-			 "apiproxy_loaded",
-			 "apihandler_loaded"]);
-
-loadStaticFile("../web/styles/facebox.css", "css");
-
-
-//    $(document).ready(function(){
-//       tryToInit();                  
-//    });
-
-});
-
-function loadStaticFile(filename, filetype){
-    if (filetype == "css"){ //if filename is an external CSS file
-        var fileref = document.createElement("link");
-         fileref.setAttribute("rel", "stylesheet");
-         fileref.setAttribute("type", "text/css");
-         fileref.setAttribute("href", filename);
-    }
-
-    if (typeof fileref != "undefined")
-         document.getElementsByTagName("head")[0].appendChild(fileref);
-}
 
 function getUrlParameters() {
     var map = {};
@@ -98,12 +17,8 @@ function ValidateEmail(str) {
     else return str;  
 }
 
+
 function init(publisherUrl) {
-  if (initialized) {
-    return;
-  }
-  
-  var initialized = true;
   var apiHandler = new ApiHandler(LTApi.getDefaultDomain());
   window.api = new LTApi();
   api.init(apiHandler);
@@ -285,49 +200,29 @@ function openPaymentLightbox(id){
         jQuery.facebox({ ajax: "payment_form.html"});              
     });                                                    
 }
+$(document).ready(function(){
 
-function initAll(){
-    window.PUBLISHER_URL = window.document.location.href;
-    
-    //initialize communication with ligertail
-    init(window.PUBLISHER_URL);
-    var urlParams = getUrlParameters();
-    if(urlParams['itemId'])
-        api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
-    else{
-        // so.amError('flashcontent', 'No itemId set!');
-        // so.write('flashcontent');
-    }
-        
-        //so.addVariable("additional_chart_settings", "");
-    
-    jQuery("#payFormSwitch").click(function(){
-            openPaymentLightbox(urlParams['itemId']);                                
-    });
-    
-    jQuery(".rbody .row-first input").live('keypress', function(event){
-        if(event.keyCode == 13)
-            openPaymentLightbox(urlParams['itemId']);
-    });
-    
-}
+	window.PUBLISHER_URL = window.document.location.href;
 
-var LT_MAX_NUM_TRIES = 10;
-function tryToInit(scriptFunctions, numtries) {
-	if (numtries == undefined) {
-		numtries = 0;
+	//initialize communication with ligertail
+	init(window.PUBLISHER_URL);
+	var urlParams = getUrlParameters();
+	if(urlParams['itemId'])
+	    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+	else{
+	    // so.amError('flashcontent', 'No itemId set!');
+	    // so.write('flashcontent');
 	}
-	if (numtries == LT_MAX_NUM_TRIES) {
-		return; // FAILED
-	}
-	for (var i = 0, f; f = scriptFunctions[i]; i++) {
-		if (!(typeof(eval(f)) === 'function')) {
-			setTimeout(function () {
-				tryToInit(scriptFunctions, numtries + 1);
-				}, 50 * numtries);
-			return;
-		} 
-	}
-    initAll();
-}
+	    
+	    //so.addVariable("additional_chart_settings", "");
 
+	jQuery("#payFormSwitch").click(function(){
+	        openPaymentLightbox(urlParams['itemId']);                                
+	});
+
+	jQuery(".rbody .row-first input").live('keypress', function(event){
+	    if(event.keyCode == 13)
+	        openPaymentLightbox(urlParams['itemId']);
+	});
+	    
+});
