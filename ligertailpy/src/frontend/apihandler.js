@@ -66,6 +66,15 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
 	//console.log(response);
+	
+	if(response.error.length > 0){
+		jQuery("#payForm .last-row input").show();
+        jQuery("#payForm .last-row .message").html(jQuery.trim(response.error));
+	}
+	else{
+        jQuery("#payForm .last-row .message").html('Thanks for your purchase! Please check your email.');
+	}
+	
 }
 
 ApiHandler.prototype.onGetOrderedItems = function(response) {
