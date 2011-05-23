@@ -105,7 +105,7 @@ function openPaymentLightbox(id){
     
             //zip
             jQuery("#payForm #pay_zip").blur(function(){
-                if(jQuery(this).val() < 100000 && jQuery(this.val()) > 10000)
+                if(jQuery(this).val() > 100000 || jQuery(this).val().length != 5)
                     jQuery("#payForm .row:eq(7) label").css("color", "red");
                 else if(jQuery("#payForm .row:eq(7) label").css("color") == "rgb(255, 0, 0)")
                     jQuery("#payForm .row:eq(7) label").css("color", "gray");
@@ -167,11 +167,8 @@ function openPaymentLightbox(id){
                    expiration_year.length == 4 && cvs. length == 3){
                                                               
                         //disable form & show waiting dialog, then submit
-                        jQuery("#payForm .row:last").remove();
-                        jQuery("#payForm").append('<div class="row last-row">' +
-                            '<div class="message" id="payFormMessage">Thanks for your purchase! Please check your email.</div>' +
-                            '<div class="veneer"></div>' +
-                            '</div>');
+                        jQuery("#payForm .last-row input").hide();
+                        jQuery("#payForm .last-row .message").html('Approving your purchase, please be patient...');
           
                         var paymentInfo = {
                            "price": price,
