@@ -122,11 +122,12 @@
     function submitUserInteraction(items) {
         // Submit user interactions.
         interactions = [];
-        for (var i = 0; i < Math.min(items.length, 5); i++) {
+        var size = Math.min(items.length, 5);
+        for (var i = 0; i < size; i++) {
           interactions.push({itemId: items[i].id, statType: StatType.VIEWS, spot: i});
         }
-        var i1 = Math.floor(Math.random() * (4));
-        var i2 = Math.floor(Math.random() * (4));
+        var i1 = Math.floor(Math.random() * size);
+        var i2 = Math.floor(Math.random() * size);
         interactions.push({itemId: items[i1].id, statType: StatType.CLOSES, spot: i1 + 1});
         interactions.push({itemId: items[i2].id, statType: StatType.CLICKS, spot: i2 + 1});
         lttest.api.submitUserInteraction(publisherUrl(), interactions, 'onUserInteractionSubmitted');
