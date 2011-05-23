@@ -157,7 +157,7 @@
     function failure(s) {
       failures += 1;
       jQuery("#failure").html(failures);
-      jQuery("#error").html(s);
+      jQuery("#error").prepend('<p>' + s + '</p>');
 
     }
 
