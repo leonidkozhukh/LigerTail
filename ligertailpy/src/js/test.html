@@ -89,8 +89,7 @@
     
     function onItemSubmitted(response) {
     	if (response.error) {
-    		status(response.error);
-    		failure();
+    		failure(response.error);
     	} else {
     		success();
     	}
@@ -105,8 +104,7 @@
     
     function onGetOrderedItems(response) {
       if (response.error) {
-        status(response.error);
-        failure();
+        failure(response.error);
         return;
       }
       success();
@@ -136,8 +134,7 @@
    
     function onUserInteractionSubmitted(response) {
         if (response.error) {
-            status(response.error);
-            failure();
+            failure(response.error);
             return;
         }
         success();    	
@@ -157,14 +154,13 @@
       jQuery("#success").html(successes);
     }
     
-    function failure() {
+    function failure(s) {
       failures += 1;
       jQuery("#failures").html(failures);
+      jQuery("#error").html(s);
+
     }
 
-    function status(s) {
-    	jQuery("#error").html(s);
-    }    
    </script>
  </body>
 </html>
