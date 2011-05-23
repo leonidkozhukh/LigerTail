@@ -118,9 +118,11 @@ class GetOrderedItemsHandler(BaseHandler):
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
                                                    self.viewer.filter)
-        if self.client.numViewableItems * 2 < len(orderedItems):
-          orderedItems = orderedItems[0: self.client.numViewableItems * 2]
+        if self.client.numItems < len(orderedItems):
+          orderedItems = orderedItems[0: self.client.numItems]
         self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
+        ''' 
+        TODO: consider submitting user interactions in this API if there is a performance cost
         numViewed = 0
         spot = 1
         for item in orderedItems:
@@ -130,6 +132,7 @@ class GetOrderedItemsHandler(BaseHandler):
             spot += 1
             #if self.viewer.isNew:
             #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
+         '''
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
