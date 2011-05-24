@@ -21,7 +21,13 @@
 <script type="text/javascript" src="../frontend/apihandler.js"></script>
 <script type="text/javascript">
 
-
+$(document).ready(function(){
+	var urlParams = getUrlParameters();
+	if(urlParams['url']){
+		jQuery(#publisherUrl").val(urlParams['url']);
+		init();
+	}
+}
 
 function init() {
 
@@ -44,6 +50,13 @@ function init() {
   	getItemInfo(jQuery("#itemId").val());
 
 }
+	function getUrlParameters() {
+    	var map = {};
+    	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    	map[key] = value;
+    	});
+    	return map; 
+	}
 
 	function getItemInfo(id){
 		api.getItemStats(id, 2, 'afterGetItemInfo');
