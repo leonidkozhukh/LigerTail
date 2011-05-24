@@ -39,7 +39,6 @@ class ResponseItem(ResponseStats):
         self.description = item.description
         self.itemInfo = itemInfo
         self.price = item.price
-        self.publisherUrl = item.publisherUrl
         if hasattr(item, 'engagement'):
           self.engagement = item.engagement
         if hasattr(item, 'tier'):
@@ -55,9 +54,8 @@ class ResponseItem(ResponseStats):
               'title' : o.title,
               'description' : o.description,
               'id' : o.id,
-              'thumbnailUrl' : o.thumbnailUrl,
-              'publisherUrl' : o.publisherUrl
-              }
+              'thumbnailUrl' : o.thumbnailUrl
+          }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
               if hasattr(o, 'engagement'):
