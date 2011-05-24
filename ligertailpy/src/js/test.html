@@ -122,7 +122,7 @@
         interactions = [];
         var size = Math.min(items.length, 5);
         for (var i = 0; i < size; i++) {
-          interactions.push({itemId: items[i].id, statType: StatType.VIEWS, spot: i});
+          interactions.push({itemId: items[i].id, statType: StatType.VIEWS, spot: i+1});
         }
         var i1 = Math.floor(Math.random() * size);
         var i2 = Math.floor(Math.random() * size);
