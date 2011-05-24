@@ -1,0 +1,186 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LigerTail Analytics & Purchasing HQ</title>
+<link rel="stylesheet" type="text/css" href="../web/styles/default.css" />
+<link rel="stylesheet" type="text/css" href="../web/styles/facebox.css" />
+
+<!--[if lte IE 6]>
+    <link rel="stylesheet" type="text/css" href="../web/styles/ie6.css" />
+    <script type="text/javascript" src="../web/scripts/png-fix.js"></script>
+    <script type="text/javascript">DD_belatedPNG.fix(".g-png");</script>
+<![endif]-->
+<!--[if IE 7 || IE8]><link rel="stylesheet" type="text/css" href="../web/styles/ie7+.css" /><![endif]-->
+<!--script type="text/javascript" src="../web/scripts/onload.js"></script-->
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript" src="../js/postrequest_orig.js"></script> 
+<script type="text/javascript" src="../js/apiproxy.js"></script>
+<script type="text/javascript" src="../frontend/apihandler.js"></script>
+<script type="text/javascript">
+
+
+
+function init() {
+  window.PUBLISHER_URL = "http://ligertailbackend.appspot.com/";
+  var apiHandler = new ApiHandler(LTApi.getDefaultDomain());
+  window.api = new LTApi();
+  api.init(apiHandler);
+  window.publisherUrl = window.PUBLISHER_URL;
+  
+  getOrderedItems(window.PUBLISHER_URL);
+}
+
+	
+	
+	function getOrderedItems(publisherUrl){
+		api.getOrderedItems(publisherUrl, 'afterOrderedItems');
+	}
+	
+	function afterOrderedItems(response){
+		jQuery.each(response.items, function(i, item){
+			var item_obj = jQuery.parseJSON(item);
+			content +=			'<div class="row" id="' + item_obj.id + '">' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-startDate"><div class="data-entry">' +
+									'<div class="interact-hide"></div>' +
+									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+								'</div></div>' +
+								'<div class="cell col-views"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-closes"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-engagement"><div class="data-entry"></div></div>' +
+                                '<div class="veneer"></div>' +
+
+                                '<div class="col-holder col-holder-link col-s"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-link-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-price col-b b-separate"><div class="inner"><div class="inner2"></div></div></div>' +
+                                '<div class="col-holder col-holder-price-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-startDate col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-views col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
+                            '</div>';
+		
+		api.getItemStats(item_obj.id, 2);
+		});
+	}
+
+
+
+
+
+
+</script>  
+</head>
+<body>
+<div class="l-part l-part-t"></div>
+<div class="l-part l-part-b"></div>
+<div class="root">
+    <div class="layout-wrap">
+        <div class="layout" id="layout">
+            
+            <ins class="layout-shadow layout-shadow-t g-png"></ins>
+            <ins class="layout-shadow layout-shadow-b g-png"></ins>
+
+            <!-- .content-container -->
+            <div class="content-container l-limiter">
+
+                <div class="head">
+                    <a href="../index.html"><img src="../web/images/logo-min.png" class="logo" width="138" height="38" alt="Ligertail" /></a>
+                </div>
+
+                <!-- .content -->
+                <div class="content">
+
+                    <div class="chart-panel">
+
+                        <!-- .params -->
+                        <div class="params l">
+                            <div class="row">
+                                <select id="paramScope" disabled="disabled">
+                                    <option value="items">Promoted Items</option>
+                                    <option value="spots">Widget Spots</option>
+                                    <option value="sites">Publisher Site</option>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <select id="paramAnalytics" disabled="disabled">
+                                    <option value="1">Views</option>
+                                    <option value="2">Clicks</option>
+                                    <option value="3">Closes</option>
+                                </select>
+
+                                <select id="paramDuration" disabled="disabled">
+                                    <option value="mm">For One Hour</option>
+                                    <option value="hh">For One Day</option>
+                                    <option value="DD" selected="selected">For One Month</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--/ .params -->
+
+                      	 <a id="start" class="bulb s-button r" onclick='init()'><span class="c">Start!!!</span><span class="l"></span></a>
+                        <div class="veneer"></div>
+                    </div>
+                    <div class="chart">
+                    
+
+                    </div>
+
+
+                    
+
+                    <!-- .rates -->
+                    <div class="rates" id="ratePrices">
+
+                        <div class="rhead">
+                            <div class="row">
+                                <div class="cell col-link"><div class="data-entry r-indent">Item Title</div></div>
+                                <div class="cell col-price"><div class="data-entry r-indent">ID</div></div>
+                                <div class="cell col-startDate"><div class="data-entry">Start Date</div></div>
+                                <div class="cell col-views"><div class="data-entry">Views</div></div>
+                                <div class="cell col-clicks"><div class="data-entry">Clicks</div></div>
+                                <div class="cell col-closes"><div class="data-entry">Closes</div></div>
+                                <div class="cell col-engagement"><div class="data-entry">Engagement</div></div>
+                                <div class="veneer"></div>
+                            </div>
+                        </div>
+
+                        <div class="rbody">
+
+                        </div>
+
+                    </div>
+                    <!--/ .rates -->
+                    <div class="veneer"></div>
+                </div>
+                <!--/ .content -->
+
+            </div>
+            <!--/ .content-container -->
+
+            <!-- foot -->
+            <div class="foot l-limiter">
+                <div class="menu-wrap">
+                    <ul class="menu">
+                        <li><a href="../about.html">contact</a></li>
+                        <li><a href="../faq.html">faq</a></li>
+                        <li><a href="../terms.html">terms</a></li>
+                        <li class="last"><a href="../privacy.html">privacy</a></li>
+                    </ul>
+                </div>
+                <div class="veneer"></div>
+            </div>
+            <!--/ .foot -->
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
