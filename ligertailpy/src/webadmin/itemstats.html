@@ -85,6 +85,7 @@ function init() {
                             '</div>');
 		
 		api.getItemStats(item_obj.id, 2, 'afterGetItemStats');
+		jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(item_obj.engagement.toFixed(2) * 100 + '%');
 		});
 	}
 
@@ -96,7 +97,7 @@ function init() {
         	jQuery(".rbody #" + item_obj.id+ " .col-views .data-entry").html(item_obj.totalStats[1]);
         	jQuery(".rbody #" + item_obj.id+ " .col-clicks .data-entry").html(item_obj.totalStats[2]);
        		jQuery(".rbody #" + item_obj.id+ " .col-closes .data-entry").html(item_obj.totalStats[4]);
-        	jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(((item_obj.totalStats[2] + item_obj.totalStats[4]) * 100 / item_obj.totalStats[1]).toFixed(2) + '%');
+        	//jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(((item_obj.totalStats[2] + item_obj.totalStats[4]) * 100 / item_obj.totalStats[1]).toFixed(2) + '%');
     	});
 		
 	}
