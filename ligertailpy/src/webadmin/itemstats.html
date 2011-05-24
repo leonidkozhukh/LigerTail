@@ -62,7 +62,7 @@ function init() {
 			var item_obj = jQuery.parseJSON(item);
 			jQuery(".rbody").append('<div class="row" id="' + item_obj.id + '">' +
                                 '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
-                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">' + item_obj.id  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">' + item_obj.id + ' - ' + item_obj.tier + '</div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
 									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
