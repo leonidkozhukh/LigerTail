@@ -24,16 +24,34 @@
 
 
 function init() {
+
   window.PUBLISHER_URL = "http://ligertailbackend.appspot.com/";
   var apiHandler = new ApiHandler(LTApi.getDefaultDomain());
   window.api = new LTApi();
   api.init(apiHandler);
   window.publisherUrl = window.PUBLISHER_URL;
   
-  getOrderedItems(window.PUBLISHER_URL);
+  if(jQuery("#publisherUrl").val().length > 0){
+  	getOrderedItems(jQuery("#publisherUrl").val());
+  	getPublisherStats(jQuery("#publisherUrl").val());
+  }
+  else{
+  	getOrderedItems(window.PUBLISHER_URL);
+  	getPublisherStats(window.PUBLISHER_URL);
+  }
+  	
+  if(jQuery("#itemId").val().length > 0)
+  	getItemInfo(jQuery("#itemId").val());
+
 }
 
+	function getItemInfo(id){
+		api.getItemStats(id, 2, 'afterGetItemInfo');
+	}
 	
+	function getPublisherStats(url){
+		api.getPublisherSiteStats(url, 'afterGetPublisherStats');
+	}
 	
 	function getOrderedItems(publisherUrl){
 		api.getOrderedItems(publisherUrl, 'afterOrderedItems');
@@ -42,9 +60,9 @@ function init() {
 	function afterOrderedItems(response){
 		jQuery.each(response.items, function(i, item){
 			var item_obj = jQuery.parseJSON(item);
-			content +=			'<div class="row" id="' + item_obj.id + '">' +
+			jQuery(".rbody").append('<div class="row" id="' + item_obj.id + '">' +
                                 '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
-                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">' + item_obj.id  + '</div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
 									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
@@ -64,14 +82,98 @@ function init() {
                                 '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
                                 '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
                                 '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
-                            '</div>';
+                            '</div>');
 		
-		api.getItemStats(item_obj.id, 2);
+		api.getItemStats(item_obj.id, 2, 'afterGetItemStats');
 		});
 	}
 
+	function afterGetItemStats(response){
+		jQuery.each(response.items, function(i, item){ 
+      	  var item_obj = jQuery.parseJSON(item);
+        
+        	jQuery(".rbody #" + item_obj.id+ " .interact-hide").html(item_obj.updateTime['year'] + '-' + item_obj.updateTime['month'] + '-' + item_obj.updateTime['day']);
+        	jQuery(".rbody #" + item_obj.id+ " .col-views .data-entry").html(item_obj.totalStats[1]);
+        	jQuery(".rbody #" + item_obj.id+ " .col-clicks .data-entry").html(item_obj.totalStats[2]);
+       		jQuery(".rbody #" + item_obj.id+ " .col-closes .data-entry").html(item_obj.totalStats[4]);
+        	jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(((item_obj.totalStats[2] + item_obj.totalStats[4]) * 100 / item_obj.totalStats[1]).toFixed(2) + '%');
+    	});
+		
+	}
+	
+	function afterGetItemInfo(response){
+		jQuery.each(response.items, function(i, item){
+			var item_obj = jQuery.parseJSON(item);
+			jQuery(".rbody").append('<div class="row" id="' + item_obj.id + '">' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">' + item_obj.id  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-startDate"><div class="data-entry">' +
+									'<div class="interact-hide"></div>' +
+									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+								'</div></div>' +
+								'<div class="cell col-views"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-closes"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-engagement"><div class="data-entry"></div></div>' +
+                                '<div class="veneer"></div>' +
 
+                                '<div class="col-holder col-holder-link col-s"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-link-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-price col-b b-separate"><div class="inner"><div class="inner2"></div></div></div>' +
+                                '<div class="col-holder col-holder-price-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-startDate col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-views col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
+                            '</div>');
+			
+			
+			jQuery(".rbody #" + item_obj.id+ " .interact-hide").html(item_obj.updateTime['year'] + '-' + item_obj.updateTime['month'] + '-' + item_obj.updateTime['day']);
+        	jQuery(".rbody #" + item_obj.id+ " .col-views .data-entry").html(item_obj.totalStats[1]);
+        	jQuery(".rbody #" + item_obj.id+ " .col-clicks .data-entry").html(item_obj.totalStats[2]);
+       		jQuery(".rbody #" + item_obj.id+ " .col-closes .data-entry").html(item_obj.totalStats[4]);
+        	jQuery(".rbody #" + item_obj.id+ " .col-engagement .data-entry").html(((item_obj.totalStats[2] + item_obj.totalStats[4]) * 100 / item_obj.totalStats[1]).toFixed(2) + '%');
+        	
+        });
+	}
 
+	function afterGetPublisherStats(response){
+		jQuery.each(response.publisherSites, function(i, site){
+			var site_obj = jQuery.parseJSON(site);
+			jQuery(".rbody").append('<div class="row" id="' + '-1' + '">' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + site_obj.publisherUrl + '</div><a class="close"></a></div></div>' +
+                                '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">' + site_obj.amount  + '</div><div class="l"></div></div></div></div>' +
+                                '<div class="cell col-startDate"><div class="data-entry">' +
+									'<div class="interact-hide"></div>' +
+									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+								'</div></div>' +
+								'<div class="cell col-views"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-closes"><div class="data-entry"></div></div>' +
+                                '<div class="cell col-engagement"><div class="data-entry"></div></div>' +
+                                '<div class="veneer"></div>' +
+
+                                '<div class="col-holder col-holder-link col-s"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-link-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-price col-b b-separate"><div class="inner"><div class="inner2"></div></div></div>' +
+                                '<div class="col-holder col-holder-price-strut"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-startDate col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-views col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-clicks col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-closes col-b"><div class="inner"></div></div>' +
+                                '<div class="col-holder col-holder-engagement col-b"><div class="inner"><div class="inner2"></div></div></div>' +
+                            '</div>');
+			
+			
+			jQuery(".rbody #" + '-1' + " .interact-hide").html(site_obj.updateTime['year'] + '-' + site_obj.updateTime['month'] + '-' + site_obj.updateTime['day']);
+        	jQuery(".rbody #" + '-1' + " .col-views .data-entry").html(site_obj.totalStats[1]);
+        	jQuery(".rbody #" + '-1' + " .col-clicks .data-entry").html(site_obj.totalStats[2]);
+       		jQuery(".rbody #" + '-1' + " .col-closes .data-entry").html(site_obj.totalStats[4]);
+        	jQuery(".rbody #" + '-1' + " .col-engagement .data-entry").html(((site_obj.totalStats[2] + site_obj.totalStats[4]) * 100 / site_obj.totalStats[1]).toFixed(2) + '%');
+        	
+        });
+	}
 
 
 
@@ -124,9 +226,11 @@ function init() {
                             </div>
                         </div>
                         <!--/ .params -->
-
+						
                       	 <a id="start" class="bulb s-button r" onclick='init()'><span class="c">Start!!!</span><span class="l"></span></a>
-                        <div class="veneer"></div>
+                      	 
+                        
+                        <div style="float: right;">url:<input type="text" id="publisherUrl" />id:<input type="text" id="itemId" /></div><div class="veneer"></div>
                     </div>
                     <div class="chart">
                     
