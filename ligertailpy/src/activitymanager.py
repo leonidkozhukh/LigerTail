@@ -1,10 +1,12 @@
 import model
 import logging
 import time
+import datetime
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 
+ 
 class Singleton(object):
   """ A Pythonic Singleton """
   def __new__(cls, *args, **kwargs):
@@ -15,26 +17,37 @@ class Singleton(object):
 class ActivityManager(Singleton):
   def __init__(self):
     self.activities = []
-    self.publisherActivityLoadMap = {}
+    self.lastLoad = datetime.datetime.utcnow()
     # TODO be able to update via UI
-    self.activityDelta = model.HOURLY
+    self.timeToRefresh = datetime.timedelta(0, 120)
+    self.numDeltasInThePast = 8
+    self.activityDelta = model.MINUTELY
+    self.averageOf = 4
     
   def getActivityPeriod(self):
     return self.activityDelta.name
   
-  def lazyLoad_(self):
-    if not len(self.activities):
+  def lazyLoad_(self, refresh):
+    if not len(self.activities) or refresh:
+      self.lastLoad = datetime.datetime.utcnow()
       self.activities = model.getActivities(True)
+      logging.info('Reloading %d activities' % len(self.activities))
   
   def getPublisherActivityLoad_(self, publisherUrl):
-    if not self.publisherActivityLoadMap.has_key(publisherUrl):
+    activityLoad = memcache.get('activityLoad_%s' % publisherUrl)
+    if not activityLoad:
       publisherSite = model.getPublisherSite(publisherUrl)
-      self.updatePublisherActivityLoad_(publisherSite)
-    return self.publisherActivityLoadMap[publisherUrl]
+      return self.updatePublisherActivityLoad_(publisherSite)
+    return activityLoad
 
   def updatePublisherActivityLoad_(self, publisherSite):        
-    activityLoad = publisherSite.timedStats.durations[self.activityDelta.id][1][model.StatType.VIEWS]
-    self.publisherActivityLoadMap[publisherSite.publisherUrl] = activityLoad
+    activityLoad = 0
+    for i in range(0, self.averageOf):
+      activityLoad += publisherSite.timedStats.durations[self.activityDelta.id][self.numDeltasInThePast - i][model.StatType.VIEWS]
+    activityLoad /= self.averageOf
+    logging.info('current activity load %d' % activityLoad)
+    memcache.set('activityLoad_%s' % publisherSite.publisherUrl, activityLoad)
+    return activityLoad
 
   def getActivityParamsForPublisherUrl_(self, publisherUrl):
     publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
@@ -47,7 +60,7 @@ class ActivityManager(Singleton):
     return model.ActivityParams() #return default
   
   def getNumBuckets(self, publisherUrl):
-    self.lazyLoad_()
+    self.refreshActivities()
     activity = self.getActivityParamsForPublisherUrl_(publisherUrl)
     return activity.num_buckets
   
@@ -63,11 +76,14 @@ class ActivityManager(Singleton):
   
   # called by admin UI after update
   def refreshActivities(self):
-    self.activities = []
-    self.lazyLoad_()
+    now = datetime.datetime.utcnow()
+    refresh = False
+    if now - self.lastLoad > self.timeToRefresh:
+      refresh = True
+    self.lazyLoad_(refresh)
   
   def initiateItemUpdateProcessing(self, publisherUrl):
-    self.lazyLoad_()
+    self.refreshActivities()
     numOfUpdates = memcache.incr('num_updates_%s' % publisherUrl, initial_value=0)
     workerAdded = memcache.get('worker_added_%s' % publisherUrl)
     activity = self.getActivityParamsForPublisherUrl_(publisherUrl)
@@ -78,11 +94,15 @@ class ActivityManager(Singleton):
     if (numOfUpdates >= activity.total_updates_before_triggering and
       secSinceLastJob > activity.min_time_sec_between_jobs or
       secSinceLastJob > activity.max_time_sec_before_triggering):
-      logging.info('initiating item update processing for %s', publisherUrl)
-      memcache.set('worker_added_%s' % publisherUrl, True)
-      memcache.set('num_updates_%s' % publisherUrl, 0) #do not update until reset
-      taskqueue.add(url='/process_item_updates', params={'publisherUrl': publisherUrl})
-
+        publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
+        logging.info('publisher load for %s %d' % (publisherUrl, publisherActivityLoad))
+        logging.info('activity: %s', activity)
+        logging.info('initiating item update processing for %s', publisherUrl)  
+        memcache.set('worker_added_%s' % publisherUrl, True)
+        memcache.set('num_updates_%s' % publisherUrl, 0) #do not update until reset
+        res = taskqueue.add(url='/process_item_updates', params={'publisherUrl': publisherUrl})
+        logging.info(res)
+        
   def finishItemUpdateProcessing(self, publisherSite): 
     self.updateJobEndTime_(publisherSite.publisherUrl)
     self.updatePublisherActivityLoad_(publisherSite)

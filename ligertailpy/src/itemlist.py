@@ -66,62 +66,64 @@ class ItemList(Singleton):
 
   
   def processUpdates(self, publisherUrl):
-    logging.info('process updates worker for %s', publisherUrl)
-    publisherSite = model.getPublisherSite(publisherUrl)
-    numBuckets = activityManager.getNumBuckets(publisherUrl)
-    bucketIds = self.getItemBucketIds_(publisherUrl, numBuckets)
-    entities = {}
-    for bucketId in bucketIds:
-      bucket = model.getBucket(bucketId)
-      entities[bucketId] = db.run_in_transaction(emptyBucket_, bucket.key())
-      #TODO: mapreduce?
-    for bucketId in bucketIds:
-      items = {}
-      spots = {}
-      for entity in entities[bucketId]:
-        if entity.itemId:
-          # update items
-          item = None
-          if not items.has_key(entity.itemId):
-            item = model.Item.get_by_id(entity.itemId)
-            if not item:
-              logging.error('no item found for id %d', entity.itemId)
+    try:
+      logging.info('process updates worker for %s', publisherUrl)
+      publisherSite = model.getPublisherSite(publisherUrl)
+      numBuckets = activityManager.getNumBuckets(publisherUrl)
+      bucketIds = self.getItemBucketIds_(publisherUrl, numBuckets)
+      entities = {}
+      for bucketId in bucketIds:
+        bucket = model.getBucket(bucketId)
+        entities[bucketId] = db.run_in_transaction(emptyBucket_, bucket.key())
+        #TODO: mapreduce?
+      for bucketId in bucketIds:
+        items = {}
+        spots = {}
+        for entity in entities[bucketId]:
+          if entity.itemId:
+            # update items
+            item = None
+            if not items.has_key(entity.itemId):
+              item = model.Item.get_by_id(entity.itemId)
+              if not item:
+                logging.error('no item found for id %d', entity.itemId)
+              else:
+                items[entity.itemId] = item               
             else:
-              items[entity.itemId] = item               
-          else:
-            item = items[entity.itemId]
-          if entity.statType and item:
-            logging.info('updating item %s: statType: %d', item.url, entity.statType)
-            item.updateStats(entity.statType, entity.creationTime)
+              item = items[entity.itemId]
+            if entity.statType and item:
+              logging.info('updating item %s: statType: %d', item.url, entity.statType)
+              item.updateStats(entity.statType, entity.creationTime)
+        
+          # update spots
+          if entity.spot != None:
+            spot = None
+            if not spots.has_key(entity.spot):
+              if entity.spot > 0:
+                spot = model.getSpot(publisherUrl, entity.spot)
+                spots[entity.spot] = spot
+            else:
+              spot = spots[entity.spot]
+            if spot:
+              logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
+              spot.updateStats(entity.statType, entity.creationTime)
+            if entity.spot != None and entity.statType != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
+              publisherSite.updateStats(entity.statType, entity.creationTime)
+            elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
+              logging.info('updating publisher site stats: statType: %d', entity.statType)
+              publisherSite.updateStats(entity.statType, entity.creationTime)
+          
+        #TODO: use a method to store lists
+        for item in items.values():
+          item.put()
+          
+        for spot in spots.values():
+          spot.put()
       
-        # update spots
-        if entity.spot != None:
-          spot = None
-          if not spots.has_key(entity.spot):
-            if entity.spot > 0:
-              spot = model.getSpot(publisherUrl, entity.spot)
-              spots[entity.spot] = spot
-          else:
-            spot = spots[entity.spot]
-          if spot:
-            logging.info('updating spot %d: statType: %d', entity.spot, entity.statType)
-            spot.updateStats(entity.statType, entity.creationTime)
-          if entity.spot != None and entity.statType != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
-            publisherSite.updateStats(entity.statType, entity.creationTime)
-          elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
-            logging.info('updating publisher site stats: statType: %d', entity.statType)
-            publisherSite.updateStats(entity.statType, entity.creationTime)
-        
-      #TODO: use a method to store lists
-      for item in items.values():
-        item.put()
-        
-      for spot in spots.values():
-        spot.put()
-    
       publisherSite.put() 
       #TODO: write updates into timed log
       self.refreshCacheForDefaultOrderedItems(publisherUrl)
+    finally:
       activityManager.finishItemUpdateProcessing(publisherSite)
       newNumBuckets = activityManager.getNumBuckets(publisherUrl)
       if newNumBuckets < numBuckets:

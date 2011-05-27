@@ -24,7 +24,7 @@ class TestTimedStats(unittest.TestCase):
     def test_statsUpdate(self):
       timedStats = model.TimedStats()
       updateTime = datetime.datetime(2010, 10, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       self.assertEqual(timedStats.updateTime, updateTime)
       for durid in range(model.YEARLY.id, model.MINUTELY.id + 1):
         self.assertEqual(timedStats.durations[durid][0][StatType.CLICKS], 1)
@@ -33,10 +33,10 @@ class TestTimedStats(unittest.TestCase):
     def test_statsMultiUpdateSameTime(self):
       timedStats = model.TimedStats()
       updateTime = datetime.datetime(2010, 10, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
-      timedStats.update(updateTime, StatType.CLICKS)
-      timedStats.update(updateTime, StatType.CLICKS)
-      timedStats.update(updateTime, StatType.CLOSES)
+      timedStats.update(StatType.CLICKS, updateTime)
+      timedStats.update(StatType.CLICKS, updateTime)
+      timedStats.update(StatType.CLICKS, updateTime)
+      timedStats.update(StatType.CLOSES, updateTime)
       self.assertEqual(timedStats.updateTime, updateTime)
       for durid in range(model.YEARLY.id, model.MINUTELY.id + 1):
         self.assertEqual(timedStats.durations[durid][0][StatType.CLICKS], 3)
@@ -45,19 +45,19 @@ class TestTimedStats(unittest.TestCase):
     def test_statsMultiUpdateDiffTime(self):
       timedStats = model.TimedStats()
       updateTime = datetime.datetime(2010, 2, 1, 10, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       updateTime = datetime.datetime(2010, 12, 30, 10, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       updateTime = datetime.datetime(2010, 12, 30, 12, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       updateTime = datetime.datetime(2011, 1, 1, 10)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       updateTime = datetime.datetime(2011, 1, 1, 11, 10)
-      timedStats.update(updateTime, StatType.UNIQUES)
+      timedStats.update(StatType.UNIQUES, updateTime)
       updateTime = datetime.datetime(2011, 1, 1, 11, 18)
-      timedStats.update(updateTime, StatType.CLICKS)
+      timedStats.update(StatType.CLICKS, updateTime)
       updateTime = datetime.datetime(2011, 1, 1, 12)
-      timedStats.update(updateTime)
+      timedStats.update(StatType.UNKNOWN, updateTime)
       
       
       self.assertEqual(timedStats.updateTime, updateTime)

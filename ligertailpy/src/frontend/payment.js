@@ -205,7 +205,7 @@ $(document).ready(function(){
 	init(window.PUBLISHER_URL);
 	var urlParams = getUrlParameters();
 	if(urlParams['itemId'])
-	    api.getItemStats(urlParams['itemId'], 0, 'ApiHandler.prototype.onGetItemInfo');
+	    api.getItemStats(urlParams['itemId'], InfoType.FULL, 'ApiHandler.prototype.onGetItemInfo');
 	else{
 	    // so.amError('flashcontent', 'No itemId set!');
 	    // so.write('flashcontent');

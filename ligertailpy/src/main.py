@@ -36,6 +36,9 @@ class MainHandler(webapp.RequestHandler):
         self.response.headers["Access-Control-Allow-Origin"] = '*'
         self.response.out.write(template.render(path, {}))
         
+    def post(self, url):
+        logging.info(url)
+                
     def options(self):
         self.response.headers['Access-Control-Allow-Origin'] = '*'
         self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
@@ -215,6 +218,7 @@ class GetItemStatsHandler(BaseHandler):
         s = self.getParam('infoType');
         if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 
           itemInfoType = int(s)
+        logging.info('getItemStats for %s, infotype = %s->%d' % (self.getParam('itemId'), s, itemInfoType))
         self.common_response.setItems([itemWithStats], itemInfoType)
       except Exception:
         BaseHandler.logException(self)

@@ -280,29 +280,56 @@ class TimedStats(object):
             StatType.VIEWS : 0
           }
 
+  def getPrevYear_(self, updateTime):
+    prevYear = -1
+    if updateTime.year - self.updateTime.year <= YEARLY.num_items:
+      prevYear = updateTime.year - self.updateTime.year
+    return prevYear
+  
+  def getPrevMonth_(self, updateTime):
+    prevMonth = -1
+    if updateTime.month >= self.updateTime.month and updateTime.year == self.updateTime.year:
+      prevMonth = updateTime.month - self.updateTime.month
+    elif updateTime.month < self.updateTime.month and updateTime.year - 1 == self.updateTime.year:
+      prevMonth = updateTime.month + 12 - self.updateTime.month
+    return prevMonth
+  
+  def getPrevDay_(self, updateTime):
+    timedelta = updateTime - self.updateTime
+    prevDay = -1
+    if updateTime.day >= self.updateTime.day and updateTime.month == self.updateTime.month and updateTime.year == self.updateTime.year:
+      prevDay = updateTime.day - self.updateTime.day
+    elif updateTime.day < self.updateTime.day and timedelta.days < 31:
+      prevDay = updateTime.day + calendar.mdays[self.updateTime.month] - self.updateTime.day
+    return prevDay
+
+  def getPrevHour_(self, updateTime):
+    timedelta = updateTime - self.updateTime
+    prevHour = -1
+    if updateTime.hour >= self.updateTime.hour and timedelta.days == 0:
+      prevHour = updateTime.hour - self.updateTime.hour
+    elif updateTime.hour < self.updateTime.hour and timedelta.days == 0:
+      prevHour = updateTime.hour + 24 - self.updateTime.hour
+    return prevHour
+
+  def getPrevMinute_(self, updateTime):
+    timedelta = updateTime - self.updateTime
+    prevMinute = -1          
+    if updateTime.minute >= self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
+      prevMinute = updateTime.minute - self.updateTime.minute
+    elif updateTime.minute < self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600:
+      prevMinute = updateTime.minute + 60 - self.updateTime.minute
+    return prevMinute
+
   def update(self, statType = StatType.UNKNOWN, updateTime = datetime.datetime.utcnow()):
-    prevYear = prevMonth  = prevDay = prevHour = prevMinute = -1
+    prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
     if self.updateTime:
-      timedelta = updateTime - self.updateTime
-      if updateTime.year - self.updateTime.year <= YEARLY.num_items:
-        prevYear = updateTime.year - self.updateTime.year
-      if updateTime.month >= self.updateTime.month and updateTime.year == self.updateTime.year:
-        prevMonth = updateTime.month - self.updateTime.month
-      elif updateTime.month < self.updateTime.month and updateTime.year - 1 == self.updateTime.year:
-        prevMonth = updateTime.month + 12 - self.updateTime.month
-      if updateTime.day >= self.updateTime.day and updateTime.month == self.updateTime.month and updateTime.year == self.updateTime.year:
-        prevDay = updateTime.day - self.updateTime.day
-      elif updateTime.day < self.updateTime.day and timedelta.days < 31:
-        prevDay = updateTime.day + calendar.mdays[self.updateTime.month] - self.updateTime.day
-      if updateTime.hour >= self.updateTime.hour and timedelta.days == 0:
-        prevHour = updateTime.hour - self.updateTime.hour
-      elif updateTime.hour < self.updateTime.hour and timedelta.days == 0:
-        prevHour = updateTime.hour + 24 - self.updateTime.hour
-      if updateTime.minute >= self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
-        prevMinute = updateTime.minute - self.updateTime.minute
-      elif updateTime.minute < self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600:
-        prevMinute = updateTime.minute + 60 - self.updateTime.minute
+      prevYear = self.getPrevYear_(updateTime);
+      prevMonth = self.getPrevMonth_(updateTime);
+      prevDay = self.getPrevDay_(updateTime);
+      prevHour = self.getPrevHour_(updateTime);
+      prevMinute = self.getPrevMinute_(updateTime);
             
     self.updateStats_(YEARLY, statType, prevYear)
     self.updateStats_(MONTHLY, statType, prevMonth)
@@ -335,6 +362,10 @@ class TimedStats(object):
     elif statType != StatType.UNKNOWN: 
       recordedStats[0][statType] = recordedStats[0][statType] + 1
     
+  def getStats(self, statType, durationType, numOfDeltas):
+    now = datetime.datetime.utcnow();
+    
+  
 class ItemUpdateEntity(object):  
   itemId = None
   bNew = False
@@ -498,10 +529,10 @@ class ActivityParams(db.Model):
       enabled = 'enabled'
     
     return '''
-      name %s, activity_load/hr: %d %s
+      name %s, activity_load: %d %s
       num_buckets %d
       total updates before triggering: %d
-      min_time_sec %d, max_time_sec %d''', (self.name, self.activity_load, enabled,
+      min_time_sec %d, max_time_sec %d''' % (self.name, self.activity_load, enabled,
       self.num_buckets, self.total_updates_before_triggering,
       self.min_time_sec_between_jobs, self.max_time_sec_before_triggering)
   

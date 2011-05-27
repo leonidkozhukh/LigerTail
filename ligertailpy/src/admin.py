@@ -120,9 +120,7 @@ class AdminHandler(webapp.RequestHandler):
         if a:
           successes.append('DELETED: %s' % a.name)
           a.delete()
-          
-      activityManager.refreshActivities()    
-      
+                
       self.response.out.write(' / '.join(successes) + 
                                 ' / '.join(errors))
       #else:

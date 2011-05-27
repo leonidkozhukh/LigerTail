@@ -114,7 +114,9 @@
       });
 
       print('number of ordered items ' + response.items.length);
-      submitUserInteraction(its);
+      if (its.length) {
+        submitUserInteraction(its);
+      }
     }
     
     function submitUserInteraction(items) {
@@ -141,7 +143,11 @@
     }
     
     function publisherUrl() {
-       return window.document.location.href;
+      var url = window.document.location.href;
+      if (url.search('localhost') >= 0) {
+    	  url = "http://test.com";
+      }
+      return url;
     }
    
     

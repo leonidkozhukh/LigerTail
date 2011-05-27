@@ -39,6 +39,7 @@ class ResponseItem(ResponseStats):
         self.description = item.description
         self.itemInfo = itemInfo
         self.price = item.price
+        self.publisherUrl = item.publisherUrl
         if hasattr(item, 'engagement'):
           self.engagement = item.engagement
         if hasattr(item, 'tier'):
@@ -63,6 +64,7 @@ class ResponseItem(ResponseStats):
               if hasattr(o, 'tier'):
                 ret['tier'] = o.tier
           if o.itemInfo == ItemInfo.FULL:
+              ret['publisherUrl'] = o.publisherUrl
               o.populateStats(ret)
           return ret
       return json.JSONEncoder.default(self, o)
