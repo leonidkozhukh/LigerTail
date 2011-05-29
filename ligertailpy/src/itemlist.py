@@ -80,6 +80,8 @@ class ItemList(Singleton):
         items = {}
         spots = {}
         for entity in entities[bucketId]:
+          #TODO: verify that entities are sorted by creation time 
+          # or sort entities by creation time and enable model.TimedStats.update(...creationtime)
           if entity.itemId:
             # update items
             item = None
@@ -110,9 +112,9 @@ class ItemList(Singleton):
             if entity.spot != None and entity.statType != None and entity.statType != model.StatType.VIEWS and entity.statType != model.StatType.UNIQUES:
               publisherSite.updateStats(entity.statType, entity.creationTime)
             elif entity.spot == 0 and (entity.statType == model.StatType.VIEWS or entity.statType == model.StatType.UNIQUES):
-              logging.info('updating publisher site stats: statType: %d', entity.statType)
               publisherSite.updateStats(entity.statType, entity.creationTime)
-          
+              logging.info('updated publisher site stats: statType: %d', entity.statType)
+              
         #TODO: use a method to store lists
         for item in items.values():
           item.put()

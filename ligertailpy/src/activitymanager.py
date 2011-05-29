@@ -17,28 +17,44 @@ class Singleton(object):
 class ActivityManager(Singleton):
   def __init__(self):
     self.activities = []
-    self.lastLoad = datetime.datetime.utcnow()
+    self.lastLoad = time.time()
+    self.publisherActivityLoadMap = {}
+    self.publisherActivityLoadUpdateMap = {}
     # TODO be able to update via UI
-    self.timeToRefresh = datetime.timedelta(0, 120)
-    self.numDeltasInThePast = 8
+    self.secToRefresh = 120
+    self.numDeltasInThePast = 4
     self.activityDelta = model.MINUTELY
-    self.averageOf = 4
+    self.averageOf = 2
+    self.secToRefreshPublisherLoad = 60
     
   def getActivityPeriod(self):
     return self.activityDelta.name
   
   def lazyLoad_(self, refresh):
     if not len(self.activities) or refresh:
-      self.lastLoad = datetime.datetime.utcnow()
+      self.lastLoad = time.time()
       self.activities = model.getActivities(True)
       logging.info('Reloading %d activities' % len(self.activities))
-  
+
   def getPublisherActivityLoad_(self, publisherUrl):
-    activityLoad = memcache.get('activityLoad_%s' % publisherUrl)
-    if not activityLoad:
+    needRefresh = False
+    if self.publisherActivityLoadUpdateMap.has_key(publisherUrl):
+      lastUpdate = self.publisherActivityLoadUpdateMap[publisherUrl]
+      now = time.time()
+      if now - lastUpdate > self.secToRefreshPublisherLoad:
+        needRefresh = True
+    if needRefresh or not self.publisherActivityLoadMap.has_key(publisherUrl):
       publisherSite = model.getPublisherSite(publisherUrl)
-      return self.updatePublisherActivityLoad_(publisherSite)
-    return activityLoad
+      self.updatePublisherActivityLoad_(publisherSite)
+    return self.publisherActivityLoadMap[publisherUrl]
+
+  
+#  def getPublisherActivityLoad_(self, publisherUrl):
+#    activityLoad = memcache.get('activityLoad_%s' % publisherUrl)
+#    if activityLoad == None:
+#      publisherSite = model.getPublisherSite(publisherUrl)
+#      return self.updatePublisherActivityLoad_(publisherSite)
+#    return activityLoad
 
   def updatePublisherActivityLoad_(self, publisherSite):        
     activityLoad = 0
@@ -46,8 +62,11 @@ class ActivityManager(Singleton):
       activityLoad += publisherSite.timedStats.durations[self.activityDelta.id][self.numDeltasInThePast - i][model.StatType.VIEWS]
     activityLoad /= self.averageOf
     logging.info('current activity load %d' % activityLoad)
-    memcache.set('activityLoad_%s' % publisherSite.publisherUrl, activityLoad)
-    return activityLoad
+    self.publisherActivityLoadMap[publisherSite.publisherUrl] = activityLoad
+    self.publisherActivityLoadUpdateMap[publisherSite.publisherUrl] = time.time()
+    #memcache.set('activityLoad_%s' % publisherSite.publisherUrl, activityLoad)
+    #memcache.set('activityLoadLastUpdated_%s' % publisherSite.publisherUrl, activityLoad)
+    #return activityLoad
 
   def getActivityParamsForPublisherUrl_(self, publisherUrl):
     publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
@@ -76,9 +95,9 @@ class ActivityManager(Singleton):
   
   # called by admin UI after update
   def refreshActivities(self):
-    now = datetime.datetime.utcnow()
+    now = time.time()
     refresh = False
-    if now - self.lastLoad > self.timeToRefresh:
+    if now - self.lastLoad > self.secToRefresh:
       refresh = True
     self.lazyLoad_(refresh)
   

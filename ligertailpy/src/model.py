@@ -142,7 +142,7 @@ class StatContainer(db.Model):
       self.stats[statType] = 1
     else:
       self.stats[statType] += 1
-    self.timedStats.update(statType, creationTime)
+    self.timedStats.update(statType) #, creationTime)
   
 
 class Item(StatContainer):
@@ -280,13 +280,13 @@ class TimedStats(object):
             StatType.VIEWS : 0
           }
 
-  def getPrevYear_(self, updateTime):
+  def getPrevYearIdx_(self, updateTime):
     prevYear = -1
     if updateTime.year - self.updateTime.year <= YEARLY.num_items:
       prevYear = updateTime.year - self.updateTime.year
     return prevYear
   
-  def getPrevMonth_(self, updateTime):
+  def getPrevMonthIdx_(self, updateTime):
     prevMonth = -1
     if updateTime.month >= self.updateTime.month and updateTime.year == self.updateTime.year:
       prevMonth = updateTime.month - self.updateTime.month
@@ -294,7 +294,7 @@ class TimedStats(object):
       prevMonth = updateTime.month + 12 - self.updateTime.month
     return prevMonth
   
-  def getPrevDay_(self, updateTime):
+  def getPrevDayIdx_(self, updateTime):
     timedelta = updateTime - self.updateTime
     prevDay = -1
     if updateTime.day >= self.updateTime.day and updateTime.month == self.updateTime.month and updateTime.year == self.updateTime.year:
@@ -303,7 +303,7 @@ class TimedStats(object):
       prevDay = updateTime.day + calendar.mdays[self.updateTime.month] - self.updateTime.day
     return prevDay
 
-  def getPrevHour_(self, updateTime):
+  def getPrevHourIdx_(self, updateTime):
     timedelta = updateTime - self.updateTime
     prevHour = -1
     if updateTime.hour >= self.updateTime.hour and timedelta.days == 0:
@@ -312,31 +312,34 @@ class TimedStats(object):
       prevHour = updateTime.hour + 24 - self.updateTime.hour
     return prevHour
 
-  def getPrevMinute_(self, updateTime):
+  def getPrevMinuteIdx_(self, updateTime):
     timedelta = updateTime - self.updateTime
     prevMinute = -1          
-    if updateTime.minute >= self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
+    if updateTime.minute > self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
       prevMinute = updateTime.minute - self.updateTime.minute
+    elif updateTime.minute == self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
+      prevMinute = 0
     elif updateTime.minute < self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600:
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
-  def update(self, statType = StatType.UNKNOWN, updateTime = datetime.datetime.utcnow()):
+  def update(self, statType = StatType.UNKNOWN):
+    newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
     if self.updateTime:
-      prevYear = self.getPrevYear_(updateTime);
-      prevMonth = self.getPrevMonth_(updateTime);
-      prevDay = self.getPrevDay_(updateTime);
-      prevHour = self.getPrevHour_(updateTime);
-      prevMinute = self.getPrevMinute_(updateTime);
+      prevYear = self.getPrevYearIdx_(newUpdateTime);
+      prevMonth = self.getPrevMonthIdx_(newUpdateTime);
+      prevDay = self.getPrevDayIdx_(newUpdateTime);
+      prevHour = self.getPrevHourIdx_(newUpdateTime);
+      prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
             
     self.updateStats_(YEARLY, statType, prevYear)
     self.updateStats_(MONTHLY, statType, prevMonth)
     self.updateStats_(DAILY, statType, prevDay)
     self.updateStats_(HOURLY, statType, prevHour)
     self.updateStats_(MINUTELY, statType, prevMinute)
-    self.updateTime = updateTime
+    self.updateTime = newUpdateTime
     return self.getCompressed()
 
   def updateStats_(self, duration, statType, previousTimeBucket):  
@@ -361,10 +364,7 @@ class TimedStats(object):
       self.durations[duration.id] = statArray
     elif statType != StatType.UNKNOWN: 
       recordedStats[0][statType] = recordedStats[0][statType] + 1
-    
-  def getStats(self, statType, durationType, numOfDeltas):
-    now = datetime.datetime.utcnow();
-    
+        
   
 class ItemUpdateEntity(object):  
   itemId = None
