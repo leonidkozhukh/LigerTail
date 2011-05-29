@@ -154,6 +154,7 @@
 #ligertail_widget_small .ligertail_widget_close {
 	float:right;
 	clear: right;
+	padding-top: 2px;
 }
 	
 
