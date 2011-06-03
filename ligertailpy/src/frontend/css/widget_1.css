@@ -189,7 +189,7 @@
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
 	border:none;
-	padding: 13px 0 0 7px;
+	padding: 7px 0 0 7px;
 	width: 185px;
 	height: 25px;
 	float: left;
@@ -198,10 +198,18 @@
 	font-size: 9px;
 	margin-left: 5px;
     border: 0;
+/*
+    position: absolute;
+    top: 5px;
+    left: 90px;
+*/
+    padding-top: 9px;
+    line-height: 20px;
+    height: 19px;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-    #ligertail_widget_small .ligertail_widget_form {padding-top: 13px;}
+    #ligertail_widget_small .ligertail_widget_form {padding-top: 20px}
 }
 
 *+html #ligertail_widget_small .ligertail_widget_content {padding-top:3px}

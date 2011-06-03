@@ -415,8 +415,7 @@ function initAll(){
         }
     }
     
-    $(".ligertail_widget").append(header + content + footer);
-    $(".ligertail_widget .ligertail_widget_content").show();
+    $(".ligertail_widget").append(header + content + footer).show();
     
     //events...
     //clicking on header logo
@@ -428,7 +427,7 @@ function initAll(){
     //input box hover
     $("#ligertail_widget_header input").hover(function(){ 
         if($(this).val() == "Submit Your Link Here")
-            $(this).val("http://").select();
+            $(this).val("").select();
         else
             $(this).select();
     }, 
