@@ -94,7 +94,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		interactions[i] = {itemId: item_obj.id, statType: StatType.VIEWS, spot: window.LIGERTAIL_ITEMS_LOADED};
 	});
 	
-	if(content.length > 0){
+	if(content != ""){
 		jQuery(".ligertail_widget .ligertail_widget_content:visible").hide();
 		jQuery(".ligertail_widget #ligertail_widget_header").after(content);
 		jQuery(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").show();
