@@ -17,6 +17,10 @@ handlers:
   static_files: web/images/favicon.ico
   upload: web/images/favicon.ico
 
+- url: /robots.txt
+  static_files: static/robots.txt
+  upload: static/robots.txt
+
 - url: /web/images
   static_dir: web/images
     
@@ -54,6 +58,4 @@ handlers:
 
 - url: /.*
   script: main.py
-  
-
-
+ 

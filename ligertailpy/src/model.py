@@ -315,10 +315,8 @@ class TimedStats(object):
   def getPrevMinuteIdx_(self, updateTime):
     timedelta = updateTime - self.updateTime
     prevMinute = -1          
-    if updateTime.minute > self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
+    if updateTime.minute >= self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
       prevMinute = updateTime.minute - self.updateTime.minute
-    elif updateTime.minute == self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600 :
-      prevMinute = 0
     elif updateTime.minute < self.updateTime.minute and timedelta.days == 0 and timedelta.seconds < 3600:
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
