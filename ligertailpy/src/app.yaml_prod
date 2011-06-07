@@ -18,8 +18,8 @@ handlers:
   upload: web/images/favicon.ico
 
 - url: /robots.txt
-  static_files: static/robots.txt
-  upload: static/robots.txt
+  static_files: web/robots.txt
+  upload: web/robots.txt
 
 - url: /web/images
   static_dir: web/images
