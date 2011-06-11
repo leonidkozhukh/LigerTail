@@ -324,11 +324,17 @@ ApiHandler.prototype.onSubmitError = function(response) {
 ApiHandler.parseStats_ = function(obj) {
 	var data = {0:["", "", "", ""], 1:["", "", "", ""], 2:["", "", "", ""], 3:["", "", "", ""], 4:["", "", "", ""]};
 	var idMap = [0,1,2,4];
+	var lastDate = new Date(obj.updateTime.year, obj.updateTime.month, obj.updateTime.day, obj.updateTime.hour, obj.updateTime.minute);
+	var labelOffsets = [0 + obj.updateTime.year,
+	                    0 + obj.updateTime.month,
+	                    0 + obj.updateTime.day,
+	                    0 + obj.updateTime.hour,
+	                    0 + obj.updateTime.minute]
 	for(var m = 0; m < 5; m++){
-			for(var n = DurationInfo[m].length - 1; n > 0; n--){
+			for(var n = DurationInfo[m].length - 1; n >= 0; n--){
 				o = obj.timedStats[m][n];
 				for (var i = 0; i < idMap.length; i++) {
-					data[m][i] += Math.abs(n - DurationInfo[m].length) + ';' + (o[idMap[i]] != null ? o[idMap[i]] : 0) + '\n'; 
+					data[m][i] += (labelOffsets[m] + DurationInfo[m].length -1 - n )%DurationInfo[m].length + ';' + (o[idMap[i]] != null ? o[idMap[i]] : 0) + '\n'; 
 				}
 			}
 	}
