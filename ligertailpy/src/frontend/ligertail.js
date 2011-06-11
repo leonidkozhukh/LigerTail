@@ -1,7 +1,7 @@
 
 // !!! NOTE: switch the domain for development!
-var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
-//var LTDOMAIN = 'http://ligertailbackend.appspot.com';
+//var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
+var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 (function(window, document, version, callback) {
     var j, d;
@@ -132,13 +132,14 @@ function SetupParameters(){
 //URL VALIDATION FUNCTION
 
 function ValidateURL(str){
-    var RegExp = /^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/;
-    if(RegExp.test(str)){ 
+	var re = new RegExp(/^((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$/);
+    if(re.test(str)){ 
         return str; 
     }else{ 
         return false; 
     }
 }
+
 
 //EMAIL VALIDATION FUNCTION
 
@@ -149,6 +150,12 @@ function ValidateEmail(str) {
     }
     else return str;  
 }
+
+// REPLACE HTML ENCODED TO CHARS
+function dehtml(str) {
+	  return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
+}
+
 ///////////////////////////////////////////////////// 
 //LOAD SUBMISSION LIGHTBOX
 
@@ -263,8 +270,8 @@ function OpenLightboxSubmission(url){
                 var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
                 item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
-                item.title = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val();
-                item.description = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val();
+                item.title = dehtml(jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val());
+                item.description = dehtml(jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val());
                 item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
 
                 //if url same as original, use embedly img

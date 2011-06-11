@@ -125,8 +125,6 @@ class ItemList(Singleton):
       publisherSite.put() 
       #TODO: write updates into timed log
       self.refreshCacheForDefaultOrderedItems(publisherUrl)
-    finally:
-      activityManager.finishItemUpdateProcessing(publisherSite)
       newNumBuckets = activityManager.getNumBuckets(publisherUrl)
       if newNumBuckets < numBuckets:
         # If the number of buckets was decreased, move items from higher buckets to where the belong now
@@ -140,6 +138,8 @@ class ItemList(Singleton):
             newBucketId = self.getItemBucketId_(entity.itemId, publisherUrl, newNumBuckets)
             newBucket = model.getBucket(newBucketId)
             db.run_in_transaction(addToBucket_, newBucket.key(), entity)
+    finally:
+      activityManager.finishItemUpdateProcessing(publisherSite)
       
     
 itemList = ItemList()
