@@ -131,6 +131,8 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				var interaction = [];
 				interaction[0] = {itemId: jQuery(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jQuery(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
 				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				jQuery(this).parent().parent().remove();
+				jQuery(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});
 	
 		//update db for like
