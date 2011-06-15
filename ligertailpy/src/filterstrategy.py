@@ -37,7 +37,7 @@ class DefaultFilterStrategy(Singleton):
       clicks = self.getClicks_(item)
       engagement = 0
       if views > 0:
-        engagement = (clicks * self.params.ctr_factor + closes * (1-self.params.ctr_factor)) / views
+        engagement = (clicks * self.params.ctr_factor - closes * (1-self.params.ctr_factor)) / views
       item.engagement = engagement
       if views < self.params.num_views_threshold and item.price > 0:
         tier0.append(item)
