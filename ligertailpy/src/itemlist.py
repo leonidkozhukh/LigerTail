@@ -88,7 +88,7 @@ class ItemList(Singleton):
             if not items.has_key(entity.itemId):
               item = model.Item.get_by_id(entity.itemId)
               if not item:
-                logging.error('no item found for id %d', entity.itemId)
+                logging.warning('no item found for id %d', entity.itemId)
               else:
                 items[entity.itemId] = item               
             else:

@@ -62,9 +62,13 @@ class BaseHandler(webapp.RequestHandler):
   def getOrderedItems(self, publisherUrl, filter):
     defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
     # use spot = 0 to record publisher site views and uniques
-    itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
-    if self.viewer.isNew:
-      itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
+    try:
+      itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
+      if self.viewer.isNew:
+        itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
+    except Exception:
+      logging.warning('getOrderedItems.updateItem %s' % sys.exc_info()[1])
+
     if filter.default:
       logging.info('return default from memcache for %s', publisherUrl)
       return defaultOrderedItems
