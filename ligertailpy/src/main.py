@@ -34,8 +34,14 @@ class MainHandler(webapp.RequestHandler):
             path = os.path.join(os.path.dirname(__file__), 'web', url)
         else:
             path = os.path.join(os.path.dirname(__file__), 'web', 'index.html')
-        self.response.headers["Access-Control-Allow-Origin"] = '*'
-        self.response.out.write(template.render(path, {}))
+        out = ''
+        try:
+          out = template.render(path, {})
+          self.response.headers["Access-Control-Allow-Origin"] = '*'
+        except Exception:
+          logging.warning('mainHandler: %s' % sys.exc_info()[1])
+          out = ''
+        self.response.out.write(out)
         
     def post(self, url):
         logging.info(url)
