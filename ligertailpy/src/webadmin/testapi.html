@@ -135,25 +135,23 @@
     }
     
     function updatePrice() {
-      // pay for 3 items
-      for (var i = 0; i < 3; i++) {
-    	  var v = i ? (i==1 ? 'bb' : 'cc') : 'aa';
-	    	ccinfo = {};
-	      ccinfo.itemId = lttest['i' + i].id;
-	      ccinfo.price = i+1;
-	      ccinfo.first_name = "John" + v;
-	      ccinfo.last_name = "Smith" + v;
-	      ccinfo.address = "23" + i +  "main street";
-	      ccinfo.city = "Nyork";
-	      ccinfo.state = "NY";
-	      ccinfo.zip = "10000";
-	      ccinfo.cc = "4111111111111111";
-	      ccinfo.expiration = "1/" + (i+1) + "/15";
-	      ccinfo.cvs = "123";
-	      ccinfo.email = 'email' + v + '@email.com';
-      
-	      lttest.api.updatePrice(ccinfo, 'onPriceUpdated');
-      }
+    	var i = lttest.itemsPaid; 
+   	  var v = i ? (i==1 ? 'bb' : 'cc') : 'aa';
+    	ccinfo = {};
+      ccinfo.itemId = lttest['i' + i].id;
+      ccinfo.price = i+1;
+      ccinfo.first_name = "John" + v;
+      ccinfo.last_name = "Smith" + v;
+      ccinfo.address = "23" + i +  "main street";
+      ccinfo.city = "Nyork";
+      ccinfo.state = "NY";
+      ccinfo.zip = "10000";
+      ccinfo.cc = "4111111111111111";
+      ccinfo.expiration = "1/" + (i+1) + "/15";
+      ccinfo.cvs = "123";
+      ccinfo.email = 'email' + v + '@email.com';
+     
+      lttest.api.updatePrice(ccinfo, 'onPriceUpdated');
     }
     
     function onPriceUpdated(response) {
@@ -162,6 +160,8 @@
     	  		lttest.itemsPaid += 1;
     	  		if (lttest.itemsPaid == 3) {
     	  		  setTimeout(getPaidItems, 0);
+    	  		} else {
+    	  			setTimeout(updatePrice, 0);
     	  		}
      	  	}
     	  	else {
