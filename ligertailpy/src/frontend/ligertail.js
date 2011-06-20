@@ -29,7 +29,7 @@ var LTVISIBLEDOMAIN = 'http://ligertail.com';
         };
         document.documentElement.childNodes[0].appendChild(script)
     }
-})(window, document, "1.4", function($, jquery_loaded) {
+})(window, document, "1.4", function(jq14, jquery_loaded) {
 
 function loadScripts(scripts, scriptFunctions) {
 	numScripts = scripts.length;
