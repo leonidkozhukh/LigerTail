@@ -5,6 +5,7 @@ from base import BaseHandler
 from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
+from google.appengine.ext import db
 from itemlist import itemList
 import admin 
 import logging
@@ -33,8 +34,14 @@ class MainHandler(webapp.RequestHandler):
             path = os.path.join(os.path.dirname(__file__), 'web', url)
         else:
             path = os.path.join(os.path.dirname(__file__), 'web', 'index.html')
-        self.response.headers["Access-Control-Allow-Origin"] = '*'
-        self.response.out.write(template.render(path, {}))
+        out = ''
+        try:
+          out = template.render(path, {})
+          self.response.headers["Access-Control-Allow-Origin"] = '*'
+        except Exception:
+          logging.warning('mainHandler: %s' % sys.exc_info()[1])
+          out = ''
+        self.response.out.write(out)
         
     def post(self, url):
         logging.info(url)
@@ -69,6 +76,14 @@ class SubmitItemHandler(BaseHandler):
           self.logException(self)
         BaseHandler.writeResponse(self)
         
+def updatePublisherPrice_(publisherSiteKey, price):
+  ''' Transactional method
+  '''
+  publisherSite = db.get(publisherSiteKey)
+  publisherSite.amount += price
+  publisherSite.put()
+        
+        
 class UpdatePriceHandler(BaseHandler):
     def post(self):
       try:
@@ -77,11 +92,11 @@ class UpdatePriceHandler(BaseHandler):
         item = BaseHandler.getItem(self, self.getParam('itemId'))
         paymentConfig = model.getPaymentConfig()
         if item and self._verifyTransaction(item, paymentConfig.test_mode):  
-          item.updatePrice(int(self.getParam('price')), self.getParam('email'))
+          price = int(self.getParam('price'))
+          item.updatePrice(price, self.getParam('email'))
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
-          publisherSite.amount += int(self.getParam('price'))
-          publisherSite.put()
+          db.run_in_transaction(updatePublisherPrice_, publisherSite.key(), price)
           itemList.refreshCacheForDefaultOrderedItems(item.publisherUrl)
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
@@ -105,7 +120,10 @@ class UpdatePriceHandler(BaseHandler):
                        'cc': self.getParam('cc'),
                        'expiration': self.getParam('expiration'),
                        'cvs': self.getParam('cvs') };
-                       
+        if item.publisherUrl.find('test.ligertail.com/test') == 0:
+          logging.info('approving test transaction')
+          return True
+           
         result = payment.verify(paymentInfo, testmode)
         logging.info('verifyTransaction %s', str(result))
         if result.code != u'1':

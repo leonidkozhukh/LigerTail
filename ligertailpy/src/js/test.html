@@ -91,7 +91,7 @@
     
     function onItemSubmitted(response) {
     	if (response.error) {
-    		failure(response.error);
+    		failure('submitItem:' + response.error);
     	} else {
     		success();
     	}
@@ -106,7 +106,7 @@
     
     function onGetOrderedItems(response) {
       if (response.error) {
-        failure(response.error);
+        failure('getOrderedItems:' + response.error);
         return;
       }
       success();
@@ -138,7 +138,7 @@
    
     function onUserInteractionSubmitted(response) {
         if (response.error) {
-            failure(response.error);
+            failure('submitUserInteraction:' + response.error);
             return;
         }
         success();    	

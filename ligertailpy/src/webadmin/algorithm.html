@@ -22,15 +22,15 @@
 </p>
 <p>
  Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
- This gives top priority to the items that are paid for, to acquire necessary stats
+ This gives top priority to the items that are paid for, to acquire   necessary stats
 </p>
 <p>
  Tier 1 - quality content. These are items whose stats are known (views > num_views_threshold)
- and whose engagement is high (clicks + closes)/views.
+ and whose engagement is high.
  The engagement is a value 0..1 (1 being the highest, when every view results in
  a user action)
  The engagement rate is calculated (ctr - click through rate, clr - close rate):
-<b> ctr * ctr_factor + clr * (1 - ctr_factor) </b>
+<b> ctr * ctr_factor - clr * (1 - ctr_factor) </b>
 </p>
 <p>
  Tier 2 - better than ads. Disregarding the number of views, just high enough engagement

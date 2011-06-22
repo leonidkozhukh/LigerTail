@@ -475,7 +475,7 @@ class OrderingAlgorithmParams(db.Model):
   
   # 0..1. The higher ctr_factor, the less important closes rate (clr) is
   # since clr is multiplied by (1-ctr_factor)
-  ctr_factor = db.FloatProperty(default = 0.7)
+  ctr_factor = db.FloatProperty(default = 0.9)
 
   # Defines a proportion of tier2 over tier3
   # eg, 0.7 - 70% is for tier2, 30% for tier3
