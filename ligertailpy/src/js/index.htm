@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
   <head>
-<script src = "../js/postrequest.js">
+<script src = "../js/postrequest_orig.js">
 </script>
 <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
 </script>
@@ -49,17 +49,17 @@ function onMySubmitted(o) {
 }
 
 function getOrderedItems() {
-    api.getOrderedItems(publisherUrl());     
+    api.getOrderedItems(publisherUrl(), 'BaseApiHandler.prototype.onGetOrderedItems');     
 }
 
 
 function getPaidItems() {
-    api.getPaidItems(publisherUrl());     
+    api.getPaidItems(publisherUrl(), 'BaseApiHandler.prototype.onGetPaidItems');     
 }
 
 function getItemStats() {
-  var itemId = document.getElementById("itemid").value - 0;
-  api.getItemStats(itemId, InfoType.FULL); // InfoType.SHORT
+  var itemId = document.getElementById("itemid").value;
+  api.getItemStats(itemId, InfoType.FULL, 'BaseApiHandler.prototype.onGetItemStats'); // InfoType.SHORT
 }
 
 function openPaymentPage() {
@@ -78,16 +78,16 @@ function openPaymentPage() {
 	}
 
 function getSpotStats() {
-	var spot = document.getElementById("spot").value - 0;
-	api.getSpotStats(spot, publisherUrl());
+	var spot = document.getElementById("spot").value;
+	api.getSpotStats(spot, publisherUrl(), 'BaseApiHandler.prototype.onGetSpotStats');
 }
 
 function getPublisherSiteStats() {
-  api.getPublisherSiteStats(publisherUrl());
+  api.getPublisherSiteStats(publisherUrl(), 'BaseApiHandler.prototype.onGetPublisherSiteStats');
 }
 
 function getFilter() {
-  api.getFilter(publisherUrl());
+  api.getFilter(publisherUrl(), 'BaseApiHandler.prototype.onGetFilter');
 }
 
 function submitFilter() {
@@ -106,7 +106,7 @@ function submitUserInteraction(itemId) {
   interactions.push({itemId:itemId, statType: StatType.CLOSES, spot:3 });
   interactions.push({itemId:itemId, statType: StatType.CLICKS, spot:4});
   interactions.push({itemId:itemId, statType: StatType.CLICKS, spot: 1});
-  api.submitUserInteraction(publisherUrl(), interactions);
+  api.submitUserInteraction(publisherUrl(), interactions, 'BaseApiHandler.prototype.onUserInteractionSubmitted');
 }
 
 function updatePrice(itemId, price) {

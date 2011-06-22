@@ -121,14 +121,14 @@ LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 };
 
 LTApi.prototype.getItemStats= function(itemId, infoType, callback) {
-	assert(itemId > 0);
+	assert(itemId);
 	var data = this.serialize({"itemId":itemId, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetItemStats');
 };
 
 LTApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
 	assert(publisherUrl);
-	assert(spot > 0);
+	assert(spot);
 	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
 	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetSpotStats');
 };

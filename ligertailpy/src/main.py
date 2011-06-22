@@ -213,13 +213,17 @@ class GetItemStatsHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        itemWithStats = BaseHandler.getItem(self, self.getParam('itemId'))
+        #itemId is space delimited list of itemIds
+        itemIds = self.getParam('itemId').split(" ")
+        itemsWithStats = []
+        for itemId in itemIds:
+            itemsWithStats.append(BaseHandler.getItem(self, itemId))
         itemInfoType = response.ItemInfo.FULL;
         s = self.getParam('infoType');
         if len(s) and int(s) >= response.ItemInfo.SHORT and int(s) <= response.ItemInfo.FULL: 
           itemInfoType = int(s)
         logging.info('getItemStats for %s, infotype = %s->%d' % (self.getParam('itemId'), s, itemInfoType))
-        self.common_response.setItems([itemWithStats], itemInfoType)
+        self.common_response.setItems(itemsWithStats, itemInfoType)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -228,8 +232,12 @@ class GetSpotStatsHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        spot = model.getSpot(self.getParam('publisherUrl'), int(self.getParam('spot')))
-        self.common_response.setSpots([spot])
+        #spot is space delimited list of spots
+        spots = self.getParam('spot').split(" ")
+        spotsWithStats = []
+        for spot in spots:
+            spotsWithStats.append(model.getSpot(self.getParam('publisherUrl'), int(spot))) 
+        self.common_response.setSpots(spotsWithStats)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -238,8 +246,12 @@ class GetPublisherSiteStatsHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        publisher = model.getPublisherSite(self.getParam('publisherUrl'))
-        self.common_response.setPublisherSites([publisher])
+        #publisherUrl is space delimited list of publishers
+        publishers = self.getParam('publisherUrl').split(" ")
+        publishersWithStats = []
+        for publisher in publishers:
+            publishersWithStats.append(model.getPublisherSite(publisher)) 
+        self.common_response.setPublisherSites(publishersWithStats)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
