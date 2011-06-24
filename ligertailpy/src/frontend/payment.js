@@ -19,7 +19,7 @@ function ValidateEmail(str) {
 
 
 function init(publisherUrl) {
-  var apiHandler = new ApiHandler(LTApi.getDefaultDomain());
+  var apiHandler = new ApiHandler(LTApi.getDefaultDomain(), jQuery);
   window.api = new LTApi();
   api.init(apiHandler);
   window.publisherUrl = publisherUrl;

@@ -3,6 +3,9 @@
 //var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
 var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
+
+var jqversion;
+
 (function(window, document, version, callback) {
     var j, d;
     var loaded = false;
@@ -29,7 +32,9 @@ var LTVISIBLEDOMAIN = 'http://ligertail.com';
         };
         document.documentElement.childNodes[0].appendChild(script)
     }
-})(window, document, "1.4", function($, jquery_loaded) {
+})(window, document, "1.5", function(jq15, jquery_loaded) {
+
+jqversion = jq15;
 
 function loadScripts(scripts, scriptFunctions) {
 	numScripts = scripts.length;
@@ -160,14 +165,14 @@ function dehtml(str) {
 //LOAD SUBMISSION LIGHTBOX
 
 function OpenLightboxSubmission(url){
-    jQuery(document).bind('init.facebox', function(){
+    jqversion(document).bind('init.facebox', function(){
         if(window.parameter["width"] == 600)                                            
              loadStaticFile(LTDOMAIN + "/frontend/css/submission_large.css", "css");  
         else
              loadStaticFile(LTDOMAIN + "/frontend/css/submission.css", "css");
     });
         
-    jQuery.facebox(function(){     
+    jqversion.facebox(function(){     
         
         if(window.parameter["width"] == 600)
             openFacebox(LTDOMAIN, "submission_large.html");
@@ -175,108 +180,108 @@ function OpenLightboxSubmission(url){
             openFacebox(LTDOMAIN, "submission.html");
         
         //make sure lightbox form loads before embed.ly is called        
-        jQuery(document).bind('reveal.facebox', function(event){
+        jqversion(document).bind('reveal.facebox', function(event){
              //correct the domain                                               
-            jQuery("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_pay").attr("src", LTDOMAIN + "/frontend/images/button_pay.png");
-            jQuery("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_free").attr("src", LTDOMAIN + "/frontend/images/button_free.png");
+            jqversion("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_pay").attr("src", LTDOMAIN + "/frontend/images/button_pay.png");
+            jqversion("#ligertail_submission_lightbox_form ligertail_submission_lightbox_button_free").attr("src", LTDOMAIN + "/frontend/images/button_free.png");
             if(window.parameter["width"] == 600){                                             
-                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_footer img").attr("src", LTDOMAIN + "/frontend/images/logo_footer.png");
-                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_1.png");
+                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_footer img").attr("src", LTDOMAIN + "/frontend/images/logo_footer.png");
+                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_1.png");
             }
             else{
-                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header img").attr("src", LTDOMAIN + "/frontend/images/logo_header.png");
-                 jQuery("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_2.png");
+                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header img").attr("src", LTDOMAIN + "/frontend/images/logo_header.png");
+                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_2.png");
             }
         
             //form validation
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").blur(function(){ 
-                jQuery(this).val(jQuery.trim(jQuery(this).val()));                                                                                           
-                if(!ValidateURL(jQuery(this).val()))
-                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "red").find("th:last").html("URL invalid.");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").blur(function(){ 
+                jqversion(this).val(jqversion.trim(jqversion(this).val()));                                                                                           
+                if(!ValidateURL(jqversion(this).val()))
+                    jqversion("#ligertail_submission_lightbox_form tr:first").css("color", "red").find("th:last").html("URL invalid.");
                 else{
-                    jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(jQuery(this).val()));
-                    if(jQuery("#ligertail_submission_lightbox_form tr:first").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#ligertail_submission_lightbox_form tr:first").css("color", "black").find("th:last").html("URL");
+                    jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(jQuery(this).val()));
+                    if(jqversion("#ligertail_submission_lightbox_form tr:first").css("color") == "rgb(255, 0, 0)")
+                    jqversion("#ligertail_submission_lightbox_form tr:first").css("color", "black").find("th:last").html("URL");
                 }
             });
             
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").blur(function(){
-                jQuery(this).val(jQuery.trim(jQuery(this).val()));          
-                if(jQuery(this).val().length < 3 || jQuery(this).val().length > 128)
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "red").find("th:last").html("Title needs to be btwn 3 & 128 chars.");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").blur(function(){
+                jqversion(this).val(jqversion.trim(jqversion(this).val()));          
+                if(jqversion(this).val().length < 3 || jqversion(this).val().length > 128)
+                    jqversion("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "red").find("th:last").html("Title needs to be btwn 3 & 128 chars.");
                 else{
-                    jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html(jQuery(this).val());
-                    if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
-                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "black").find("th:last").html("Title");
+                    jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html(jqversion(this).val());
+                    if(jqversion("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color") == "rgb(255, 0, 0)")
+                        jqversion("#ligertail_submission_lightbox_form tr:nth-child(3)").css("color", "black").find("th:last").html("Title");
                 }
             });
 
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").blur(function(){
-                jQuery(this).val(jQuery.trim(jQuery(this).val()));                                                                                                               
-                if(jQuery(this).val().length > 512 || jQuery(this).val().length < 3)
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "red").find("th:last").html("Description needs to be btwn 3 & 512 chars.");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").blur(function(){
+                jqversion(this).val(jqversion.trim(jqversion(this).val()));                                                                                                               
+                if(jqversion(this).val().length > 512 || jqversion(this).val().length < 3)
+                    jqversion("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "red").find("th:last").html("Description needs to be btwn 3 & 512 chars.");
                 else{
-                    jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html(jQuery(this).val()); 
-                    if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
-                        jQuery("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "black").find("th:last").html("Description");
+                    jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html(jqversion(this).val()); 
+                    if(jqversion("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color") == "rgb(255, 0, 0)")
+                        jqversion("#ligertail_submission_lightbox_form tr:nth-child(5)").css("color", "black").find("th:last").html("Description");
                 }
             });
             
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").blur(function(){
-                jQuery(this).val(jQuery.trim(jQuery(this).val()));                                                                                                         
-                if(!ValidateEmail(jQuery(this).val()))
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "red").find("th:last").html("Email invalid.");
-                else if(jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "black").find("th:last").html("Email");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").blur(function(){
+                jqversion(this).val(jqversion.trim(jqversion(this).val()));                                                                                                         
+                if(!ValidateEmail(jqversion(this).val()))
+                    jqversion("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "red").find("th:last").html("Email invalid.");
+                else if(jqversion("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color") == "rgb(255, 0, 0)")
+                    jqversion("#ligertail_submission_lightbox_form tr:nth-child(7)").css("color", "black").find("th:last").html("Email");
             });
                                                                  
-            url = jQuery.trim(url);
+            url = jqversion.trim(url);
             if(ValidateURL(url)){
                 // disable form & call embedly
-               jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
-               jQuery("#ligertail_submission_lightbox_form input").attr("disabled", "true");
+               jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
+               jqversion("#ligertail_submission_lightbox_form input").attr("disabled", "true");
                 
-                jQuery.ajax({
+                jqversion.ajax({
                        type: "GET",
                        url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
                        dataType: "json",
                        timeout: 1000,
                        success: function(data){
                                     //enable form input
-                                    jQuery("#ligertail_submission_lightbox_form input").attr("disabled", ""); 
+                                    jqversion("#ligertail_submission_lightbox_form input").attr("disabled", ""); 
                                               
-                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
-                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
-                                    jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
+                                    jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
+                                    jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
+                                    jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val(data.thumbnail_url); 
                 
-                                    jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
-                                    jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
+                                    jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html(getDomain(url));
+                                    jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html(data.title);
                                     if(window.parameter["width"] == 600){
-                                            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html(data.description);
-                                            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', data.thumbnail_url);
+                                            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html(data.description);
+                                            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', data.thumbnail_url);
                                     }  
                                     
-                                    jQuery("#ligertail_submission_lightbox_form input").trigger("blur");       
+                                    jqversion("#ligertail_submission_lightbox_form input").trigger("blur");       
                        },
-                       error: function(e){ jQuery("#ligertail_submission_lightbox_form input").attr("disabled", ""); }        
+                       error: function(e){ jqversion("#ligertail_submission_lightbox_form input").attr("disabled", ""); }        
                 });
             }
-            else{ jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("http://"); }                                               
+            else{ jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("http://"); }                                               
             
             //submission handling     
-            jQuery("#ligertail_submission_lightbox_form").submit(function(event){
+            jqversion("#ligertail_submission_lightbox_form").submit(function(event){
                 event.preventDefault();
                 
                 var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
-                item.url = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
-                item.title = dehtml(jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val());
-                item.description = dehtml(jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val());
-                item.email = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
+                item.url = jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(); 
+                item.title = dehtml(jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val());
+                item.description = dehtml(jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val());
+                item.email = jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
 
                 //if url same as original, use embedly img
                 if(item.url == url)
-                    item.thumbnailUrl = jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
+                    item.thumbnailUrl = jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
                     item.thumbnailUrl = LTDOMAIN + "/frontend/images/default.png";
 
@@ -285,43 +290,43 @@ function OpenLightboxSubmission(url){
                     item.description.length >= 3 && item.description.length < 512 &&
                     ValidateEmail(item.email)){                   
                         api.submitItem(item);                        
-                        jQuery(document).trigger('close.facebox');                     
+                        jqversion(document).trigger('close.facebox');                     
                 }
                 else{
-                        jQuery("#ligertail_submission_lightbox_form input").trigger("blur");
+                        jqversion("#ligertail_submission_lightbox_form input").trigger("blur");
                 }
             });
             
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_free").click(function(event){
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_free").click(function(event){
                 event.preventDefault();
                 window.submitForFree = true;                                                                                                  
-                jQuery("#ligertail_submission_lightbox_form").submit(); 
+                jqversion("#ligertail_submission_lightbox_form").submit(); 
                 
             });
             
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(event){ 
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_button_pay").click(function(event){ 
                 event.preventDefault();
                 window.submitForFree = false;               
-                jQuery("#ligertail_submission_lightbox_form").submit();
+                jqversion("#ligertail_submission_lightbox_form").submit();
             });
             
         });  
         
-        jQuery(document).bind('close.facebox', function(){
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val("");    
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val("");
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("");
-            jQuery("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val("");                                              
-            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html("ligertail.com");
-            jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
+        jqversion(document).bind('close.facebox', function(){
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val("");    
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val("");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("");
+            jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val("");                                              
+            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html("ligertail.com");
+            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
             if(window.parameter["width"] == 600){
-                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
-                jQuery("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', LTDOMAIN + '/frontend/images/default.png');
+                jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
+                jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', LTDOMAIN + '/frontend/images/default.png');
             }
-            jQuery("#ligertail_submission_lightbox_form tr").css("color", "black");
-            jQuery("#ligertail_widget_header input").val("Submit Your Link Here");
+            jqversion("#ligertail_submission_lightbox_form tr").css("color", "black");
+            jqversion("#ligertail_widget_header input").val("Submit Your Link Here");
             
-            jQuery(document).unbind('reveal.facebox');
+            jqversion(document).unbind('reveal.facebox');
         });      
     });
 }
@@ -334,7 +339,7 @@ function init(publisherUrl) {
   }
   
   var initialized = true;
-  var apiHandler = new ApiHandler(LTDOMAIN);
+  var apiHandler = new ApiHandler(LTDOMAIN, jqversion);
   window.api = new LTApi();
   api.init(apiHandler, LTDOMAIN);
   window.publisherUrl = publisherUrl;

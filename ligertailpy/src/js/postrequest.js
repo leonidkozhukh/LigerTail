@@ -70,7 +70,7 @@ function postRequest(domain, command, type, data, callback) {
 
 function openFacebox(domain, url) {
 	createRemote().openFacebox(domain, url, function(response){
-		jQuery.facebox(response);	
+		jqversion.facebox(response);	
 	}, 
 	function(errorObj){});
 }

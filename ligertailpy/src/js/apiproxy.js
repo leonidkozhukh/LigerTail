@@ -120,23 +120,23 @@ LTApi.prototype.submitFilter= function(publisherUrl, filter, callback) {
 	postRequest(this.domain, 'submit_filter', 'POST', data, callback ? callback : 'ApiHandler.prototype.onFilterSubmitted');
 };
 
-LTApi.prototype.getItemStats= function(itemId, infoType, callback) {
-	assert(itemId > 0);
-	var data = this.serialize({"itemId":itemId, "infoType":infoType});
+LTApi.prototype.getItemStats= function(itemIds, infoType, callback) {
+	assert(itemIds);
+	var data = this.serialize({"itemId":itemIds, "infoType":infoType});
 	postRequest(this.domain, 'get_item_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetItemStats');
 };
 
-LTApi.prototype.getSpotStats= function(spot, publisherUrl, callback) {
+LTApi.prototype.getSpotStats= function(spots, publisherUrl, callback) {
 	assert(publisherUrl);
-	assert(spot > 0);
-	var data = this.serialize({"spot":spot, "publisherUrl":publisherUrl});
+	assert(spots);
+	var data = this.serialize({"spot":spots, "publisherUrl":publisherUrl});
 	postRequest(this.domain, 'get_spot_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetSpotStats');
 };
 
 
-LTApi.prototype.getPublisherSiteStats= function(publisherUrl, callback) {
-	assert(publisherUrl);
-	var data = this.serialize({"publisherUrl":publisherUrl});
+LTApi.prototype.getPublisherSiteStats= function(publisherUrls, callback) {
+	assert(publisherUrls);
+	var data = this.serialize({"publisherUrl":publisherUrls});
 	postRequest(this.domain, 'get_publisher_site_stats', 'POST', data, callback ? callback : 'ApiHandler.prototype.onGetPublisherSiteStats');
 };
 
