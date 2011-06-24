@@ -182,52 +182,51 @@ LTApi.normalizePublisherUrl = function(url) {
 	if (url.search('http') != 0) {
 	  url = 'http://' + url;
 	}
-	var regex ='^((http[s]?):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$';
-	var re = new RegExp(regex);
-	re.global = true;
+	//var regex ='^((http[s]?):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$';
+	//var re = new RegExp(regex);
+	var re = new RegExp(/^(https?):\/\/((|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$/);
+//	var re = new RegExp(/^(https?):\/\/((|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$/);
+    
+	//re.global = true;
 	
 	var m = re.exec(url);
 	var pureDomain = ''
+	/*
 	if (m == null) {
 		if (url.charAt(url.length-1) != '/') {
 			url += '/';
 		}
 		url += 'index.html';
 	    m = re.exec(url);
-	}
+	}*/
+	
 	if (m == null) {
 		if (url.search('http://localhost') != 0) {
 		  assert(m);
 		}
 		return original;
 	} else {
-	  pureDomain = m[3];
-	  path = m[4];
+	  pureDomain = m[2];//m[3];
+	  if (pureDomain.indexOf('?') != -1) {
+	    pureDomain = pureDomain.substring(0, pureDomain.indexOf('?'));
+	  }
+	  if (pureDomain.indexOf('index.') != -1) {
+		pureDomain = pureDomain.substring(0, pureDomain.indexOf('index.'));
+	  }
+   	  if (pureDomain.charAt(pureDomain.length-1) != '/') {
+   		pureDomain += '/';
+	  }
+/*	  path = m[4];
 	  file = m[6];
 	  pureDomain += path;
 	  if (file.search('index.') == -1) {
 		 pureDomain += file
 	  }
+	  */
 	}
 	return pureDomain;
 }
 
-/*
-function stacktrace() { 
-	  function join(args) {
-		 s = ''
-		 for (var i =0 ;i < args.length; i++) {
-			 s += args[i] + ',';
-		 }
-		 return s;
-	  }
-	  function st2(f) {
-	    return !f ? [] : 
-	        st2(f.caller).concat([f.toString().split('(')[0].substring(9) + '(' + join(f.arguments) + ')']);
-	  }
-	  return st2(arguments.callee.caller);
-	}
-*/
 Function.prototype.trace = function()
 {
     var trace = [];

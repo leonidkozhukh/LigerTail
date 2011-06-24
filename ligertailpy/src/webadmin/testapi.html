@@ -47,6 +47,13 @@
 	 }
 	} 
   
+  function assertEquals(s1, s2) {
+	  if (s1 != s2) {
+		  status ("Assert failed: " + s1 + " " + s2);
+		  
+	  }
+  }
+  
   function waitTillAllDone() {
 	  jQuery('#numTestsLeft').html(lttest.numTestsLeft);
 	  if (lttest.numTestsLeft) {
@@ -69,10 +76,9 @@
     	try {
     		
 //    		assertEquals('', LTApi.normalizePublisherUrl());
-        
-        //assertEquals('deadspin.com/5789494/kobe-finally-makes-his-chinese-pop-debut', LTApi.normalizePublisherUrl('http://deadspin.com/#!5789494/kobe-finally-makes-his-chinese-pop-debut'));
-        //assertEquals('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv19846/', LTApi.normalizePublisherUrl('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv,19846/'));
-        //assertEquals('http://localhost:8080', LTApi.normalizePublisherUrl('http://localhost:8080'));
+        assertEquals('deadspin.com/#!5789494/kobe-finally-makes-his-chinese-pop-debut/', LTApi.normalizePublisherUrl('http://deadspin.com/#!5789494/kobe-finally-makes-his-chinese-pop-debut'));
+        assertEquals('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv,19846/', LTApi.normalizePublisherUrl('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv,19846/'));
+        assertEquals('localhost:8080/', LTApi.normalizePublisherUrl('http://localhost:8080'));
         assertEquals('www.foo.com/', LTApi.normalizePublisherUrl('www.foo.com'));
         assertEquals('www.foo.com/', LTApi.normalizePublisherUrl('www.foo.com/'));
         assertEquals('www.foo.com/', LTApi.normalizePublisherUrl('www.foo.com/index.htm'));
@@ -81,11 +87,11 @@
         assertEquals('www.foo.com/', LTApi.normalizePublisherUrl('http://www.foo.com'));
         assertEquals('www.foo.com/', LTApi.normalizePublisherUrl('https://www.foo.com/'));
         assertEquals('www.foo.com/5/', LTApi.normalizePublisherUrl('http://www.foo.com/5/index.html'));
-        assertEquals('www.foo.com/page.url', LTApi.normalizePublisherUrl('https://www.foo.com/page.url'));
+        assertEquals('www.foo.com/page.url/', LTApi.normalizePublisherUrl('https://www.foo.com/page.url'));
         assertEquals('foo.com/', LTApi.normalizePublisherUrl('foo.com'));
         assertEquals('foo.com/blah/', LTApi.normalizePublisherUrl('http://foo.com/blah/index.html'));
-        //assertEquals('test.com/5789494blah', LTApi.normalizePublisherUrl('test.com/#!5789494,blah'));
-        assertEquals('ftp://blah.com', LTApi.normalizePublisherUrl('ftp://blah.com'));  // fails, returns original
+        assertEquals('test.com/#!5789494,blah/', LTApi.normalizePublisherUrl('test.com/#!5789494,blah'));
+        assertEquals('natashakozlovaphotography.com/', LTApi.normalizePublisherUrl('http://natashakozlovaphotography.com/?page_id=1591'));
         lttest.numTestsLeft -=1;              
         print('Done testNormalizeUrl');
     	} catch (e) {
