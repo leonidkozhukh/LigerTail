@@ -211,7 +211,7 @@ LTApi.normalizePublisherUrl = function(url) {
 	    pureDomain = pureDomain.substring(0, pureDomain.indexOf('?'));
 	  }
 	  var indexPos = pureDomain.lastIndexOf('index.');
-	  var lastSlashPos = pureDomain.lastIndexOf('/');
+	  var lastSlashPos = pureDomain.lastIndexOf('/'); 
 	  if (indexPos != -1 && indexPos > lastSlashPos) {
 		pureDomain = pureDomain.substring(0, indexPos);
 	  }

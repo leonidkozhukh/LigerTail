@@ -76,6 +76,10 @@
     	try {
     		
 //    		assertEquals('', LTApi.normalizePublisherUrl());
+        assertEquals('www.foo.com/index.mine/', LTApi.normalizePublisherUrl('http://www.foo.com/index.mine/'))
+        assertEquals('www.foo.com/index.mine/', LTApi.normalizePublisherUrl('http://www.foo.com/index.mine/index.html'))
+        assertEquals('www.foo.com/index.mine/', LTApi.normalizePublisherUrl('http://www.foo.com/index.mine/index.html?param=blah'))
+        assertEquals('www.index.com/index/index.html', LTApi.normalizePublisherUrl('http://www.index.com/index/'))
         assertEquals('deadspin.com/#!5789494/kobe-finally-makes-his-chinese-pop-debut/', LTApi.normalizePublisherUrl('http://deadspin.com/#!5789494/kobe-finally-makes-his-chinese-pop-debut'));
         assertEquals('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv,19846/', LTApi.normalizePublisherUrl('www.theonion.com/video/american-dream-declared-dead-as-final-believer-giv,19846/'));
         assertEquals('localhost:8080/', LTApi.normalizePublisherUrl('http://localhost:8080'));
