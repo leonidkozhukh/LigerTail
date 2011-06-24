@@ -239,7 +239,7 @@ function OpenLightboxSubmission(url){
             if(ValidateURL(url)){
                 // disable form & call embedly
                jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val(url);
-               jqversion("#ligertail_submission_lightbox_form input").attr("disabled", "true");
+               jqversion("#ligertail_submission_lightbox_form input").attr("disabled", "disabled");
                 
                 jqversion.ajax({
                        type: "GET",
@@ -248,7 +248,7 @@ function OpenLightboxSubmission(url){
                        timeout: 1000,
                        success: function(data){
                                     //enable form input
-                                    jqversion("#ligertail_submission_lightbox_form input").attr("disabled", ""); 
+                                    jqversion("#ligertail_submission_lightbox_form input").removeAttr("disabled"); 
                                               
                                     jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_title").val(data.title);    
                                     jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val(data.description);
@@ -263,7 +263,7 @@ function OpenLightboxSubmission(url){
                                     
                                     jqversion("#ligertail_submission_lightbox_form input").trigger("blur");       
                        },
-                       error: function(e){ jqversion("#ligertail_submission_lightbox_form input").attr("disabled", ""); }        
+                       error: function(e){ jqversion("#ligertail_submission_lightbox_form input").removeAttr("disabled"); }        
                 });
             }
             else{ jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("http://"); }                                               
