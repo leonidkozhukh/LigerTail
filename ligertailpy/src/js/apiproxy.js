@@ -210,8 +210,10 @@ LTApi.normalizePublisherUrl = function(url) {
 	  if (pureDomain.indexOf('?') != -1) {
 	    pureDomain = pureDomain.substring(0, pureDomain.indexOf('?'));
 	  }
-	  if (pureDomain.indexOf('index.') != -1) {
-		pureDomain = pureDomain.substring(0, pureDomain.indexOf('index.'));
+	  var indexPos = pureDomain.lastIndexOf('index.');
+	  var lastSlashPos = pureDomain.lastIndexOf('/');
+	  if (indexPos != -1 && indexPos > lastSlashPos) {
+		pureDomain = pureDomain.substring(0, indexPos);
 	  }
    	  if (pureDomain.charAt(pureDomain.length-1) != '/') {
    		pureDomain += '/';
