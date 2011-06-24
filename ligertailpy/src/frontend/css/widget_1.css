@@ -7,7 +7,7 @@
 	text-decoration:none;
 }
 
-.ligertail_widget a:visited {
+.ligertail_widget a:visited, a:active {
 	color: #000000;
 }
 
