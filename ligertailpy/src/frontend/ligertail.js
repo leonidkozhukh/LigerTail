@@ -1,7 +1,7 @@
 
 // !!! NOTE: switch the domain for development!
-//var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
-var LTDOMAIN = 'http://ligertailbackend.appspot.com';
+var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
+//var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 
 var jqversion;
@@ -280,7 +280,7 @@ function OpenLightboxSubmission(url){
                 item.email = jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_email").val();
 
                 //if url same as original, use embedly img
-                if(item.url == url)
+                if(item.url == url && jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val() != "")
                     item.thumbnailUrl = jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val();
                 else
                     item.thumbnailUrl = LTDOMAIN + "/frontend/images/default.png";
@@ -420,7 +420,7 @@ function initAll(){
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_close"></div><div class="ligertail_widget_image"><img src="' + LTDOMAIN + '/fronend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_blank"></div><div class="ligertail_widget_image"><img src="' + LTDOMAIN + '/frontend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
         }
         else{
             content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';

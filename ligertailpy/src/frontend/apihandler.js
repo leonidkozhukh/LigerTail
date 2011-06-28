@@ -33,15 +33,15 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 	var item = jqversion.parseJSON(response.items[0]);
 	
 	//remove last item from view to make room for the new submission
-    jqversion(".ligertail_widget .ligertail_widget_content:eq(7)").hide();
+    jqversion(".ligertail_widget .ligertail_widget_content:eq(" + window.numItems - 1 + ")").hide();
                         
     //add content to widget
-     if(window.parameter["width"] == 600){                                                          
-          jqversion(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src=' + LTDOMAIN + '/frontend/images/button_close.png" width="12" height="12" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + checkLink(item.url) +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span><div class="ligertail_widget_top_text"><p class="ligertail_widget_description">' + item.description + '</p></div></div>');
-     }
-     else{
-          jqversion(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span></div><div class="close"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" alt="Delete" width="12" height="12" border="0" /></div></div>');
-     }													
+    if(window.parameter["width"] == 600){                                                          
+          jqversion(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '" style="display:block;"><div class="ligertail_widget_close"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" width="12" height="12" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + checkLink(item.url) +'"><img src="' + item.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span><div class="ligertail_widget_top_text"><p class="ligertail_widget_description">' + item.description + '</p></div></div>');
+    }
+    else{
+          jqversion(".ligertail_widget #ligertail_widget_header").after('<div class="ligertail_widget_content" id="' + item.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" alt="Delete" width="12" height="12" border="0" /></div></div>');
+    }													
 														
 													
   // TODO: handle error case
