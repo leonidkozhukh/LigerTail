@@ -1,7 +1,7 @@
 
 // !!! NOTE: switch the domain for development!
-var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
-//var LTDOMAIN = 'http://ligertailbackend.appspot.com';
+//var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
+var LTDOMAIN = 'http://ligertailbackend.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 
 var jqversion;
@@ -245,7 +245,7 @@ function OpenLightboxSubmission(url){
                        type: "GET",
                        url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
                        dataType: "json",
-                       timeout: 1000,
+                       timeout: 2000,
                        success: function(data){
                                     //enable form input
                                     jqversion("#ligertail_submission_lightbox_form input").removeAttr("disabled"); 
