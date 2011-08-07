@@ -55,7 +55,10 @@ handlers:
       
 - url: /api/.*
   script: main.py
-
+  
+- url: /wiki/.*
+  script: main.py
+  
 - url: /.*
   script: main.py
   

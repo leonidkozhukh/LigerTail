@@ -273,6 +273,21 @@ class GetPublisherSiteStatsHandler(BaseHandler):
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
+      
+class CreateWikiPageHandler(BaseHandler):
+    def get(self, url):
+        #if len(url) > 0:
+        #    path = os.path.join(os.path.dirname(__file__), 'web', url)
+        #else:
+        path = os.path.join(os.path.dirname(__file__), 'web', 'wiki_template.html')
+        out = ''
+        try:
+          out = template.render(path, {})
+          self.response.headers["Access-Control-Allow-Origin"] = '*'
+        except Exception:
+          logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
+          out = ''
+        self.response.out.write(out)
 
 class SubmitErrorHandler(BaseHandler):
     def post(self):
@@ -303,6 +318,7 @@ def main():
                                           ('/process_item_updates', ProcessItemUpdatesWorker),
                                           ('/admin', admin.AdminHandler),
                                           ('/admin/(.*)', admin.AdminHandler),
+                                          ('/wiki/(.*)', CreateWikiPageHandler),
                                           # everything else
                                           ('/(.*)', MainHandler),
                                           
