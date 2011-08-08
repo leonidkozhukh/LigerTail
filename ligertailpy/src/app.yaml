@@ -47,7 +47,6 @@ handlers:
   
 - url: /admin/.*
   script: main.py
-  login: admin
 
 - url: /ligertail.js
   static_files: frontend/ligertail.js
