@@ -47,22 +47,28 @@ function loadScripts(scripts, scriptFunctions) {
 		});
 	}
 }	
-	
 function loadScript(sScriptSrc, oCallback) {
-	var oHead = document.documentElement.childNodes[0];
-	var oScript = document.createElement('script');
-	oScript.type = 'text/javascript';
-	oScript.src = sScriptSrc;
-	// most browsers
-	oScript.onload = oCallback;
-	// IE 6 & 7
-	oScript.onreadystatechange = function() {
-		if (this.readyState == 'complete' || this.readyState == 'loaded') {
-			oCallback();
-		}
-	}
-	oHead.appendChild(oScript);
-}	
+    var children = document.documentElement.childNodes;
+    for (var i = 0; i < children.length; i++)
+       if (children[i].tagName == 'HEAD') {
+          var oHead =children[i];
+          var oScript = document.createElement('script');
+          oScript.type = 'text/javascript';
+          oScript.src = sScriptSrc;
+          // most browsers
+         oScript.onload = oCallback;
+         // IE 6 & 7
+         oScript.onreadystatechange = function() {
+            if (this.readyState == 'complete' || this.readyState == 'loaded') {
+               oCallback();
+            }
+          }
+         oHead.appendChild(oScript);
+         return;
+      }
+   }
+}   	
+
 		
 	
 var initialized = false;
