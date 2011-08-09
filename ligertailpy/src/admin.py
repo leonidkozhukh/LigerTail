@@ -12,9 +12,11 @@ NEW_ACTIVITY_NAME = 'add_new_activity_here'
 class AdminHandler(webapp.RequestHandler):
     def get(self, url):
         user = users.get_current_user()
-
-        if user:
+            
+        if user and users.is_current_user_admin():
             context = {'user' : user.nickname()}
+            logout_url = users.create_logout_url(self.request.uri)
+            context['logout_url'] = logout_url
             if url == 'algorithm.html':
               context['alg'] =  model.getOrderingAlgorithmParams()
             elif url == 'background.html':
@@ -40,23 +42,28 @@ class AdminHandler(webapp.RequestHandler):
               context['publishers'] = publishers
             elif url =='paymentsconfig.html':
               context['paymentparams'] = model.getPaymentConfig()
-      
+            
             path = ''
             if url and len(url) > 0:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', url)
             else:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', 'index.html')
             self.response.out.write(template.render(path, context))
-
+        elif user and users.is_current_user_admin() == False:
+            context = {'user' : user.nickname()}
+            login_url = users.create_login_url(self.request.uri)
+            context['login_url'] = login_url
+            path = os.path.join(os.path.dirname(__file__), 'webadmin', 'unauthorized.html')
+            self.response.out.write(template.render(path, context))
         else:
             self.redirect(users.create_login_url(self.request.uri))
     
-    def post(self, url):
-      if url == 'update_alg':
+    def post(self, cmd):
+      if cmd == 'update_alg':
         self.updateAlg()
-      elif url == 'update_activities':
+      elif cmd == 'update_activities':
         self.updateActivities()
-      elif url == 'update_paymentconfig':
+      elif cmd == 'update_paymentconfig':
         self.updatePaymentConfig()
 
     def updateAlg(self):
@@ -71,7 +78,7 @@ class AdminHandler(webapp.RequestHandler):
         self.redirect('algorithm.html?status=updated')
       else:
         self.response.out.write(err)
-    
+        
     def updatePaymentConfig(self):
       config = model.getPaymentConfig()
       
