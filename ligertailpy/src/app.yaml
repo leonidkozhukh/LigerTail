@@ -1,5 +1,5 @@
-application: ligertaildevelopmentbackend
-version: 2
+application: ligertailbackend
+version: 3
 runtime: python
 api_version: 1
 
@@ -20,7 +20,7 @@ handlers:
 - url: /robots.txt
   static_files: web/robots.txt
   upload: web/robots.txt
-  
+
 - url: /web/images
   static_dir: web/images
     
@@ -47,17 +47,15 @@ handlers:
   
 - url: /admin/.*
   script: main.py
+  login: admin
 
-- url: /ligertail\.js
+- url: /ligertail.js
   static_files: frontend/ligertail.js
   upload: frontend/ligertail.js
-        
+      
 - url: /api/.*
   script: main.py
-  
-- url: /wiki/.*
-  script: main.py
-  
+
 - url: /.*
   script: main.py
   

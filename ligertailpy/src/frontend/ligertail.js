@@ -47,9 +47,10 @@ function loadScripts(scripts, scriptFunctions) {
 		});
 	}
 }	
+
 function loadScript(sScriptSrc, oCallback) {
     var children = document.documentElement.childNodes;
-    for (var i = 0; i < children.length; i++)
+    for (var i = 0; i < children.length; i++) {
        if (children[i].tagName == 'HEAD') {
           var oHead =children[i];
           var oScript = document.createElement('script');
@@ -62,7 +63,7 @@ function loadScript(sScriptSrc, oCallback) {
             if (this.readyState == 'complete' || this.readyState == 'loaded') {
                oCallback();
             }
-          }
+         }
          oHead.appendChild(oScript);
          return;
       }
