@@ -1,5 +1,5 @@
 application: ligertailbackend
-version: 1
+version: 3
 runtime: python
 api_version: 1
 
@@ -47,6 +47,7 @@ handlers:
   
 - url: /admin/.*
   script: main.py
+  login: admin
 
 - url: /ligertail.js
   static_files: frontend/ligertail.js
@@ -54,10 +55,7 @@ handlers:
       
 - url: /api/.*
   script: main.py
-  
-- url: /wiki/.*
-  script: main.py
-  
+
 - url: /.*
   script: main.py
   
