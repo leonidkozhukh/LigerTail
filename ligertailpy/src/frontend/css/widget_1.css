@@ -224,6 +224,9 @@
 	border: none;
 }
 
+#ligertail_widget_small #ligertail_widget_header form input[type="image"] {
+	padding: 0px;
+}
 
 #ligertail_widget_small #ligertail_widget_footer {
 	height:20px;
