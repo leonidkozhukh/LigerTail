@@ -223,6 +223,7 @@
 
 #ligertail_widget_small #ligertail_widget_header form input {
 	border: none;
+	font-family: Lucida Grande;
 }
 
 #ligertail_widget_small #ligertail_widget_header form input[type="image"] {
