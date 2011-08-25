@@ -169,6 +169,7 @@
 	line-height: 14px;
 	text-align: left;
 	color: #000000;
+	text-transform: none;
 }
 
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
