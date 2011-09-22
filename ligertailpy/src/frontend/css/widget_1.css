@@ -211,7 +211,7 @@
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-    #ligertail_widget_small .ligertail_widget_form {padding-top: 20px}
+    #ligertail_widget_small .ligertail_widget_form {padding-top: 11px}
 }
 
 *+html #ligertail_widget_small .ligertail_widget_content {padding-top:3px}
