@@ -37,6 +37,15 @@ handlers:
   secure: always
   static_dir: frontend
 
+- url: /tumblr/images
+  static_dir: tumblr/images
+    
+- url: /tumblr/styles
+  static_dir: tumblr/styles
+ 
+- url: /tumblr/scripts
+  static_dir: tumblr/scripts
+
 - url: /payment\.html
   secure: always
   script: main.py
