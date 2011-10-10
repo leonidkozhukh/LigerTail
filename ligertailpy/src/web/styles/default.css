@@ -39,7 +39,7 @@ p {font-size: 15px; line-height: 20px; margin-bottom: 15px;}
 p.important {font-size: 17px; line-height: 22px; margin-bottom: 10px;}
 p.simple {margin-bottom:0;}
 code {font-family: Helvetica, Arial, sans-serif; font-size: 12px; white-space:pre-line;}
-em {}
+em {color: #F25733; font-style: normal; font-weight:bold;}
 h4.em {text-decoration: underline; font-size: 12px;}
 span.tip {font-family:Helvetica,Arial; font-size: 11px; padding: 0 8px; color: #fff; background-color: #F25733; display: inline-block; }
 strong.important {color: #666;}
