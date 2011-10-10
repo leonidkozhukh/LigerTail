@@ -125,8 +125,10 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 
 /* @presentation-code */
 .presentation-code {font-size: 12px; width: 100%; bottom: 0; left: 0; position: absolute; background:url(../images/bg/presentation-code.png) repeat-x left top;}
-.presentation-code .code-inner {padding: 9px 0 9px 12px;}
-.presentation-code .code-inner code {padding-left: 10px;}
+.presentation-code .code-inner {padding: 5px 0 6px 12px;}
+/*.presentation-code .code-inner code {padding-left: 10px;}*/
+.presentation-code .code-inner span.tip {cursor:pointer}
+.presentation-code .code-inner input {margin-left: 9px;border:none;width:400px;font-family: Helvetica, Arial, sans-serif; font-size: 12px; white-space:pre-line;color:gray;padding:0}
 
 /* @presentation-pic */
 .presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow-small.png) no-repeat left top;}
