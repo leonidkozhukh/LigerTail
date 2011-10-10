@@ -1,6 +1,9 @@
 @charset "utf-8";
 /* CSS Document */
 
+input {
+	outline:none;/* remove blue outline in webkit */ 
+}
 
 .ligertail_widget a:link {
 	color: #000000;
@@ -127,7 +130,7 @@
 
 #ligertail_widget_small {
 	width:300px;
-	float:left;
+/*	float:left;*/
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:12px;
 }
@@ -218,7 +221,8 @@
 
 #ligertail_widget_small #ligertail_widget_header form img {
 	margin: 0px;
-	border: none;
+	border:none;
+	cursor:pointer;
 }
 
 #ligertail_widget_small #ligertail_widget_header form input {
