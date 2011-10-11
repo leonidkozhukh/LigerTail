@@ -58,6 +58,7 @@ def verify(paymentInfo, is_test=True):
                 x_address=u'%s' % paymentInfo['address'],
                 x_city=u'%s' % paymentInfo['city'],
                 x_state=u'%s' % paymentInfo['state'],
+                x_country=u'United States',
                 x_zip=u'%s' % paymentInfo['zip']
             )
   return result_dict
