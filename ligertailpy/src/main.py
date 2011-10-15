@@ -22,7 +22,7 @@ from google.appengine.api import urlfetch
 import wsgiref.handlers
 import socket
 import sys
-import simplejson as json
+import json as simplejson
 import socket
 #import google.appengine.webapp.template
 ##from google.appengine.ext.webapp import template
