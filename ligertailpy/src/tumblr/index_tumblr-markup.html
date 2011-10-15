@@ -2,57 +2,37 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<title>Ligertail</title>
-<link rel="stylesheet" type="text/css" href="http://test.softfacade.com/ligertail-tumblr/styles/default.css">
-<!--[if IE 6]><style type="text/css" media="screen">/* <![CDATA[ */ @import url(styles/ie6.css); /* ]]> */</style><![endif]-->
-<!--[if IE 7]><style type="text/css" media="screen">/* <![CDATA[ */ @import url(styles/ie7+.css); /* ]]> */</style><![endif]-->
-<!--[if IE 8]><style type="text/css" media="screen">/* <![CDATA[ */ @import url(styles/ie7+.css); /* ]]> */</style><![endif]-->
-<!--<script type="text/javascript" language="JavaScript" src="scripts/ui.js"></script>-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-<!--<script type="text/javascript" src="http://theme.matthewbuchanan.name/tumblr/tools/proxy/notes/notes-native.js"></script>-->
-<!--<script type="text/javascript">-->
-<!--$(document).ready(function(){-->
-    <!--var layoutHeight = document.getElementById("layout").offsetHeight;-->
-    <!--document.getElementById("globalpartLeft").style.height = layoutHeight +"px";-->
-    <!--document.getElementById("globalpartRight").style.height = layoutHeight +"px";-->
-<!--});-->
-<!--</script>-->
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var nodes = $(".notes-button"),
-                par = document.getElementById("searchItem"),
-                parContent = document.getElementById("searchInputWrapper"),
-                i = 0,
-                iMax = nodes.length,
-                isOpen = false;
-            for (i; i < iMax; i += 1){
-                if (nodes[i].innerHTML.length > 0){
-                    nodes[i].style.display = "inline";
-                }
-            }
-            if (par != undefined){
-                par.setAttribute("href", "javascript:void(0);");
-                par.onclick = function(){
-                    if (isOpen){
-                        par.className = par.className.replace(" isOpen", "");
-                        par.innerHTML = "Search";
-                        $(parContent).hide(200);
-                        isOpen = false;
-                    } else{
-                        $(parContent).show(200);
-                        par.innerHTML = "Close Search";
-                        par.className += " isOpen";
-                        isOpen = true;
-                    }
-                }
-            }
-        });
-    </script>
+<title>{block:TagPage}Tagged "{Tag}" | {/block:TagPage}{block:SearchPage}Searched "{SearchQuery}" | {/block:SearchPage}{block:PostSummary}{PostSummary} | {/block:PostSummary}{Title}</title>
+<link rel="stylesheet" type="text/css" href="http://static.tumblr.com/tokpufl/ORjlt3v49/default.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $('#searchItem').click(function() {
+        	$("#searchInputWrapper").show(200);
+	});
+	
+//display current time in header  
+
+    function showTime() { 
+      var t = new Date();
+	  var h = t.getHours() + '';
+	  if (h.length == 1) h = "0" + h;
+	  var m = t.getMinutes() + '';
+      if (m.length == 1) m = "0" + m;
+	  var time = h + ':' + m;
+	  $('#clockTime').html(time);
+	}
+	showTime();
+  	window.setInterval(showTime, 30000);//update every 30 secs
+});
+</script>
+    <meta name="text:CityName" content="Moscow" /> 
+    <meta name="image:BlogPicture120x120" content="http://static.tumblr.com/tokpufl/CDxlt3v18/theme-pic.png" />
+    <meta name="text:BlogDescription" content="By far<br>the finest tumblr<br>theme ever<br>created<br>by a crazy man<br>in Russia" />   
 </head>
 <body>
-<!--<div class="global-part global-part-left" id="globalpartLeft"></div>-->
-<!--<div class="global-part global-part-right" id="globalpartRight"></div>-->
-
+<div class="layout-bg">
     <div class="layout" id="layout">
         <div class="layout-decor layout-decor-top layout-decor-top-right">
             <div class="layout-decor layout-decor-top layout-decor-top-center"></div>
@@ -61,9 +41,9 @@
 
         <!-- .header -->
         <div class="header">
-            <img src="http://test.softfacade.com/ligertail-tumblr/images/logo.png" class="logo" alt="Ligertail">
-            <span class="heading">Simply<span class="separator">/</span>Grey<span class="separator">/</span>Matters</span>
-            <span class="clock">Moscow <span id="clockTime">02:46</span></span>
+            <img src="http://static.tumblr.com/tokpufl/lpdlt3v1v/logo.png" class="logo" alt="Ligertail">
+            <span class="heading"><a href="/" title="{Title}">{Title}</a></span>
+            <span class="clock">{text:CityName} <span id="clockTime"></span></span>
             <div class="veneer"></div>
         </div>
         <!--/ .header -->
@@ -74,7 +54,7 @@
             <!-- .right-column-emulator -->
             <div class="right-column-emulator">
                 <div class="right-column-footer" id="rightColumnFooter">
-                    "Greymatters" theme by <a href="#">J.E.Jones</a> / <a href="#">Ligertail</a>
+                    "Greymatters" theme by <a href="http://www.firemanifest.com/blog">J.E.Jones</a> / <a href="http://ligertail.com">Ligertail</a>
                 </div>
             </div>
             <!--/ .right-column-emulator -->
@@ -109,6 +89,28 @@
                     </div>
                     {/block:Text}
 
+                    {block:Link}
+                    <div class="post-body post-type-link">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-top r-top-right"><div class="r-top r-top-center"></div><div class="r-top r-top-left"></div></div>
+                                <div class="r-content">
+                                    <a title="{Name}" href="{URL}" {Target}>{Name}</a>
+                                    {block:Description}
+                                        <h3 class="post-header">{Description}</h3>
+                                    {/block:Description}
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {/block:Link}
 
                     {block:Video}
                     <div class="post-body post-type-video">
@@ -179,15 +181,23 @@
                     {block:Audio}
                     <div class="post-body post-type-audio">
                         <div class="post-content">
-                            <div class="audio-player">
-
+                            <div class="audio-player-container">
                                 <div class="track-area">
                                     {block:Artist}<span class="track-artist"><span class="track-artist-inner"><span class="text">{Artist}</span></span></span>{/block:Artist}
                                     {block:TrackName}<span class="track-title"><span class="track-title-inner">{TrackName}</span></span>{/block:TrackName}
                                     <span class="player-control-play"></span>
                                 </div>
-                                <div class="player-area"><div class="player-area-inner">{AudioPlayerWhite}</div></div>
-
+                                <div class="player-area"><div class="player-area-inner">                                
+									<script type="text/javascript" language="javascript" src="http://assets.tumblr.com/javascript/tumblelog.js?7"></script>
+									<span id="audio_player_{PostID}" class="audio_player">[<a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" target="_blank">Flash 9</a> is required to listen to audio.]</span>
+									<script type="text/javascript" src="/api/read/json?id={PostID}"></script>
+									<script type="text/javascript">
+									    var color = "f15a24";
+									    var player = tumblr_api_read['posts'][0]['audio-player'].replace("color=FFFFFF", "color=" + color);
+									    replaceIfFlash(9, "audio_player_{PostID}", player);
+									</script>
+                                </div></div>
+<a class="post-notes notes-button">{PlayCount}&nbsp;Plays</a>
                             </div>
                         </div>
                     </div>
@@ -228,18 +238,10 @@
 
                     <!-- .post-meta -->
                     <div class="post-meta">
-                        {block:Date}<span class="post-date">{DayOfMonth} <span class="separator">/</span> {Month}</span>{/block:Date}
-                        <!--<span class="post-notes">23 notes</span>-->
-                        <div class="notes-wrapper">
-                            <!--{block:NoteCount}-->
-                                <!--<a href="http://theme.matthewbuchanan.name/tumblr/tools/proxy/notes/?url=http://www.tumblr.com/dashboard/notes/{postID}/I01Ng626S" rel="{postID}" class="post-notes notes-button">{NoteCountWithLabel}</a>-->
-                            <!--{/block:NoteCount}-->
-                            <a href="{Permalink}" class="post-notes notes-button">{block:NoteCount}{NoteCountWithLabel}{/block:NoteCount}</a>
-
-                            <!--<div class="notes-container" id="notes-{postID}">-->
-                                <!--<p class="loading">Loading...</p>-->
-                                <!--<div class="notes-loader"></div>-->
-                            <!--</div>-->
+                        {block:Date}<span class="post-date">{DayOfMonthWithZero} <span class="separator">/</span> {MonthNumberWithZero}</span>{/block:Date}
+                        <div class="notes-wrapper">                                                      
+							
+							<a class="post-notes notes-button" {block:NoteCount} href="{Permalink}#notes"{/block:NoteCount}>{NoteCountWithLabel}</a>
                         </div>
                         <!-- tags -->
                         {block:HasTags}
@@ -251,18 +253,10 @@
                         {/block:HasTags}
                         <!--/ tags -->
                         <div class="veneer"></div>
+
                         {block:PostNotes}
                         <div class="post-notes-block" id="postNotesBlock">
-                            <script type="text/javascript">
-                                $(document).ready(function(){
-                                    document.getElementById("rightColumnFooter").style.display = "none";
-                                    document.getElementById("ligertailWidget").style.display = "none";
-                                    document.getElementById("themeBlock").style.display = "none";
-                                    if ($("#postNotesBlock .notes")[0] == undefined){
-                                        document.getElementById("postNotesBlock").style.display = "none";
-                                    }
-                                });
-                            </script>
+     					<a name="notes"></a>
                             <h4>Notes</h4>
                             {PostNotes}
                         </div>
@@ -276,48 +270,43 @@
                 <!--/ .post -->
                 {/block:Posts}
 
-
                 <!-- .posts-nav -->
-                {block:Pagination}
                 <div class="posts-nav">
                     <div class="posts-nav-inner">
                         <ul class="nav">
-                            {block:PreviousPage}
-                            <li><a href="{PreviousPage}" class="prev">Older posts &rarr;</a></li>
-                            {/block:PreviousPage}
-
-                            {block:NextPage}
-                            <li><a href="{NextPage}" class="next">&larr; Newer</a></li>
-                            {/block:NextPage}
+				            {block:NextPage}
+				                 <li><a class='next' href='{NextPage}'>{lang:Older posts} &rarr;</a></li>
+				            {/block:NextPage}
+				
+				            {block:PreviousPage}
+				                 <li><a class='prev' href='{PreviousPage}'>&larr; {lang:Newer}</a></li>
+				            {/block:PreviousPage}
                         </ul>
                     </div>
                 </div>
-                {/block:Pagination}
                 <!--/ .posts-nav -->
 
             </div>
             <!--/ .content-area -->
 
             <!-- .right-column -->
+            
             <div class="right-column">
 
                 <!-- .ligertail-widget -->
-                <div class="ligertail-widget" id="ligertailWidget">
-                    <!--<img src="http://test.softfacade.com/ligertail-tumblr/tmp/widget.png" alt="">-->
-                    <div><script type="text/javascript" src="http://ligertail.com/ligertail.js"></script></div>
-                    <div class="veneer"></div>
-                </div>
+            <script type="text/javascript" src="http://ligertail.com/ligertail.js"></script> 
                 <!--/ .ligertail-widget -->
 
 
                 <!-- .menu -->
                 <div class="menu">
+                 
                     <ul>
-                        <li><a href="#">Subscribe</a></li>
-                        <li><a href="#">Mobile</a></li>
-                        <li><a href="#">Archives</a></li>
+                        <li><a href="http://www.tumblr.com/follow/{Name}">Subscribe</a></li>
+                        <li><a href="/mobile">Mobile</a></li>
+                        <li><a href="/archive">Archives</a></li>
                         <li>
-                            <a href="javascript:void(0);" id="searchItem">Search</a>
+                            <span id="searchItem">Search</span>
                             <div id="searchInputWrapper">
                                 <form action="/search" method="get">
                                     <input type="text" class="input" name="q" value="{SearchQuery}"/><input class="button" type="submit" value="Search" />
@@ -331,10 +320,10 @@
 
                 <!-- .theme-block -->
                 <div class="theme-block" id="themeBlock">
-                    <img src="http://test.softfacade.com/ligertail-tumblr/images/theme-pic.jpg" width="139" height="123" alt="">
+                 
+                    <img src="{image:BlogPicture120x120}" alt="{text:BlogDescription}">
                     <span class="caption">
-                        <span class="caption-inner">
-                        By far<br>the finest tumblr<br>theme ever<br>created<br>by a crazy man<br>in Russia
+                        <span class="caption-inner">{text:BlogDescription}
                         </span>
                     </span>
                 </div>
@@ -355,6 +344,8 @@
 
         </div>
         <!--/ .layout-decor -->
+    </div>
+        <!--/ .layout-bg -->
     </div>
 </body>
 </html>
