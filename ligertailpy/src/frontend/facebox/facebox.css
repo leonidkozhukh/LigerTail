@@ -70,6 +70,7 @@
   width: 10px;
   overflow: hidden;
   padding: 0;
+  display:table;
 }
 
 #facebox_overlay {
