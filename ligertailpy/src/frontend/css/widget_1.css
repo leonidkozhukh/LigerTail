@@ -1,18 +1,21 @@
 @charset "utf-8";
 /* CSS Document */
 
+input {
+	outline:none;/* remove blue outline in webkit */ 
+}
 
 .ligertail_widget a:link {
-	color: #000000;
-	text-decoration:none;
+	color: #000000!important;
+	text-decoration:none!important;
 }
 
 .ligertail_widget a:visited, a:active {
-	color: #000000;
+	color: #000000!important;
 }
 
 .ligertail_widget .ligertail_widget_source a, .ligertail_widget_title a {
-	color: #000000;
+	color: #000000!important;
 }
 #ligertail_widget_large {
 	width:600px;
@@ -127,7 +130,7 @@
 
 #ligertail_widget_small {
 	width:300px;
-	float:left;
+/*	float:left;*/
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:12px;
 }
@@ -169,6 +172,7 @@
 	line-height: 14px;
 	text-align: left;
 	color: #000000;
+	text-transform: none;
 }
 
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
@@ -189,41 +193,41 @@
 #ligertail_widget_small .ligertail_widget_form {
 	background-image:url(../images/input_submit_2.png);
 	background-repeat:no-repeat;
+	background-position:0 -9px;
 	border:none;
-	padding: 7px 0 0 7px;
+	padding: 0 0 0 5px;
 	width: 185px;
-	height: 25px;
 	float: left;
 	text-transform: uppercase;
 	font-weight: bold;
 	font-size: 9px;
-	margin-left: 5px;
+	margin:9px 0 0 5px;
     border: 0;
-/*
-    position: absolute;
-    top: 5px;
-    left: 90px;
-*/
-    padding-top: 9px;
+    color:#000!important;
     line-height: 20px;
     height: 19px;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-    #ligertail_widget_small .ligertail_widget_form {padding-top: 20px}
+    #ligertail_widget_small .ligertail_widget_form {padding-top: 1px} 
 }
 
 *+html #ligertail_widget_small .ligertail_widget_content {padding-top:3px}
 
 #ligertail_widget_small #ligertail_widget_header form img {
 	margin: 0px;
-	border: none;
+	border:none;
+	cursor:pointer;
 }
 
 #ligertail_widget_small #ligertail_widget_header form input {
 	border: none;
+	font-family: Lucida Grande;
 }
 
+#ligertail_widget_small #ligertail_widget_header form input[type="image"] {
+	padding: 0px;
+}
 
 #ligertail_widget_small #ligertail_widget_footer {
 	height:20px;

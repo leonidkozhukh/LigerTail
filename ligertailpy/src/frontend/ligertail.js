@@ -119,12 +119,13 @@ function SetupParameters(){
         var i, j, src, parts, basePath, options = {};
         LTnode = document.createElement("div");
         LTnode.setAttribute("class", "ligertail_widget");
+        LTnode.setAttribute("style","width:300px!important;height:250px!important;float:none!important");
         
     for (i = 0; i < scripts.length; i++) { 
           src = scripts[i].src;
          if (src.indexOf(file_name) != -1) {
                //create ligertail container <div>               
-               scripts[i].parentNode.appendChild(LTnode);
+               scripts[i].parentNode.insertBefore(LTnode,scripts[i]);
                
                //parse parameters                             
                parts = src.split('?'); 
@@ -420,7 +421,7 @@ function initAll(){
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" /><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit ligertail.com"/><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
@@ -433,8 +434,10 @@ function initAll(){
             content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
         }
     }
+  
+  var wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;height:250px!important;">';
     
-    $(".ligertail_widget").append(header + content + footer);
+    $(".ligertail_widget").append(wrapper + header + content + footer + '</div>');
     $(".ligertail_widget .ligertail_widget_content").show();
    
     //events...

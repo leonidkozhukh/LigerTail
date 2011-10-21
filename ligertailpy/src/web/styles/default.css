@@ -39,7 +39,7 @@ p {font-size: 15px; line-height: 20px; margin-bottom: 15px;}
 p.important {font-size: 17px; line-height: 22px; margin-bottom: 10px;}
 p.simple {margin-bottom:0;}
 code {font-family: Helvetica, Arial, sans-serif; font-size: 12px; white-space:pre-line;}
-em {}
+em {color: #F25733; font-style: normal; font-weight:bold;}
 h4.em {text-decoration: underline; font-size: 12px;}
 span.tip {font-family:Helvetica,Arial; font-size: 11px; padding: 0 8px; color: #fff; background-color: #F25733; display: inline-block; }
 strong.important {color: #666;}
@@ -65,7 +65,9 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 .l-part {width: 100%; height: 50%; left: 0; position: fixed; background-repeat: repeat; background-position: 0 0;}
 .l-part-t {top: 0; background-image: url(../images/bg/layout-part-t.png);}
 .l-part-b {bottom: 0; background-image: url(../images/bg/layout-part-b.png);}
-.l-limiter {width: 960px; text-align: left; margin-left: auto; margin-right: auto;}
+.l-limiter {width: 960px; text-align: left; margin-left: auto; margin-right: auto;position:relative;padding-right:140px}
+
+.bighand {position:absolute;background:transparent url(../images/hand.png) no-repeat;right:-1px;top:-26px;height:294px;width:276px;z-index:3;}
 
 .root {position: relative; width: 100%; height: 100%; display: table;}
 .layout-wrap {padding-top: 42px; padding-bottom: 42px; display: table-cell; vertical-align: middle; overflow: hidden;}
@@ -129,7 +131,7 @@ select {color: #4D4D4D; font-family: 'Helvetica Neue', Helvetica, sans-serif;}
 .presentation-code .code-inner code {padding-left: 10px;}
 
 /* @presentation-pic */
-.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow-small.png) no-repeat left top;}
+.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow-small.png) no-repeat left top; z-index:4}
 .info-block .presentation-pic-placeholder {width: 318px; height: 250px; top: -16px; left: -5px; position: relative; margin-left: auto; margin-right: auto;}
 
 
