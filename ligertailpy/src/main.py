@@ -7,6 +7,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext import db
 from itemlist import itemList
+from xml.dom import minidom
 import admin 
 import logging
 import model
@@ -14,9 +15,15 @@ import response
 import payment
 import os
 import cgi
+import urllib2
 import urllib
+import urlparse
+from google.appengine.api import urlfetch
 import wsgiref.handlers
+import socket
 import sys
+import simplejson as json
+import string
 #import google.appengine.webapp.template
 ##from google.appengine.ext.webapp import template
 #import appengine_django.auth.templatetags
@@ -27,6 +34,8 @@ import os
 #from google.appengine.dist import use_library
 #use_library('django', '1.2')
 from google.appengine.ext.webapp import template
+
+
 
 class MainHandler(webapp.RequestHandler):
     def get(self, url):
@@ -275,10 +284,186 @@ class GetPublisherSiteStatsHandler(BaseHandler):
       BaseHandler.writeResponse(self)
       
 class CreateWikiPageHandler(BaseHandler):
+    
+    errors = 0
+    successes = 0
+    exceptions = 0
+    publisherUrl = ""
+    
+    def handle_result(self, rpc):
+        
+        
+        try:
+            result = rpc.get_result()
+            embedly_results = json.loads(result.content)
+            for link_info in embedly_results:
+                item = model.Item()
+                
+                item.publisherUrl = self.publisherUrl
+                
+                if 'url' in link_info:
+                    item.url = link_info['url']
+                else:
+                    self.errors += 1
+                    logging.warning('Invalid link for %s \n %s' % (self.publisherUrl, link_info))
+                    return
+                if 'thumbnail_url' in link_info:
+                    item.thumbnailUrl = link_info['thumbnail_url']
+                else:
+                    item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
+                if 'title' in link_info:
+                    item.title = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
+                    item.description = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
+                if 'description' in link_info:
+                    item.description = link_info['description'].replace('%u', '\\u').decode('unicode-escape')
+                item.price = 0
+                item.email = 'wiki@ligertail.com'
+                item.sessionId = 'wiki'
+                item.put()
+                logging.info('Submitted %s ' % item)
+                self.successes += 1
+        except Exception:
+            logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
+            self.exceptions += 1
+        
+    
+    def create_callback(self, rpc):
+        return lambda: self.handle_result(rpc)
+    
+    def copyWikiLinks(self, url_title):
+        
+        
+        self.publisherUrl = self.request.host + "/wiki/" + url_title
+        if self.publisherUrl[-1] != "/":
+            self.publisherUrl += "/"
+        self.publisherUrl = self.publisherUrl.lower()
+        self.url_list = []
+        self.errors = 0
+        self.successes = 0
+        self.exceptions = 0
+        
+        #capitalize first letter for wiki
+        url_title = string.capwords(url_title.lower(), '_')
+        #querying http://en.wikipedia.org/w/api.php for external links for url_title in XML format
+        #current limit set to 20 since embed.ly cannot accommodate more
+        #TODO: send out parallel requests to embed.ly
+        url = 'http://en.wikipedia.org/w/api.php?action=query&prop=extlinks&ellimit=50&format=xml&titles=' + url_title
+        
+        links = []
+        data = urllib2.urlopen(url).read()
+        
+        dom = minidom.parseString(data)
+        for node in dom.getElementsByTagName('el'):
+            #if link is within wiki, ignore
+            extlink = node.firstChild.data
+            if (extlink.lower().startswith("http") != True):
+                continue
+            links.append(extlink)
+        
+        if len(links) < 1: return
+           
+        api_url = 'http://api.embed.ly/1/oembed?'
+        
+        urls_per_request = len(links) / 10
+        if (urls_per_request < 1):
+            urls_per_request
+        
+        rpcs = []
+        link_index = 0
+        for asynch_request in range(10):
+            
+            rpc = urlfetch.create_rpc(deadline=10)
+            rpc.callback = self.create_callback(rpc)
+            url_list = ""
+            j = 0
+            while link_index < len(links):
+                if len(url_list) > 0:
+                    url_list += ","           
+                url_list += urllib.quote_plus(links[link_index])
+                link_index = link_index + 1
+                j = j + 1
+                if (j == urls_per_request and asynch_request < 9):
+                    break;
+            urlfetch.make_fetch_call(rpc, api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list)
+            rpcs.append(rpc)
+        
+        # Finish all RPCs, and let callbacks process the results.
+        for rpc in rpcs:
+            rpc.wait()
+          
+            
+        ##url_list = ""
+        ##for extlink in links:
+        ##    if len(url_list) > 0:
+        ##        url_list += ","           
+        ##    url_list += urllib.quote_plus(extlink)
+        
+        ##oembed_call = api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list
+        ##jsoned = urlfetch.fetch(oembed_call, payload=None, method='GET', headers={}, allow_truncated=False, follow_redirects=True, deadline=30)
+        ##embedly_results = json.loads(jsoned.content) #json.loads(urllib2.urlopen(oembed_call, 10).read())
+        
+        ##errors = 0
+        ##successes = 0
+        ##exceptions = 0
+        ##for link_info in embedly_results:
+        ##    try:
+#                item = model.Item()
+#                publisherUrl = self.request.host + "/wiki/" + url_title
+#                if publisherUrl[-1] != "/":
+#                    publisherUrl += "/"
+#                item.publisherUrl = publisherUrl.lower()
+#                
+#                if 'url' in link_info:
+#                    item.url = link_info['url']
+#                else:
+#                    errors += 1
+#                    logging.warning('Invalid link for %s \n %s' % (publisherUrl, link_info))
+#                    continue
+#                if 'thumbnail_url' in link_info:
+#                    item.thumbnailUrl = link_info['thumbnail_url']
+#                else:
+#                    item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
+#                if 'title' in link_info:
+#                    item.title = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
+#                    item.description = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
+#                if 'description' in link_info:
+#                    item.description = link_info['description'].replace('%u', '\\u').decode('unicode-escape')
+#                item.price = 0
+#                item.email = 'wiki@ligertail.com'
+#                item.sessionId = 'wiki'
+#                item.put()
+#                logging.info('Submitted %s ' % item)
+#                successes += 1
+#            except Exception:
+#                logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
+#                exceptions += 1
+#        logging.info('successes / errors / exceptions: %d %d %d' % (successes, errors, exceptions))
+        logging.info('successes / errors / exceptions: %d %d %d' % (self.successes, self.errors, self.exceptions))
+        if (self.successes > 0):
+            itemList.refreshCacheForDefaultOrderedItems(self.publisherUrl)
+        
+    
+        
     def get(self, url):
+        BaseHandler.initFromRequest(self, self.request)
+        if not url or len(url) < 1:
+            return
+        
         #if len(url) > 0:
         #    path = os.path.join(os.path.dirname(__file__), 'web', url)
         #else:
+        publisherUrl = self.request.host + "/wiki/" + url
+        if publisherUrl[-1] != "/":
+            publisherUrl += "/"
+        #publisherUrl = publisherUrl.lower()
+        items = BaseHandler.getOrderedItems(self,
+                                            publisherUrl,
+                                            self.viewer.filter)
+
+        #publisherLinks = model.getItems(publisherUrl)
+        if len(items) < 1:
+            self.copyWikiLinks(url)
+            
         path = os.path.join(os.path.dirname(__file__), 'web', 'wiki_template.html')
         out = ''
         try:
@@ -288,6 +473,7 @@ class CreateWikiPageHandler(BaseHandler):
           logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
           out = ''
         self.response.out.write(out)
+    
 
 class SubmitErrorHandler(BaseHandler):
     def post(self):
