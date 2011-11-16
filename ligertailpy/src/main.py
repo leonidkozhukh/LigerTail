@@ -24,6 +24,7 @@ import socket
 import sys
 import simplejson as json
 import string
+import math
 #import google.appengine.webapp.template
 ##from google.appengine.ext.webapp import template
 #import appengine_django.auth.templatetags
@@ -342,12 +343,15 @@ class CreateWikiPageHandler(BaseHandler):
         self.successes = 0
         self.exceptions = 0
         
+        config = model.getLigerpediaConfig()
+        config_timeout = config.embedly_request_timeout
+        config_ellimit = str(config.embedly_request_links_total)
+        
         #capitalize first letter for wiki
         url_title = string.capwords(url_title.lower(), '_')
         #querying http://en.wikipedia.org/w/api.php for external links for url_title in XML format
-        #current limit set to 20 since embed.ly cannot accommodate more
-        #TODO: send out parallel requests to embed.ly
-        url = 'http://en.wikipedia.org/w/api.php?action=query&prop=extlinks&ellimit=50&format=xml&titles=' + url_title
+        #wikipedia ellimit can go up to 500. There are 10 parallel embedly requests of maximum 20 links (200 total)
+        url = 'http://en.wikipedia.org/w/api.php?action=query&prop=extlinks&ellimit=' + config_ellimit + '&format=xml&titles=' + url_title
         
         links = []
         data = urllib2.urlopen(url).read()
@@ -363,16 +367,17 @@ class CreateWikiPageHandler(BaseHandler):
         if len(links) < 1: return
            
         api_url = 'http://api.embed.ly/1/oembed?'
-        
-        urls_per_request = len(links) / 10
+        logging.info('requesting %d links from embedly' % (len(links)))
+        urls_per_request = math.ceil(len(links) / 10.0)
         if (urls_per_request < 1):
             urls_per_request
         
         rpcs = []
         link_index = 0
         for asynch_request in range(10):
-            
-            rpc = urlfetch.create_rpc(deadline=10)
+            if (link_index == len(links)):
+                break
+            rpc = urlfetch.create_rpc(deadline=config_timeout)
             rpc.callback = self.create_callback(rpc)
             url_list = ""
             j = 0
@@ -384,7 +389,9 @@ class CreateWikiPageHandler(BaseHandler):
                 j = j + 1
                 if (j == urls_per_request and asynch_request < 9):
                     break;
+            
             urlfetch.make_fetch_call(rpc, api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list)
+            logging.info('ASYNCH REQUEST %d, requesting %d links' % (asynch_request, j))
             rpcs.append(rpc)
         
         # Finish all RPCs, and let callbacks process the results.

@@ -439,6 +439,10 @@ class Viewer(db.Model):
 class PaymentConfig(db.Model):
   send_email = db.BooleanProperty(default=False)
   test_mode = db.BooleanProperty(default=True)
+  
+class LigerpediaConfig(db.Model):
+  embedly_request_links_total = db.IntegerProperty(default=50)
+  embedly_request_timeout = db.IntegerProperty(default=5)
 
 
 # The ordering algorithm is calculated the following way:
@@ -655,6 +659,13 @@ def getPaymentConfig():
       params = PaymentConfig()
       params.put()
     return params
+
+def getLigerpediaConfig():
+  params = db.GqlQuery('SELECT * FROM LigerpediaConfig').get()
+  if not params:
+    params = LigerpediaConfig()
+    params.put()
+  return params
 
 
 def getActivities(enabled):

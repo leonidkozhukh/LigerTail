@@ -42,7 +42,8 @@ class AdminHandler(webapp.RequestHandler):
               context['publishers'] = publishers
             elif url =='paymentsconfig.html':
               context['paymentparams'] = model.getPaymentConfig()
-            
+            elif url =='ligerpediaconfig.html':
+              context['ligerpediaconfig'] = model.getLigerpediaConfig()
             path = ''
             if url and len(url) > 0:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', url)
@@ -65,6 +66,8 @@ class AdminHandler(webapp.RequestHandler):
         self.updateActivities()
       elif cmd == 'update_paymentconfig':
         self.updatePaymentConfig()
+      elif cmd == 'update_ligerpediaconfig':
+        self.updateLigerpediaConfig()
 
     def updateAlg(self):
       params = model.getOrderingAlgorithmParams()
@@ -91,6 +94,13 @@ class AdminHandler(webapp.RequestHandler):
       else:
         config.send_email = False
       config.put()
+    
+    def updateLigerpediaConfig(self):
+      config = model.getLigerpediaConfig()
+      config.embedly_request_links_total = int(self.request.get('links_total'))
+      config.embedly_request_timeout = int(self.request.get('timeout'))
+      config.put()
+      self.redirect('ligerpediaconfig.html?status=updated')
       
     def updateActivities(self):
       errors = []
