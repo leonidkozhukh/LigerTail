@@ -325,14 +325,14 @@ function OpenLightboxSubmission(url){
             jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_description").val("");
             jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_url").val("");
             jqversion("#ligertail_submission_lightbox_form #ligertail_submission_lightbox_thumbnail").val("");                                              
-            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html("ligertail.com");
-            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("submit your link above!");
+            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_source").html("ligertail");
+            jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_title").html("Your link could be here. Enter it above.");
             if(window.parameter["width"] == 600){
                 jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_description").html("Display your content here to get recognized!!!");
                 jqversion("#ligertail_submission_lightbox_right_column .ligertail_widget_content:first .ligertail_widget_image img").attr('src', LTDOMAIN + '/frontend/images/default.png');
             }
             jqversion("#ligertail_submission_lightbox_form tr").css("color", "black");
-            jqversion("#ligertail_widget_header input").val("Submit Your Link Here");
+            jqversion("#ligertail_widget_header input").val("Got a link to add here?");
             
             jqversion(document).unbind('reveal.facebox');
         });      
@@ -416,22 +416,22 @@ function initAll(){
     //load header, footer, and default content then bind events
     //this should be a switch statement
     if(window.parameter["width"] == 600){
-        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_1.png" value="Submit" /></form></div>';
         var footer = '<div id="ligertail_widget_footer"><img src="' + LTDOMAIN + '/frontend/images/logo_footer.png" width="116" height="35" alt="Logo" /></div>';
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit ligertail.com"/><input type="text" class="ligertail_widget_form" value="Submit Your Link Here" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit LigerTail.com"/><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
     
     for(var j = 1; j <= window.numItems; j++){
         if(window.parameter["width"] == 600){
-            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_blank"></div><div class="ligertail_widget_image"><img src="' + LTDOMAIN + '/frontend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_blank"></div><div class="ligertail_widget_image"><img src="' + LTDOMAIN + '/frontend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
         }
         else{
-            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail.com</span><span class="ligertail_widget_title">submit your link above!</span></div></div>';
+            content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Your link could be here. Enter it above.</span></div></div>';
         }
     }
   
@@ -449,14 +449,14 @@ function initAll(){
     
     //input box hover
     $("#ligertail_widget_header input").hover(function(){ 
-        if($(this).val() == "Submit Your Link Here")
+        if($(this).val() == "Got a link to add here?")
             $(this).val("").select();
         else
             $(this).select();
     }, 
     function(){
         if($(this).val() == "")
-            $(this).val("Submit Your Link Here").blur();
+            $(this).val("Got a link to add here?").blur();
         else
             $(this).blur();
     });

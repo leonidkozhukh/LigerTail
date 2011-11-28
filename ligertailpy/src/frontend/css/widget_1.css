@@ -177,14 +177,17 @@ input {
 
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
 	font-size:9px;
-	font-weight:bold;
+	/*font-weight:bold;
 	margin: 0px 5px 0px 0px;
+	border-right:2px solid #d36317;*/
 	text-transform:uppercase;
+	margin:0px;
 	padding-right:3px;
-	border-right:2px solid #d36317;
 	color: #000000;
 }
-
+ligertail_widget_small .ligertail_widget_text .ligertail_widget_source:after {
+	content: " /";
+}
 #ligertail_widget_small .ligertail_widget_share {
 	float:right;
 	margin-top: 0px;
@@ -198,7 +201,7 @@ input {
 	padding: 0 0 0 5px;
 	width: 185px;
 	float: left;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	font-weight: bold;
 	font-size: 9px;
 	margin:9px 0 0 5px;
