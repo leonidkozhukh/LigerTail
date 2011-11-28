@@ -185,7 +185,7 @@ input {
 	padding-right:3px;
 	color: #000000;
 }
-ligertail_widget_small .ligertail_widget_text .ligertail_widget_source:after {
+#ligertail_widget_small .ligertail_widget_text .ligertail_widget_source:after {
 	content: " /";
 }
 #ligertail_widget_small .ligertail_widget_share {
