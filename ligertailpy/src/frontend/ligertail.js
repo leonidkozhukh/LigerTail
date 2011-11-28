@@ -23,7 +23,7 @@ var jqversion;
     if (!(j = window.jQuery) || version > j.fn.jquery || callback(j, loaded)) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.js"; //LTDOMAIN + "/js/jquery.min.js";
+        script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"; //LTDOMAIN + "/js/jquery.min.js";
         script.onload = script.onreadystatechange = function() {
             if (!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 callback((j = window.jQuery).noConflict(1), loaded = true);
@@ -74,7 +74,7 @@ function loadScript(sScriptSrc, oCallback) {
 	
 var initialized = false;
 
-loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.js", //LTDOMAIN + "/js/jquery.min.js",
+loadScripts(["//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js", //LTDOMAIN + "/js/jquery.min.js",
 			 LTDOMAIN + "/js/easyxdm.min.js",
              LTDOMAIN + "/js/json2.js",
 			 LTDOMAIN + "/js/postrequest.js", 
