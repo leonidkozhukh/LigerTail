@@ -436,6 +436,9 @@ function initAll(){
 			case 1:
 			  content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">Krampus</span><span class="ligertail_widget_title"><a target="_blank" href="http://bit.ly/uekDfe">The Dark Side of St. Nicholas. Beware!</a></span></div></div>';
 			  break;
+			case 2:
+			  content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">JackThreads</span><span class="ligertail_widget_title"><a target="_blank" href="http://bit.ly/tovEcz">Street, Skate, Surf Men\'s Fashion.</a></span></div></div>';
+			  break;
 			default:
               content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Your link could be here. Enter it above.</span></div></div>';
         	}
