@@ -431,17 +431,7 @@ function initAll(){
             content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_blank"></div><div class="ligertail_widget_image"><img src="' + LTDOMAIN + '/frontend/images/default.png" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Submit your content in the input box above!</span></div><p class="ligertail_widget_description">Display your content here to get recognized!!!</p></div></div>';
         }
         else{
-        	switch(j)
-			{
-			case 1:
-			  content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">Krampus</span><span class="ligertail_widget_title"><a target="_blank" href="http://bit.ly/uekDfe">The Dark Side of St. Nicholas. Beware!</a></span></div></div>';
-			  break;
-			case 2:
-			  content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">Hoot.me</span><span class="ligertail_widget_title"><a target="_blank" href="http://bit.ly/rJWWts">Switch your Facebook into study mode.</a></span></div></div>';
-			  break;
-			default:
-              content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Your link could be here. Enter it above.</span></div></div>';
-        	}
+        	content += '<div class="ligertail_widget_content" id="-' + j + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">LigerTail</span><span class="ligertail_widget_title">Your link could be here. Enter it above.</span></div></div>';
         }
     }
   

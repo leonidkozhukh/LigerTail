@@ -445,6 +445,12 @@ class LigerpediaConfig(db.Model):
   embedly_request_timeout = db.IntegerProperty(default=5)
 
 
+class DefaultLinksConfig(db.Model):
+  enable = db.BooleanProperty(default=False)
+  default_links_url = db.StringProperty(default='')
+  refresh_period_sec = db.IntegerProperty(default=120)
+
+
 # The ordering algorithm is calculated the following way:
 # Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
 # This gives top priority to the items that are paid for, to acquire necessary stats
@@ -664,6 +670,14 @@ def getLigerpediaConfig():
   params = db.GqlQuery('SELECT * FROM LigerpediaConfig').get()
   if not params:
     params = LigerpediaConfig()
+    params.put()
+  return params
+
+
+def getDefaultLinksConfig():
+  params = db.GqlQuery('SELECT * FROM DefaultLinksConfig').get()
+  if not params:
+    params = DefaultLinksConfig()
     params.put()
   return params
 

@@ -92,16 +92,33 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		else{
 			content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item_obj.url) + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" alt="Delete" width="12" height="12" border="0" /></div></div>';
 		}
-		
-		interactions[i] = {itemId: item_obj.id, statType: StatType.VIEWS, spot: window.LIGERTAIL_ITEMS_LOADED};
+		if (i < window.numItems) {
+		  interactions[i] = {itemId: item_obj.id, statType: StatType.VIEWS, spot: window.LIGERTAIL_ITEMS_LOADED};
+		}
 	});
+	if (interactions.length) {
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+	}
+	// populate default links
+	var defaultItemIds = {};
+	if (!window.parameter["block_default_links"]) {
+		jqversion.each(response.defaultItems, function(i, item){
+			window.LIGERTAIL_ITEMS_LOADED++; 
+			var item_obj = jqversion.parseJSON(item);
+			defaultItemIds[item_obj.id] = true;
+			if(window.parameter["width"] == 600){
+				content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" width="12" height="12" alt="Delete" /></div><div class="ligertail_widget_image"><a target="_blank" href="' + checkLink(item_obj.url) +'"><img src="' + item_obj.thumbnailUrl + '" alt="Image" width="105" height="65" border="0" /></a></div><div class="ligertail_widget_text"><div class="ligertail_widget_top_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item_obj.url) + '">' + item_obj.title + '</a></span></div><p class="ligertail_widget_description">' + item_obj.description + '</p></div></div>';
+			}
+			else{
+				content += '<div class="ligertail_widget_content" id="' + item_obj.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item_obj.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item_obj.url) + '">' + item_obj.title + '</a></span></div><div class="ligertail_widget_close" id="' + window.LIGERTAIL_ITEMS_LOADED + '"><img src="' + LTDOMAIN + '/frontend/images/button_close.png" alt="Delete" width="12" height="12" border="0" /></div></div>';
+			}
+		});
+	}	
 	
 	if(content != ""){
 		jqversion(".ligertail_widget .ligertail_widget_content:visible").hide();
 		jqversion(".ligertail_widget #ligertail_widget_header").after(content);
 		jqversion(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").show();
-
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 		
 		// add events to content
 		jqversion(".ligertail_widget .ligertail_widget_content").bind("show", function(){
@@ -114,7 +131,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				else{
 					interaction[0] = {itemId: jqversion(this).attr('id'), statType: StatType.VIEWS, spot: jqversion(this).find(".ligertail_widget_close").attr('id')};
 				}
-				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				if (!defaultItemIds[interaction[0].itemId]) {
+				  api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				}
 		});
 
 		//update db, remove the current content, move stack up, & show more content
@@ -122,7 +141,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				//this is a close
 				var interaction = [];
 				interaction[0] = {itemId: jqversion(this).parent().attr('id'), statType: StatType.CLOSES, spot: jqversion(this).attr('id')};
-				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				if (!defaultItemIds[interaction[0].itemId]) {
+				  api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				}
 				jqversion(this).parent().remove();
 				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});
@@ -132,7 +153,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				//this is a click
 				var interaction = [];
 				interaction[0] = {itemId: jqversion(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jqversion(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
-				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				if (!defaultItemIds[interaction[0].itemId]) {
+					api.submitUserInteraction(window.PUBLISHER_URL, interaction);
+				}
 				jqversion(this).parent().parent().remove();
 				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});

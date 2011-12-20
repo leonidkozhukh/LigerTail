@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Your title here</title>
+    <script src="../frontend/ltdomain.js" type="text/javascript"></script>
+
+  </head>
+  
+  <body>
+  <h1>Payment configuration</h1>    
+  Logged in: {{ user }}
+  
+  <div id="header" class="container_3">
+    <div id="" class="grid_3 ">
+    </div>
+  </div>
+
+  <div id="content" class="container_3">
+    <div id="" class="grid_3 ">
+      <script src="../frontend/ligertail.js?block_default_links=1" type="text/javascript"></script>
+    </div>
+  </div>
+
+  <div id="footer" class="container_3">
+
+    <div id="" class="grid_3 ">
+    </div>
+  </div>
+
+<p>Note, default links on a particular site can be blocked with <b>?block_default_links=1</b> param</p>
+ <form name="MyForm" method="POST" action="update_defaultlinksconfig"
+       onsubmit='return formPostProcessing()'>
+        Enable on all widgets
+        {% if defaultlinksconfig.enable %}
+        <INPUT TYPE=CHECKBOX NAME="enable" CHECKED value=true />
+        {% else %}
+        <INPUT TYPE=CHECKBOX NAME="enable" value=true />
+        {% endif %}
+        <br/>
+        Refresh period in seconds (min 10 sec): <input type="text" name="refresh" value = {{ defaultlinksconfig.refresh_period_sec }} /><br />
+        <input TYPE=HIDDEN NAME="url" />
+      <input type="submit" value="Update" />
+  </form>
+<script>
+  function formPostProcessing() {
+    var url = window.document.location.host + window.document.location.pathname;
+    if (url.indexOf('?') != -1) {
+        url = url.substring(0, url.indexOf('?'));
+    }
+    if (url.charAt(url.length-1) != '/') {
+        url += '/';
+    }
+    document.forms["MyForm"]["url"].value = url;
+    if (document.forms["MyForm"]["refresh"].value - 0 < 10) {
+        document.forms["MyForm"]["refresh"].value = 10;
+    }
+    return true;
+  }
+</script>
+</body>
+
+</html>

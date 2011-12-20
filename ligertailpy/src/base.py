@@ -4,6 +4,7 @@ from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import webapp
 from itemlist import itemList
+from defaultitemlist import defaultItemList
 from filterstrategy import filterStrategy
 import logging
 import model
@@ -75,6 +76,15 @@ class BaseHandler(webapp.RequestHandler):
     logging.info('filter is not default for %s', publisherUrl)
     return filterStrategy.applyFilter(defaultOrderedItems, filter)
       
+      
+  def setDefaultItems(self, num):
+    defaultItems = defaultItemList.getOrderedItems()
+    if num < len(defaultItems):
+      defaultItems = defaultItems[0: num]
+    if len(defaultItems):
+      self.common_response.setDefaultItems(defaultItems, response.ItemInfo.SHORT)
+
+    
   def getPaidItems(self, publisherUrl):
       logging.info('getPaidItems')
       items = model.getPaidItems(publisherUrl)

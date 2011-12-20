@@ -15,28 +15,8 @@ function url_query( query ) {
     return false;
   }
 }
- 
-function setLigertailDomain() {
-	var sameDomain = url_query('sameDomain');
-	if( sameDomain ) {
-    window.ligertail = {};
-    var hostname = window.document.location.hostname;
-    if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
-      hostname = 'ligertailbackend.appspot.com';
-      window.ligertail.visibleDomain = 'ligertail.com';
-    }
-    var domain = window.document.location.protocol + "//" + hostname;
-    if (window.document.location.port) {
-      domain += ":" + window.document.location.port;
-    }
-    window.ligertail.domain = domain;
-  }
-};
-
-  
-setLigertailDomain();
-
 </script>
+<script src="../frontend/ltdomain.js" type="text/javascript"></script>
 </head>
 <body>
 <script type="text/javascript" src="../frontend/ligertail_iframe.js?width=300"></script>

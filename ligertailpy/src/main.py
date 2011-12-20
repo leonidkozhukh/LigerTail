@@ -152,6 +152,8 @@ class GetOrderedItemsHandler(BaseHandler):
         if self.client.numItems < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numItems]
         self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
+        if self.client.numItems - len(orderedItems) > 0:
+          BaseHandler.setDefaultItems(self, self.client.numItems - len(orderedItems))
         ''' 
         TODO: consider submitting user interactions in this API if there is a performance cost
         numViewed = 0

@@ -120,6 +120,7 @@ class CommonResponse(json.JSONEncoder):
     
   def reset(self):
     self.items = []
+    self.defaultItems = []
     self.spots = []
     self.publisherSites = []
     self.sessionId = None
@@ -130,6 +131,7 @@ class CommonResponse(json.JSONEncoder):
   def default(self, o):
       if isinstance(o, CommonResponse):
           return {"items" : o.items,
+                  "defaultItems": o.defaultItems,
                   "spots" : o.spots,
                   "publisherSites" : o.publisherSites,
                   "filter" : o.filter,
@@ -152,6 +154,12 @@ class CommonResponse(json.JSONEncoder):
       ri = ResponseItem()
       ri.initFrom(item, itemInfo)
       self.items.append(ri)
+
+  def setDefaultItems(self, defaultItems, itemInfo):
+    for defaultItem in defaultItems:
+      ri = ResponseItem()
+      ri.initFrom(defaultItem, itemInfo)
+      self.defaultItems.append(ri)
   
   def setSpots(self, spots):
     for spot in spots:
