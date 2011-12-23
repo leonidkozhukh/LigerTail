@@ -58,6 +58,10 @@ class BaseHandler(webapp.RequestHandler):
     return cgi.escape(self.request.get(name))
   
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=0):
+    if publisherUrl == 'default':
+      if defaultItemList.disallowIncoming():
+        return
+      publisherUrl = defaultItemList.getPublisherUrl()
     itemList.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
  
   def getOrderedItems(self, publisherUrl, filter):

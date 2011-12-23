@@ -8,7 +8,7 @@
   </head>
   
   <body>
-  <h1>Payment configuration</h1>    
+  <h1>Default link configuration</h1>    
   Logged in: {{ user }}
   
   <div id="header" class="container_3">
@@ -39,6 +39,19 @@
         {% endif %}
         <br/>
         Refresh period in seconds (min 10 sec): <input type="text" name="refresh" value = {{ defaultlinksconfig.refresh_period_sec }} /><br />
+        
+        <br/>
+        Throttle (0 - disallow all requests, 100% - allow all): <input type="text" name="throttle" value = {{ defaultlinksconfig.throttle }} /><br />
+        Throttle outgoing requests:
+        {% if defaultlinksconfig.throttle_outgoing %}
+        <INPUT TYPE=CHECKBOX NAME="outgoing" CHECKED value=true />
+        {% else %}
+        <INPUT TYPE=CHECKBOX NAME="outgoing" value=true />
+        {% endif %}
+        <br/>
+        If set, apply throttling on outgoing requests,
+        otherwise, apply on incoming requests
+        <br/>
         <input TYPE=HIDDEN NAME="url" />
       <input type="submit" value="Update" />
   </form>
@@ -54,6 +67,12 @@
     document.forms["MyForm"]["url"].value = url;
     if (document.forms["MyForm"]["refresh"].value - 0 < 10) {
         document.forms["MyForm"]["refresh"].value = 10;
+    }
+    if (document.forms["MyForm"]["throttle"].value - 0 > 100) {
+        document.forms["MyForm"]["throttle"].value = 100;
+    }
+    if (document.forms["MyForm"]["throttle"].value - 0 < 0) {
+        document.forms["MyForm"]["throttle"].value = 0;
     }
     return true;
   }

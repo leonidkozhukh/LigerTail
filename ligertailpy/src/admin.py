@@ -111,6 +111,8 @@ class AdminHandler(webapp.RequestHandler):
       config.enable = bool(self.request.get('enable'))
       config.default_links_url = str(self.request.get('url'))
       config.refresh_period_sec = int(self.request.get('refresh'))
+      config.throttle = int(self.request.get('throttle'))
+      config.throttle_outgoing = bool(self.request.get('outgoing'))
       config.put()
       self.redirect('defaultlinks.html?status=updated')
    

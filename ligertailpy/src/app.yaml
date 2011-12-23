@@ -1,5 +1,5 @@
-application: ligertailbackend
-version: 4
+application: ligertaildevelopmentbackend
+version: 6
 runtime: python
 api_version: 1
 
@@ -20,7 +20,7 @@ handlers:
 - url: /robots.txt
   static_files: web/robots.txt
   upload: web/robots.txt
-
+  
 - url: /web/images
   static_dir: web/images
     
@@ -32,10 +32,6 @@ handlers:
   
 - url: /web/amline
   static_dir: web/amline
-  
-- url: /frontend/payment\.html
-  secure: always
-  static_dir: frontend
 
 - url: /tumblr/images
   static_dir: tumblr/images
@@ -45,6 +41,10 @@ handlers:
  
 - url: /tumblr/scripts
   static_dir: tumblr/scripts
+  
+- url: /frontend/payment\.html
+  secure: always
+  static_dir: frontend
 
 - url: /payment\.html
   secure: always
@@ -58,10 +58,10 @@ handlers:
   script: main.py
   login: admin
 
-- url: /ligertail.js
+- url: /ligertail\.js
   static_files: frontend/ligertail.js
   upload: frontend/ligertail.js
-      
+        
 - url: /api/.*
   script: main.py
 

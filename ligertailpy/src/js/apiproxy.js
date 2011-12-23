@@ -162,7 +162,7 @@ LTApi.prototype.serialize = function(obj) {
 		          first = false;
 		    }
 	    	var val = obj[prop];
-	    	if (prop == 'publisherUrl' && !this.inError) {
+	    	if (prop == 'publisherUrl' && !this.inError && val != 'default') {
 	    	  val = LTApi.normalizePublisherUrl(val);
 	    	  this.currentPublisherUrl = val;
 	    	}

@@ -449,6 +449,8 @@ class DefaultLinksConfig(db.Model):
   enable = db.BooleanProperty(default=False)
   default_links_url = db.StringProperty(default='')
   refresh_period_sec = db.IntegerProperty(default=120)
+  throttle = db.IntegerProperty(default=0)
+  throttle_outgoing = db.BooleanProperty(default=False)
 
 
 # The ordering algorithm is calculated the following way:
