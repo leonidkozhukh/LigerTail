@@ -27,7 +27,63 @@
     <div id="" class="grid_3 ">
     </div>
   </div>
+  <h3>Publisher stats</h3>
+<h1>Publisher stats</h1>
+  <table>
+    <tr>
+      <td>url</td>
+      <td>$</td>
+      <td>views</td>
+      <td>clicks</td>
+      <td>closes</td>
+    </tr>
+    <tr>
+      <td>
+        <b>{{publisher.publisherUrl}}</b>
+      </td>
+      <td> ${{ publisher.amount }}</td>
+      <td> {{ totalviews }}</td>
+      <td> {{ publisher.stats.2 }}</td>
+      <td> {{ publisher.stats.4 }}</td>
+    </tr>
+   </table>
 
+  <h3>Items</h3>
+  <table>
+    <tr>
+      <td>id</td>
+      <td>title</td>
+      <td>url</td>
+      <td>price</td>
+      <td>views</td>
+      <td>clicks</td>
+      <td>closes</td>
+      <td>tier</td>
+      <td>engagement</td>
+      <td>more</td>
+    </tr>
+  {% for item in items %}
+    <tr>
+      <td> {{ item.id }} </td>
+      <td> {{ item.title }}</td>
+      <td> {{ item.url }} </td>
+      <td> ${{ price }} </td>
+      <td> {{ item.stats.1 }}</td>
+      <td> {{ item.stats.2 }}</td>
+      <td> {{ item.stats.4 }}</td>
+      <td> {{ item.tier }} </td>
+      <td> {{ item.engagement }} </td>
+      <td>
+         <form name="ItemForm" method="POST" action="delete_item">
+            <input TYPE=HIDDEN NAME="id" VALUE="{{ item.id }}" />
+            <input type="submit" value="Delete" />
+         </form>
+      </td>
+    </tr>
+{% endfor %}
+   </table>
+
+<h3>Configuration</h3>
 <p>Note, default links on a particular site can be blocked with <b>?block_default_links=1</b> param</p>
  <form name="MyForm" method="POST" action="update_defaultlinksconfig"
        onsubmit='return formPostProcessing()'>
@@ -76,7 +132,17 @@
     }
     return true;
   }
+  
+  function format (expr, decplaces) {
+	    var str = "" + Math.round (eval(expr) * Math.pow(10,decplaces))
+	    while (str.length <= decplaces) {
+	        str = "0" + str
+	    }
+	    var decpoint = str.length - decplaces
+	    return str.substring(0,decpoint) + "." + str.substring(decpoint,str.length);
+	}
 </script>
+
 </body>
 
 </html>

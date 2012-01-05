@@ -31,6 +31,7 @@ class DefaultFilterStrategy(Singleton):
     #TODO: support timeliness
     #TODO: support likes
     for item in items:
+      item.id = item.key().id()
       # likes = float(item.stats[model.StatType.LIKES])
       closes = self.getCloses_(item)
       views = self.getViews_(item)

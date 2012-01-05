@@ -3,9 +3,11 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import model
 import os
+from defaultitemlist import defaultItemList
 from google.appengine.ext.webapp import template
 from filterstrategy import filterStrategy
 from activitymanager import activityManager
+
 
 NEW_ACTIVITY_NAME = 'add_new_activity_here'
 
@@ -45,7 +47,15 @@ class AdminHandler(webapp.RequestHandler):
             elif url =='ligerpediaconfig.html':
               context['ligerpediaconfig'] = model.getLigerpediaConfig()
             elif url =='defaultlinks.html':
-              context['defaultlinksconfig'] = model.getDefaultLinksConfig()
+              config = model.getDefaultLinksConfig()
+              context['publisher'] = model.getPublisherSite(config.default_links_url)
+              context['defaultlinksconfig'] = config
+              items = defaultItemList.getOrderedItems()
+              views = 0
+              for item in items:
+                views += item.stats[model.StatType.VIEWS]
+              context['items'] = items
+              context['totalviews'] = views
             path = ''
             if url and len(url) > 0:
               path = os.path.join(os.path.dirname(__file__), 'webadmin', url)
@@ -72,6 +82,8 @@ class AdminHandler(webapp.RequestHandler):
         self.updateLigerpediaConfig()
       elif cmd == 'update_defaultlinksconfig':
         self.updateDefaultLinksConfig()
+      elif cmd == 'delete_item':
+        self.deleteItem()
 
     def updateAlg(self):
       params = model.getOrderingAlgorithmParams()
@@ -98,6 +110,14 @@ class AdminHandler(webapp.RequestHandler):
       else:
         config.send_email = False
       config.put()
+    
+    def deleteItem(self):
+      id = int(self.request.get('id'))
+      if id:
+        item = model.Item.get_by_id(id)
+        item.delete()
+        self.redirect('defaultlinks.html?status=updated')
+
     
     def updateLigerpediaConfig(self):
       config = model.getLigerpediaConfig()
