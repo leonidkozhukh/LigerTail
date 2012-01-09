@@ -20,11 +20,11 @@ import urllib
 import urlparse
 from google.appengine.api import urlfetch
 import wsgiref.handlers
-import socket
 import sys
 import simplejson as json
 import string
 import math
+import traceback
 #import google.appengine.webapp.template
 ##from google.appengine.ext.webapp import template
 #import appengine_django.auth.templatetags
@@ -152,8 +152,6 @@ class GetOrderedItemsHandler(BaseHandler):
         if self.client.numItems < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numItems]
         self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
-        if self.client.numItems - len(orderedItems) > 0:
-          BaseHandler.setDefaultItems(self, self.client.numItems - len(orderedItems))
         ''' 
         TODO: consider submitting user interactions in this API if there is a performance cost
         numViewed = 0
@@ -292,47 +290,69 @@ class CreateWikiPageHandler(BaseHandler):
     successes = 0
     exceptions = 0
     publisherUrl = ""
+    links_map = {}
     
     def handle_result(self, rpc):
         
-        
-        try:
-            result = rpc.get_result()
-            embedly_results = json.loads(result.content)
-            for link_info in embedly_results:
-                item = model.Item()
-                
-                item.publisherUrl = self.publisherUrl
-                
-                if 'url' in link_info:
-                    item.url = link_info['url']
-                else:
-                    self.errors += 1
-                    logging.warning('Invalid link for %s \n %s' % (self.publisherUrl, link_info))
-                    return
-                if 'thumbnail_url' in link_info:
-                    item.thumbnailUrl = link_info['thumbnail_url']
-                else:
-                    item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
-                if 'title' in link_info:
-                    item.title = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
-                    item.description = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
-                if 'description' in link_info:
-                    item.description = link_info['description'].replace('%u', '\\u').decode('unicode-escape')
-                item.price = 0
-                item.email = 'wiki@ligertail.com'
-                item.sessionId = 'wiki'
-                item.put()
-                logging.info('Submitted %s ' % item)
-                self.successes += 1
-        except Exception:
-            logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
+      try:
+        result = rpc.get_result()
+        embedly_results = json.loads(result.content)
+        for link_info in embedly_results:
+          item = model.Item()
+          
+          item.publisherUrl = self.publisherUrl
+          
+          if 'url' in link_info:
+            item.url = link_info['url']
+            #urls are not always returning in the same form as were requested, which means some
+            #cannot be tracked
+            if (self.links_map.has_key(item.url) == False or self.links_map[item.url] is None):
+              self.links_map[item.url] = 'DONE'
+            else:
+              self.successes -= 1 #this url was already retrieved previously
+          else:
+            self.errors += 1
+            logging.warning('Invalid link for %s \n %s' % (self.publisherUrl, link_info))
+            continue
+          if 'thumbnail_url' in link_info:
+            item.thumbnailUrl = link_info['thumbnail_url']
+          else:
+            item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
+          if 'title' in link_info:
+            item.title = link_info['title']#.replace('%u', '\\u').decode('unicode-escape')
+            item.description = link_info['title']#.replace('%u', '\\u').decode('unicode-escape')
+          else:
+            item.title = item.url
+            
+          if 'description' in link_info:
+            item.description = link_info['description']#.replace('%u', '\\u').decode('unicode-escape')
+          else:
+            item.description = item.title
+            
+          item.price = 0
+          item.email = 'wiki@ligertail.com'
+          item.sessionId = 'wiki'
+          item.put()
+          logging.info('Submitted %s ' % item)
+          self.successes += 1
+      except Exception:
+        logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
+        if str(sys.exc_info()[1]) != 'ApplicationError: 2 timed out':
             self.exceptions += 1
+            #logging.warning(traceback.format_exc())
         
     
     def create_callback(self, rpc):
         return lambda: self.handle_result(rpc)
     
+    def getUnretreivedUrls(self):
+        links = []
+        for link in self.links_map.keys():
+            if (self.links_map[link] is None):
+              links.append(link)
+        
+        return links
+      
     def copyWikiLinks(self, url_title):
         
         
@@ -350,109 +370,93 @@ class CreateWikiPageHandler(BaseHandler):
         config_ellimit = str(config.embedly_request_links_total)
         
         #capitalize first letter for wiki
-        url_title = string.capwords(url_title.lower(), '_')
-        #querying http://en.wikipedia.org/w/api.php for external links for url_title in XML format
-        #wikipedia ellimit can go up to 500. There are 10 parallel embedly requests of maximum 20 links (200 total)
-        url = 'http://en.wikipedia.org/w/api.php?action=query&prop=extlinks&ellimit=' + config_ellimit + '&format=xml&titles=' + url_title
+        #url_title = string.capwords(url_title.lower(), '_')
+        self.links_map.clear()
+        attempt = 0
         
-        links = []
-        data = urllib2.urlopen(url).read()
+        while attempt < 2 and len(self.links_map) < 1:
+          #querying http://en.wikipedia.org/w/api.php for external links for url_title in XML format
+          #wikipedia ellimit can go up to 500. There are 10 parallel embedly requests of maximum 20 links (200 total)
+          url = 'http://en.wikipedia.org/w/api.php?action=query&prop=extlinks&ellimit=' + config_ellimit + '&format=xml&titles=' + url_title
         
-        dom = minidom.parseString(data)
-        for node in dom.getElementsByTagName('el'):
+          data = urllib2.urlopen(url).read()
+        
+          dom = minidom.parseString(data)
+          for node in dom.getElementsByTagName('el'):
             #if link is within wiki, ignore
             extlink = node.firstChild.data
             if (extlink.lower().startswith("http") != True):
-                continue
-            links.append(extlink)
+              continue
+            self.links_map[extlink] = None
         
-        if len(links) < 1: return
-           
-        api_url = 'http://api.embed.ly/1/oembed?'
-        logging.info('requesting %d links from embedly' % (len(links)))
-        urls_per_request = math.ceil(len(links) / 10.0)
-        if (urls_per_request < 1):
-            urls_per_request
-        
-        rpcs = []
-        link_index = 0
-        for asynch_request in range(10):
-            if (link_index == len(links)):
-                break
-            rpc = urlfetch.create_rpc(deadline=config_timeout)
-            rpc.callback = self.create_callback(rpc)
-            url_list = ""
-            j = 0
-            while link_index < len(links):
-                if len(url_list) > 0:
-                    url_list += ","           
-                url_list += urllib.quote_plus(links[link_index])
-                link_index = link_index + 1
-                j = j + 1
-                if (j == urls_per_request and asynch_request < 9):
-                    break;
-            
-            urlfetch.make_fetch_call(rpc, api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list)
-            logging.info('ASYNCH REQUEST %d, requesting %d links' % (asynch_request, j))
-            rpcs.append(rpc)
-        
-        # Finish all RPCs, and let callbacks process the results.
-        for rpc in rpcs:
-            rpc.wait()
+          attempt = attempt + 1
           
+          if len(self.links_map) < 1 and attempt < 2:
+            #casing possibly incorrect, will attempt to search for the right term
+            url = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + urllib.quote_plus(url_title)
+            search_results = json.loads(urllib2.urlopen(url).read())
+            search_list = search_results[1]
+            if len(search_list) > 0:
+              url_title = search_list[0].replace(' ','_')
+            else: #search did not return anything -- will not try any more
+              break  
+        
+        if len(self.links_map) < 1: 
+          return
+        
+        
+        
+        api_url = 'http://api.embed.ly/1/oembed?'
+        
+        #sending requests every 2 seconds up until config_timeout
+        #embed.ly will cache requests from the earlier searches so that we can retrieve them later if needed
+        attempt = 0
+        while ((attempt * 2) <= config_timeout and self.successes < config_ellimit and self.successes < 20):
             
-        ##url_list = ""
-        ##for extlink in links:
-        ##    if len(url_list) > 0:
-        ##        url_list += ","           
-        ##    url_list += urllib.quote_plus(extlink)
-        
-        ##oembed_call = api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list
-        ##jsoned = urlfetch.fetch(oembed_call, payload=None, method='GET', headers={}, allow_truncated=False, follow_redirects=True, deadline=30)
-        ##embedly_results = json.loads(jsoned.content) #json.loads(urllib2.urlopen(oembed_call, 10).read())
-        
-        ##errors = 0
-        ##successes = 0
-        ##exceptions = 0
-        ##for link_info in embedly_results:
-        ##    try:
-#                item = model.Item()
-#                publisherUrl = self.request.host + "/wiki/" + url_title
-#                if publisherUrl[-1] != "/":
-#                    publisherUrl += "/"
-#                item.publisherUrl = publisherUrl.lower()
-#                
-#                if 'url' in link_info:
-#                    item.url = link_info['url']
-#                else:
-#                    errors += 1
-#                    logging.warning('Invalid link for %s \n %s' % (publisherUrl, link_info))
-#                    continue
-#                if 'thumbnail_url' in link_info:
-#                    item.thumbnailUrl = link_info['thumbnail_url']
-#                else:
-#                    item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
-#                if 'title' in link_info:
-#                    item.title = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
-#                    item.description = link_info['title'].replace('%u', '\\u').decode('unicode-escape')
-#                if 'description' in link_info:
-#                    item.description = link_info['description'].replace('%u', '\\u').decode('unicode-escape')
-#                item.price = 0
-#                item.email = 'wiki@ligertail.com'
-#                item.sessionId = 'wiki'
-#                item.put()
-#                logging.info('Submitted %s ' % item)
-#                successes += 1
-#            except Exception:
-#                logging.warning('createWikiHandler: %s' % sys.exc_info()[1])
-#                exceptions += 1
-#        logging.info('successes / errors / exceptions: %d %d %d' % (successes, errors, exceptions))
+            unretrieved_links = self.getUnretreivedUrls()
+            logging.info('requesting %d links from embedly' % (len(unretrieved_links)))
+            urls_per_request = math.ceil(len(unretrieved_links) / 10.0)
+                        
+            rpcs = []
+            links_it = iter(unretrieved_links)
+            iteration_stopped = False
+            
+            for asynch_request in range(10):
+                
+                rpc = urlfetch.create_rpc(deadline=2)
+                rpc.callback = self.create_callback(rpc)
+                url_list = ""
+                j = 0
+                try:
+                  while not(j == urls_per_request and asynch_request < 9):
+                      link = str(links_it.next())
+                      if len(url_list) > 0:
+                          url_list += ","           
+                      url_list += urllib.quote_plus(link)
+                      j = j + 1
+                    
+                except StopIteration:
+                  iteration_stopped = True
+                
+                urlfetch.make_fetch_call(rpc, api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list)
+                logging.info('ASYNCH REQUEST %d, requesting %d links' % (asynch_request, j))
+                logging.info('ASYNCH REQUEST: %s ' % api_url + "key=863cd350298b11e091d0404058088959&urls=" + url_list)
+                rpcs.append(rpc)
+                
+                if iteration_stopped:
+                  break
+            
+            # Finish all RPCs, and let callbacks process the results.
+            for rpc in rpcs:
+                rpc.wait()
+                
+            attempt = attempt + 1
+          
         logging.info('successes / errors / exceptions: %d %d %d' % (self.successes, self.errors, self.exceptions))
         if (self.successes > 0):
             itemList.refreshCacheForDefaultOrderedItems(self.publisherUrl)
         
-    
-        
+      
     def get(self, url):
         BaseHandler.initFromRequest(self, self.request)
         if not url or len(url) < 1:

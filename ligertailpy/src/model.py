@@ -442,7 +442,7 @@ class PaymentConfig(db.Model):
   
 class LigerpediaConfig(db.Model):
   embedly_request_links_total = db.IntegerProperty(default=50)
-  embedly_request_timeout = db.IntegerProperty(default=5)
+  embedly_request_timeout = db.IntegerProperty(default=6)
 
 
 class DefaultLinksConfig(db.Model):
