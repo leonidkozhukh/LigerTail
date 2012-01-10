@@ -10,6 +10,22 @@
   <body>
   <h1>Default link configuration</h1>    
   Logged in: {{ user }}
+    <div id="header" class="container_3">
+    <div id="" class="grid_3 ">
+    </div>
+  </div>
+
+  <div id="content" class="container_3">
+    <div id="" class="grid_3 ">
+      <script src="../frontend/ligertail.js?block_default_links=1" type="text/javascript"></script>
+    </div>
+  </div>
+
+  <div id="footer" class="container_3">
+
+    <div id="" class="grid_3 ">
+    </div>
+  </div>
   
     <h3>Publisher stats</h3>
   <table>
@@ -50,7 +66,7 @@
       <td> {{ item.id }} </td>
       <td> {{ item.title }}</td>
       <td> {{ item.url }} </td>
-      <td> ${{ price }} </td>
+      <td> ${{ item.price }} </td>
       <td> {{ item.stats.1 }}</td>
       <td> {{ item.stats.2 }}</td>
       <td> {{ item.stats.4 }}</td>

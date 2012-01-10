@@ -82,6 +82,8 @@ class BaseHandler(webapp.RequestHandler):
       
       
   def setDefaultItems(self, num):
+    if defaultItemList.getPublisherUrl() == self.getParam('publisherUrl'):
+      return # Do not sets default links for the url that is hosting it
     defaultItems = defaultItemList.getOrderedItems()
     if num < len(defaultItems):
       defaultItems = defaultItems[0: num]
