@@ -129,7 +129,8 @@ class AdminHandler(webapp.RequestHandler):
     def updateDefaultLinksConfig(self):
       config = model.getDefaultLinksConfig()
       config.enable = bool(self.request.get('enable'))
-      config.default_links_url = str(self.request.get('url'))
+      url = str(self.request.get('url')).lower()
+      config.default_links_url = url
       config.refresh_period_sec = int(self.request.get('refresh'))
       config.throttle = int(self.request.get('throttle'))
       config.throttle_outgoing = bool(self.request.get('outgoing'))

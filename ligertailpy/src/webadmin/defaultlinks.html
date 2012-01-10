@@ -11,24 +11,7 @@
   <h1>Default link configuration</h1>    
   Logged in: {{ user }}
   
-  <div id="header" class="container_3">
-    <div id="" class="grid_3 ">
-    </div>
-  </div>
-
-  <div id="content" class="container_3">
-    <div id="" class="grid_3 ">
-      <script src="../frontend/ligertail.js?block_default_links=1" type="text/javascript"></script>
-    </div>
-  </div>
-
-  <div id="footer" class="container_3">
-
-    <div id="" class="grid_3 ">
-    </div>
-  </div>
-  <h3>Publisher stats</h3>
-<h1>Publisher stats</h1>
+    <h3>Publisher stats</h3>
   <table>
     <tr>
       <td>url</td>
@@ -87,6 +70,8 @@
 <p>Note, default links on a particular site can be blocked with <b>?block_default_links=1</b> param</p>
  <form name="MyForm" method="POST" action="update_defaultlinksconfig"
        onsubmit='return formPostProcessing()'>
+        Default Link URL: <input TYPE=text NAME="url" value={{ defaultlinksconfig.default_links_url }} /> 
+        <br/>
         Enable on all widgets
         {% if defaultlinksconfig.enable %}
         <INPUT TYPE=CHECKBOX NAME="enable" CHECKED value=true />
@@ -108,17 +93,20 @@
         If set, apply throttling on outgoing requests,
         otherwise, apply on incoming requests
         <br/>
-        <input TYPE=HIDDEN NAME="url" />
       <input type="submit" value="Update" />
   </form>
 <script>
   function formPostProcessing() {
-    var url = window.document.location.host + window.document.location.pathname;
+    //url = window.document.location.host + window.document.location.pathname;
+    var url = document.forms["MyForm"]["url"].value;
     if (url.indexOf('?') != -1) {
         url = url.substring(0, url.indexOf('?'));
     }
     if (url.charAt(url.length-1) != '/') {
         url += '/';
+    }
+    if (url.indexOf('://') != -1) {
+        url = url.substring(url.indexOf('://') + 3 , url.length)
     }
     document.forms["MyForm"]["url"].value = url;
     if (document.forms["MyForm"]["refresh"].value - 0 < 10) {
