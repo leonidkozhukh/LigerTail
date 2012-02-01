@@ -12,6 +12,107 @@
 <!--[if IE 7]><link rel="stylesheet" type="text/css" href="../web/styles/ie7+.css" /><![endif]-->
 <!--[if IE 8]><![endif]-->
 <script src="../frontend/ltdomain.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="../web/scripts/jrollingcounter-0.0.1.js"></script>
+<script type="text/javascript">
+    var _url = '../web/scripts/clicks.json'; //test json, local
+    var _spinInterval = 200;
+    var _totalDigits = 6;
+    var _currentClicks = 0;
+    var _resetFlag = false; //specs for 'per day' stats? when reset daily stats?
+    var _digits = [];
+    var _startFlag = true;
+   
+var jq$ = $; // use this to prevent jqery conflicts & problems
+/*
+ligertail widget is loading jquery 1.5 on page causing problems with counter.js (needs jq1.6 or later)
+-- as is, widget jquery may conflict with jquery on pages
+*/ 
+function setClicks(clicks) { 
+    var diffClicks = (_startFlag)? 1: 0;
+    if ((clicks < _currentClicks) && (!_resetFlag)) { 
+        var oldC = 0;
+        clicks = _currentClicks;
+    } else if ((clicks >= _currentClicks) && (!_resetFlag)) { 
+        var oldC = _currentClicks;
+        _currentClicks = clicks; //update global
+        var diffClicks = clicks-oldC;
+    } else if (_resetFlag) {
+        // reset counter
+    } 
+    var c = clicks.toString();
+    var oldC = oldC.toString();
+    _totalDigits = c.length;
+    if (!oldC) {
+        var oldC = '0';
+    }
+    while (c.length > oldC.length) {
+       oldC = '0' + oldC;
+    }      
+    for (var i=_totalDigits; i>=0; i--) {
+        _digits[i] = [];
+        _digits[i]['start'] = parseInt(oldC.charAt(i));
+        _digits[i]['stop'] = parseInt(c.charAt(i));
+    }
+    var changeDigits = (diffClicks)? diffClicks.toString().length : 0;
+    if (!_startFlag && diffClicks) {
+        var firstChangedNumber;
+        for (var i=_totalDigits-1; i>=0; i--) {
+            if (_digits[i]['start']=_digits[i]['stop']) {
+                    firstChangedNumber=_totalDigits-i;
+            } 
+        }
+    } else if (_startFlag){
+        changeDigits = _totalDigits;
+    }
+    if(firstChangedNumber && changeDigits <= firstChangedNumber) {
+        changeDigits = firstChangedNumber;
+    }
+    if (changeDigits) {    
+        for (var i=changeDigits; i>0; i--) {
+            var charPos = _totalDigits - i; //reverse positions
+            var start = _digits[charPos]['start'];
+            var stop = _digits[charPos]['stop'];
+            jq$('#digit'+(i)).find('img').css('visibility','visible');//show counter digits
+                if (!_startFlag) {
+                    if (changeDigits==1) { // faster if only digit changing
+                        var distance = 10 - (Math.abs(stop-start));
+                        var spinInterval = (stop!=0)? _spinInterval/distance : _spinInterval;
+                    } else {
+                        var spinInterval =_spinInterval;
+                    }
+                    jq$('#digit'+(i)).spinCounter({spinTime: spinInterval, startDigit:start, stopDigit:stop});
+         
+                } else if (_startFlag) {
+                    jq$('#digit'+(i)).spinCounter({spinTime: _spinInterval, startDigit:start, stopDigit:stop});        
+                }
+            }
+    }
+    _startFlag = false;
+}
+ 
+jq$(document).ready (function() {
+    var _err = false;
+    function getClicks() {
+        jq$.ajax({
+            cache: false,
+            url: _url,
+            success: function(data) {
+                setClicks(data.clicks);
+            },
+            error: function() {
+                _err = true;       
+            }
+        });
+    }
+    if (!_err) { //success
+        getClicks();
+        setInterval(function(){getClicks()},3000);//check every 3 secs
+    }
+    
+});
+                
+</script>
 <script type='text/javascript'>
 (function() {
     var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
@@ -32,7 +133,7 @@
 
             <!-- .content-container -->
             <div class="content-container l-limiter">
-				<div class="bighand"></div>
+                <div class="bighand"></div>
                 <div class="head">
                     <img src="../web/images/logo-min.png" class="logo" width="138" height="38" alt="Ligertail" />
                 </div>
@@ -45,11 +146,13 @@
                         <div class="inner-wrap g-png">
                             <div class="inner-content text-content">
    
-                                <h1>Share the best stuff<br />with others.</h1>
-                                <p class="important">See recommended links from people on-site.<br />See the widget? <em>Share a link</em>.<br />
-                                    Have a blog or site? <br />
-                                    Embed the widget and increase reader engagement.<br />
-
+                                <h1>We&rsquo;re here<br />to share. <em>Join us.</em></h1>
+                                <p class="important">The Ligertail widget is your window into<br/>
+                                    a powerful distribution channel.<br/>
+                                    Anywhere you see it, you can explore links<br/>
+                                    that others recommend &ndash;<br/>
+                                    and share your own favorites with <br/>
+                                    thousands of people.
                                 </p>
 
                             </div>
@@ -77,9 +180,28 @@
                         <!--/ .info-block -->
 
                         <div class="presentation-code g-png">
-                            <div class="code-inner">
-                                <span class="tip">code</span><code>&lt;script type="text/javascript" src="http://ligertail.com/ligertail.js"&gt;&lt;/script&gt;</code>
+                            NOW GENERATING
+                            <div class="counter-container">
+                                <div class="counter" id="digit6">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
+                                <div class="counter" id="digit5">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
+                                <div class="counter" id="digit4">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
+                                <div class="counter" id="digit3">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
+                                <div class="counter" id="digit2">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
+                                <div class="counter" id="digit1">
+                                    <img src="../web/images/digits.png"/>
+                                </div>
                             </div>
+                            <span>CLICKS PER DAY</span>
                         </div>
 
                     </div>
@@ -101,38 +223,66 @@
                     <ul class="advantages">
                         <li class="entry1">
                             <h2>Localized</h2>
-                            <p>To get rolling, all you have to do is copy-paste the line of embed code above. And <a href="../about.html">drop us a line</a> to let us know how it’s going.</p>
+                            <p>
+                            To embed our 300-pixel widget 
+                            in your site, all you have to do is 
+                            copy-paste the HTML code below. 
+                            Then, please <a href="about.html">drop us a line</a>  
+                            and let us know how it’s going.</p>
                             <span class="num">1</span>
                         </li>
                         <li class="entry2">
                             <h2>Community</h2>
-                            <p>Our widget is like <a href="http://reddit.com">Reddit</a> in a little box - anywhere on the internet. Everyone is a creator. Let's create quality together.</p>
+                            <p>
+                            On the LT channel, everyone 
+                            is a creator and everyone 
+                            shares. The widget is just like 
+                            Reddit in a little box—anywhere  
+                            you see it on the internet.</p>
                             <span class="num">2</span>
                         </li>
                         <li class="entry3">
                             <h2>Content</h2>
-                            <p>With our widget, everyone becomes an advertiser. However, we let merit speak.<br />If it's not your thing, close the link by clicking 'x' to the right of it.</p>
+                            <p>Links that are creative and 
+                            relevant automatically move up
+                            in the Ligertail widget. But
+                            you decide: if it’s not your thing,
+                            just click on the &lsquo;X&rsquo; to close. 
+                            </p>
                             <span class="num">3</span>
                         </li>
                     </ul>
+
+                    <div class="menu-wrap">
+                        <ul class="menu">
+                            <li><a href="about.html">about</a></li>
+                            <li><a href="faq.html">faq</a></li>
+                            <li><a href="terms.html">terms</a></li>
+                            <li><a href="privacy.html">privacy</a></li>
+                            <li class="last"><a href="http://ligertail.tumblr.com">blog</a></li>
+                        </ul>
+                    </div>
+                    
                     <div class="veneer"></div>
 
                 </div>
+
             </div>
             <!--/ .promo-block -->
 
             <!-- foot -->
-            <div class="foot l-limiter">
-                <div class="menu-wrap">
-                    <ul class="menu">
-                        <li><a href="../about.html">about</a></li>
-                        <li><a href="../faq.html">faq</a></li>
-                        <li><a href="../terms.html">terms</a></li>
-                        <li><a href="../privacy.html">privacy</a></li>
-                        <li class="last"><a href="http://ligertail.tumblr.com">blog</a></li>
-                    </ul>
+
+            <div class="foot l-limiter">  
+                <div class="tumblr-link">
+                        <a href="http://www.tumblr.com/theme/32590" target="_blank" title="get tumblr theme">
+                           <img src="../web/images/tumblr-icon.png" width="16" height="16" alt="tumblr icon" /> <code>get our new tumblr theme here...</code>
+                        </a>
                 </div>
-                
+                <div class="code-inner"> 
+                    <div class="select-code" onclick="$('#thecode').select()">
+                                <span class="tip">code</span><input class="code" id="thecode" value='&lt;script type="text/javascript" src="http://ligertail.com/ligertail.js"&gt;&lt;/script&gt;'/>
+                    </div>
+                </div>                          
                 <div class="veneer"></div>
             </div>
             <!--/ .foot -->
