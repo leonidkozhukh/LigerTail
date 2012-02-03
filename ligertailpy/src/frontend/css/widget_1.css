@@ -184,6 +184,8 @@ input {
 	margin:0px;
 	padding-right:3px;
 	color: #000000;
+	display:inline-block;
+	line-height:16px;
 }
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source:after {
 	content: " /";
