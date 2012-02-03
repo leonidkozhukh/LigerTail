@@ -1,7 +1,10 @@
 /* 
- * Ligertail spin counter counter based on:
- * jQuery Rolling Counter 0.0.1 
- * Copyright 2011, Yuriy Zisin
+* spin counter based on:
+* jQuery Rolling Counter 0.0.1 
+* Copyright 2011, Yuriy Zisin
+* 
+* implementation
+* MAS for Ligertail 2012
 */
 Counter = function ($object, options) {
     this.options= {
@@ -76,26 +79,29 @@ $.fn.extend({
         return this;
     }
 });
-/* GLOBALS for Ligertail Counter */
-var _url = '../web/scripts/clicks.json'; //test data, local
+
+//instance globals
 var _spinInterval = 200;
-var _totalDigits = 6; //number of digits available for display
+var _minDigitSpinDelay = 10;
+var _maxDigitSpinDelay = 100;
+var _digitID = '#digit';
+var _totalDigits;   //set in $(document).ready               
+var _maxNum;        //set in $(document).ready               
 var _currentClicks = 0;
 var _digits = [];
 var _startFlag = true;
 var _resetFlag = false;    
-var _minDigitSpinDelay = 10;
-var _maxDigitSpinDelay = 100;
 var _err;
-var jq$ = $; // use this to prevent jqery conflicts & problems
-/*
-ligertail widget is loading jquery 1.5 on page causing problems with counter.js (needs jq1.6 or later)
+var jq$ = $; 
+/*  
+    replace $ to prevent jqery namespace conflicts 
+    as ligertail widget is loading jquery 1.5 on page 
 */ 
 function setClicks(clicks) { 
     if (_resetFlag && !_startFlag) {
         _startFlag = true;
         for (var i=1; i <= _totalDigits;i++) {
-            jq$('#digit'+(i)).find('img').css('visibility','hidden');//show counter digits
+            jq$(_digitID +i).find('img').css('visibility','hidden');//show counter digits
         }
         _currentClicks = 0;
     }
@@ -106,17 +112,18 @@ function setClicks(clicks) {
             var oldC = 0;
             clicks = _currentClicks;
         } else if (clicks >= _currentClicks) { 
-            _currentClicks = clicks; //update global
-            var diffClicks = clicks-oldC;//calculate diffClicks
+            _currentClicks = clicks;        //update global
+            var diffClicks = clicks-oldC;   //calculate diffClicks
         } 
     } else {
+        _currentClicks = clicks;
         diffClicks = _totalDigits;
     }
     var c = clicks.toString();
     var oldC = oldC.toString();
     numDigits = c.length;
     while (c.length > oldC.length) {
-       oldC = '0' + oldC;//add zeros so old & new have same number of digits
+       oldC = '0' + oldC;   //add zeros so old & new have same number of digits
     }      
     for (var i=numDigits; i>=0; i--) {
         _digits[i] = [];
@@ -145,7 +152,7 @@ function setClicks(clicks) {
             var minDelay = _minDigitSpinDelay;
             var maxDelay = _maxDigitSpinDelay 
             var spinInterval =_spinInterval;
-            jq$('#digit'+(i)).find('img').css('visibility','visible');//show counter digits
+            jq$(_digitID + i).find('img').css('visibility','visible');//show counter digits
             if (changeDigits==1) { // faster if only digit changing
                 var distance = 11 - (Math.abs(stop-start));
                 if (distance==10) {
@@ -153,9 +160,10 @@ function setClicks(clicks) {
                 // if just one increment (distance==10) make it spin slower 
                 } else {
                     var spinInterval =  (_spinInterval/distance) * 2;  
+                //spin more if
                 }
             }
-            jq$('#digit'+(i)).spinCounter({
+            jq$(_digitID + i).spinCounter({
                 spinTime: spinInterval, 
                 startDigit:start, 
                 stopDigit:stop,
@@ -166,10 +174,8 @@ function setClicks(clicks) {
     }
     if (_startFlag) {
         _startFlag = false;
-        getClicks();
-    } else {
-        setTimeout("getClicks();",3000);
-    }
+    } 
+    setTimeout("getClicks();",_timerIntervalSecs * 1000);
 }
 function getClicks() {
     jq$.ajax({
@@ -177,21 +183,13 @@ function getClicks() {
         url: _url,
         success: function(data) {
             _err = false;
-            if (data.reset==true) {
-                _resetFlag = true;
-            } else {
-                _resetFlag = false;
-            }
+            _resetFlag = (data.reset==true)? true : false;
             var c = parseInt(data.clicks);
-            var max = '9';
-            while (max.length<_totalDigits) {
-               max += '9';
-            }
-            if (c>=0 && c<parseInt(max)) {
-                setClicks(data.clicks);
+            if (c>=0 && c<=_maxNum) {
+                setClicks(c);
             } else {
                 _err = true;
-                setTimeout("getClicks();",3000);
+                setTimeout("getClicks();",9000);//wait 10 secs
             }
         },
         error: function() {
@@ -200,5 +198,15 @@ function getClicks() {
     });
 }
 jq$(document).ready (function() {
-   getClicks();
+    _totalDigits = jq$('.counter').length; //number of digits available for display
+    var max = '9';
+    while (max.length<_totalDigits) {
+        max += '9';// build maximum displayable number
+    }
+    _maxNum = parseInt(max);
+    if (_totalDigits>=1) {
+        getClicks();
+    } else {
+        _err = true;
+    }
 });
