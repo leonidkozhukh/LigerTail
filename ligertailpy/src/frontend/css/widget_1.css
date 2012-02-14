@@ -8,6 +8,7 @@ input {
 .ligertail_widget a:link {
 	color: #000000!important;
 	text-decoration:none!important;
+	border:none!important;
 }
 
 .ligertail_widget a:visited, a:active {
