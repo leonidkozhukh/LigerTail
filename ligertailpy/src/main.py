@@ -13,6 +13,7 @@ import logging
 import model
 import response
 import payment
+import payment2
 import os
 import cgi
 import urllib2
@@ -94,6 +95,46 @@ def updatePublisherPrice_(publisherSiteKey, price):
   publisherSite.put()
         
         
+class UpdatePrice2Handler(BaseHandler):
+    def post(self):
+      try:
+        BaseHandler.initFromRequest(self, self.request)
+        # TODO: assert https
+        item = BaseHandler.getItem(self, self.getParam('itemId'))
+        paymentConfig = model.getPaymentConfig()
+        if item and self._verifyTransaction(item, paymentConfig.test_mode):  
+          price = int(self.getParam('price'))
+          item.updatePrice(price, self.getParam('email'))
+          item.put()
+          publisherSite = model.getPublisherSite(item.publisherUrl)
+          db.run_in_transaction(updatePublisherPrice_, publisherSite.key(), price)
+          itemList.refreshCacheForDefaultOrderedItems(item.publisherUrl)
+          logging.info('Number of price updates : %d' % len(item.payments))
+          logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
+          if paymentConfig.send_email:
+            BaseHandler.sendConfirmationEmail(self, self.getParam('email'), self.getParam('price'), item)                                   
+        self.common_response.setItems([item], response.ItemInfo.WITH_PRICE)
+      except Exception:
+        BaseHandler.logException(self)
+      BaseHandler.writeResponse(self)
+         
+    def _verifyTransaction(self, item, testmode):
+        paymentInfo = {'price': self.getParam('price'),
+                       'token': self.getParam('token'),
+                       'itemId': self.getParam('itemId'),
+                       'itemUrl': item.url
+                       };
+        if item.publisherUrl.find('test.ligertail.com/test') == 0:
+          logging.info('approving test transaction')
+          return True
+           
+        result = payment2.charge(paymentInfo, testmode)
+        logging.info('verifyTransaction %s', str(result))
+        if not result.paid:
+          self.common_response.set_error('Failed to charge %s' % result.description)
+        #TODO: verify transaction is decrypted and contains correct item title/url/price
+        return result.paid
+
 class UpdatePriceHandler(BaseHandler):
     def post(self):
       try:
@@ -506,6 +547,7 @@ def main():
                                           # apis
                                           ('/api/submit_item', SubmitItemHandler),
                                           ('/api/update_price', UpdatePriceHandler),
+                                          ('/api/update_price2', UpdatePrice2Handler),
                                           ('/api/get_ordered_items', GetOrderedItemsHandler),
                                           ('/api/get_paid_items', GetPaidItemsHandler),
                                           ('/api/submit_user_interaction', SubmitUserInteractionHandler),

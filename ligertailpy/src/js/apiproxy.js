@@ -65,6 +65,11 @@ LTApi.prototype.updatePrice = function(ccinfo, callback) {
 	postRequest(this.domain, 'update_price', 'POST', data, callback ? callback : 'ApiHandler.prototype.onPriceUpdated');
 };
 
+LTApi.prototype.updatePrice2 = function(ccinfo2, callback) {
+	var data = this.serialize(ccinfo2);
+	postRequest(this.domain, 'update_price2', 'POST', data, callback ? callback : 'ApiHandler.prototype.onPriceUpdated');
+};
+
 
 LTApi.prototype.getOrderedItems = function(publisherUrl, callback) {
 	assert(publisherUrl);

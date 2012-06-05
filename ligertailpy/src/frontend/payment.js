@@ -1,3 +1,34 @@
+// TEST Stripe.setPublishableKey('pk_HnDpFzcf4dcUzd5V5g9cOJLIgSG6X');
+Stripe.setPublishableKey('pk_aIec5diplKCBrBpQ5vMAXSt3LEVnL');
+function stripeResponseHandler(status, response) {
+    if (response.error) {
+       // re-enable the submit button
+       $('.input-submit').removeAttr("disabled");
+       // show the errors on the form
+       $("#payFormMessage").html(response.error.message);
+    } else {
+       var form$ = $("#payment-form");
+       // token contains id, last4, and card type
+       var token = response['id'];
+       var price = jQuery("#payForm #pay_amount").val();
+       var email = jQuery("#payForm #pay_email").val();
+       var itemId = getUrlParameters()['itemId'];
+       var paymentInfo = {
+               "price": price,
+               "email": email,
+               "token": token,
+               "itemId": itemId
+               };
+
+       // insert the token into the form so it gets submitted to the server
+       // form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
+       // and submit
+       api.updatePrice2(paymentInfo);
+
+       // this should be UpdatePrice2 API call
+       //form$.get(0).submit();
+    }
+}
 
 function getUrlParameters() {
     var map = {};
@@ -37,7 +68,9 @@ function showGraph(scope, id, analytics, duration){
          //error message
     }
     so.write("flashcontent");
-}
+};
+
+
 
 function openPaymentLightbox(id){                
     jQuery.facebox(function(){             
@@ -62,55 +95,7 @@ function openPaymentLightbox(id){
                 else if(jQuery("#payForm .row:eq(1) label").css("color") == "rgb(255, 0, 0)")
                     jQuery("#payForm .row:eq(1) label").css("color", "gray");
             });
-    
-            //first
-            jQuery("#payForm #pay_first_name").blur(function(){
-                if(jQuery(this).val().length == 0)
-                    jQuery("#payForm .row:eq(2) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(2) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(2) label").css("color", "gray");
-            });
-            
-            //last
-            jQuery("#payForm #pay_last_name").blur(function(){
-                if(jQuery(this).val().length == 0)
-                    jQuery("#payForm .row:eq(3) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(3) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(3) label").css("color", "gray");
-            });
-    
-            //address
-            jQuery("#payForm #pay_address").blur(function(){
-                if(jQuery(this).val().length == 0)
-                    jQuery("#payForm .row:eq(4) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(4) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(4) label").css("color", "gray");
-            });
-    
-            //city
-            jQuery("#payForm #pay_city").blur(function(){
-                if(jQuery(this).val().length == 0)
-                    jQuery("#payForm .row:eq(5) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(5) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(5) label").css("color", "gray");
-            });
-    
-            //state
-            jQuery("#payForm #pay_state").blur(function(){
-                if(jQuery(this).val().length != 2)
-                    jQuery("#payForm .row:eq(6) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(6) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(6) label").css("color", "gray");
-            });
-    
-            //zip
-            jQuery("#payForm #pay_zip").blur(function(){
-                if(jQuery(this).val() > 100000 || jQuery(this).val().length != 5)
-                    jQuery("#payForm .row:eq(7) label").css("color", "red");
-                else if(jQuery("#payForm .row:eq(7) label").css("color") == "rgb(255, 0, 0)")
-                    jQuery("#payForm .row:eq(7) label").css("color", "gray");
-            });
-    
+ 
             //cc #
             jQuery("#payForm #pay_cc_number").blur(function(){
                 if(jQuery(this).val().length != 16)
@@ -142,61 +127,32 @@ function openPaymentLightbox(id){
                     jQuery("#payForm .row:eq(11) label").css("color", "gray");
             });
     
-
-            //catch submission
-            //add error message to form
-            jQuery("#payForm").submit(function(event){
-                event.preventDefault();
-        
-                var price = jQuery("#payForm #pay_amount").val();
-                var email = jQuery("#payForm #pay_email").val();
-                var first_name = jQuery("#payForm #pay_first_name").val();
-                var last_name = jQuery("#payForm #pay_last_name").val();
-                var address = jQuery("#payForm #pay_address").val();
-                var city = jQuery("#payForm #pay_city").val();
-                var state = jQuery("#payForm #pay_state").val();
-                var zip = jQuery("#payForm #pay_zip").val();
-                var cc = jQuery ("#payForm #pay_cc_number").val();
+	        //catch submission
+	        //add error message to form
+	        jQuery("#payForm").submit(function(event){
+	            event.preventDefault();
+                // disable the submit button to prevent repeated clicks
+	            $('.input-submit').attr("disabled", "disabled");
+	            // createToken returns immediately - the supplied callback submits the form if there are no errors
+	            var cc = jQuery ("#payForm #pay_cc_number").val();
                 var expiration_month = jQuery("#payForm #pay_card_expiration_month").val();
                 var expiration_year = jQuery("#payForm #pay_card_expiration_year").val();
                 var cvs = jQuery("#payForm #pay_cvs").val();
-        
-                if(price > 0 && ValidateEmail(email) && first_name.length > 0 && last_name.length > 0 && 
-                   address.length > 0 && city.length > 0 && state.length == 2 && 
-                   zip.length == 5 && cc.length == 16 && expiration_month.length > 0 && 
-                   expiration_year.length == 4 && cvs. length == 3){
-                                                              
-                        //disable form & show waiting dialog, then submit
-                        jQuery("#payForm .last-row input").hide();
-                        jQuery("#payForm .last-row .message").html('Approving your purchase, please be patient...');
-          
-                        var paymentInfo = {
-                           "price": price,
-                           "email": email,
-                           "first_name": first_name,
-                           "last_name": last_name,
-                           "itemId": id,
-                           "address": address,
-                           "city": city,
-                           "state": state,
-                           "zip": zip, 
-                           "cc": cc,
-                           "expiration": expiration_month + '/' + expiration_year,
-                           "cvs": cvs,                      
-                           };
-             
-                        api.updatePrice(paymentInfo);    
-                    }
-                   else{
-                        //show errors
-                        jQuery("#payForm input, select").trigger('blur');
-                    }
-            });
-        });
-        
+
+		      	Stripe.createToken({
+		      	      number: cc,
+		      	      cvc: cvs,
+		      	      exp_month: expiration_month,
+		      	      exp_year: expiration_year
+		      	}, stripeResponseHandler);
+		      	return false; // submit from callback
+		     });
+	     });
+   
         jQuery.facebox({ ajax: "payment_form.html"});              
     });                                                    
 }
+
 $(document).ready(function(){
 
 	window.PUBLISHER_URL = window.document.location.href;
@@ -221,5 +177,5 @@ $(document).ready(function(){
 	    if(event.keyCode == 13)
 	        openPaymentLightbox(urlParams['itemId']);
 	});
-	    
 });
+
