@@ -12,6 +12,11 @@ body {
     color: #808080;
     background-color: #C7482C;
 }
+
+body.payment {
+    background-color: #FFFFFF;
+}
+
 table, tr, th, td {border-collapse:collapse;border:none;border-spacing:0;}
 input, textarea {font-size: 14px; line-height: 24px; font-family:Arial, sans-serif; color:#000000;}
 
