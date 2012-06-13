@@ -98,6 +98,7 @@ var jq$ = $;
     as ligertail widget is loading jquery 1.5 on page 
 */ 
 function setClicks(clicks) { 
+	
     if (_resetFlag && !_startFlag) {
         _startFlag = true;
         for (var i=1; i <= _totalDigits;i++) {
@@ -177,20 +178,38 @@ function setClicks(clicks) {
     } 
     setTimeout("getClicks();",_timerIntervalSecs * 1000);
 }
+
+function getPublisherStats(response){
+	jQuery.each(response.publisherSites, function(i, site){
+		var site_obj = jQuery.parseJSON(site);
+		
+		var clicks = parseInt(site_obj.totalStats[2]);
+		var closes = parseInt(site_obj.totalStats[4]);
+		var c = clicks + closes;
+		if (c>=0 && c<=_maxNum) {
+            setClicks(c);
+        } else {
+            _err = true;
+            setTimeout("getClicks();",9000);//wait 10 secs
+        }
+    });
+}
+
 function getClicks() {
-    jq$.ajax({
+	jq$.ajax({
         cache: false,
         url: _url,
         success: function(data) {
             _err = false;
             _resetFlag = (data.reset==true)? true : false;
-            var c = parseInt(data.clicks);
-            if (c>=0 && c<=_maxNum) {
-                setClicks(c);
-            } else {
-                _err = true;
-                setTimeout("getClicks();",9000);//wait 10 secs
-            }
+            //var c = parseInt(data.clicks);
+            window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
+            //if (c>=0 && c<=_maxNum) {
+            //    setClicks(c);
+            //} else {
+            //    _err = true;
+            //    setTimeout("getClicks();",9000);//wait 10 secs
+            //}
         },
         error: function() {
             _err = true;       
