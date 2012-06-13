@@ -203,7 +203,11 @@ function getClicks() {
             _err = false;
             _resetFlag = (data.reset==true)? true : false;
             //var c = parseInt(data.clicks);
-            window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
+            if (typeof window.api == 'undefined')  {
+            	setTimeout("getClicks();",500);
+            } else  {
+            	window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
+            }
             //if (c>=0 && c<=_maxNum) {
             //    setClicks(c);
             //} else {
@@ -212,7 +216,7 @@ function getClicks() {
             //}
         },
         error: function() {
-            _err = true;       
+            _err = true;   
         }
     });
 }
