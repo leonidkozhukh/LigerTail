@@ -183,14 +183,14 @@ function getPublisherStats(response){
 	jQuery.each(response.publisherSites, function(i, site){
 		var site_obj = jQuery.parseJSON(site);
 		
-		var clicks = parseInt(site_obj.totalStats[2]);
-		var closes = parseInt(site_obj.totalStats[4]);
+		var clicks = parseInt(site_obj.timedStats[Duration.WEEKLY][1][2]);
+		var closes = parseInt(site_obj.timedStats[Duration.WEEKLY][1][4]);
 		var c = clicks + closes;
 		if (c>=0 && c<=_maxNum) {
             setClicks(c);
         } else {
             _err = true;
-            setTimeout("getClicks();",9000);//wait 10 secs
+            //setTimeout("getClicks();",9000);//wait 10 secs
         }
     });
 }
@@ -204,16 +204,10 @@ function getClicks() {
             _resetFlag = (data.reset==true)? true : false;
             //var c = parseInt(data.clicks);
             if (typeof window.api == 'undefined')  {
-            	setTimeout("getClicks();",500);
+            	//setTimeout("getClicks();",500);
             } else  {
             	window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
             }
-            //if (c>=0 && c<=_maxNum) {
-            //    setClicks(c);
-            //} else {
-            //    _err = true;
-            //    setTimeout("getClicks();",9000);//wait 10 secs
-            //}
         },
         error: function() {
             _err = true;   
