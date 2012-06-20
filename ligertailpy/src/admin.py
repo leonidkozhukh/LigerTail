@@ -132,33 +132,66 @@ class AdminHandler(webapp.RequestHandler):
         self.redirect('defaultlinks.html?status=updated')
 
     def deleteTableSpot(self):
-       db.delete(model.Spot.all())
-       self.redirect('deletedbs.html?status=deleted_spot')
+       query = model.Spot.all()
+       i = self.deleteAll(query)
+       # db.delete(model.Spot.all())
+       self.redirect('deletedbs.html?status=deleted_spot&' + str(i))
 
     def deleteTableBucket(self):
-       db.delete(model.Bucket.all())
-       self.redirect('deletedbs.html?status=deleted_bucket')
+       query = model.Bucket.all()
+       i = self.deleteAll(query)
+       # db.delete(model.Bucket.all())
+       self.redirect('deletedbs.html?status=deleted_bucket&' + str(i))
 
     def deleteTableItem(self):
-       db.delete(model.Item.all())
-       self.redirect('deletedbs.html?status=deleted_item')
+       query = model.Item.all()
+       i = self.deleteAll(query)
+       #db.delete(model.Item.all())
+       self.redirect('deletedbs.html?status=deleted_item&' + str(i))
 
     def deleteTablePublisherSite(self):
-       db.delete(model.PublisherSite.all())
-       self.redirect('deletedbs.html?status=deleted_publisherSite')
+       query = model.PublisherSite.all()
+       i = self.deleteAll(query);
+       #db.delete(model.PublisherSite.all())
+       self.redirect('deletedbs.html?status=deleted_publisherSite&' + str(i))
 
     def deleteTableViewer(self):
-       db.delete(model.Viewer.all())
-       self.redirect('deletedbs.html?status=deleted_viewer')
+       query = model.Viewer.all()
+       i = self.deleteAll(query)
+       #db.delete(model.Viewer.all())
+       self.redirect('deletedbs.html?status=deleted_viewer&' + str(i))
  
     def deleteTablesAll(self):
-       db.delete(model.Viewer.all())
-       db.delete(model.Spot.all())
-       db.delete(model.Item.all())
-       db.delete(model.Bucket.all())
-       db.delete(model.PublisherSite.all())
+       query = model.Viewer.all()
+       self.deleteAll(query)
+       query = model.Spot.all()
+       self.deleteAll(query)
+       query = model.Item.all()
+       self.deleteAll(query)
+       query = model.Bucket.all()
+       self.deleteAll(query)
+       query = model.PublisherSite.all()
+       self.deleteAll(query);
+       
+       #db.delete(model.Viewer.all())
+       #db.delete(model.Spot.all())
+       #db.delete(model.Item.all())
+       #db.delete(model.Bucket.all())
+       #db.delete(model.PublisherSite.all())
        self.redirect('deletedbs.html?status=deleted_all')
-
+      
+    def deleteAll(self, query):
+      i = 0
+      try:
+        while i <= 4:
+          i+=1
+          entries = query.fetch(500)
+          db.delete(entries)
+        return i*500
+      except StopIteration:
+        return i*500
+       
+      
     def updateLigerpediaConfig(self):
       config = model.getLigerpediaConfig()
       config.embedly_request_links_total = int(self.request.get('links_total'))
