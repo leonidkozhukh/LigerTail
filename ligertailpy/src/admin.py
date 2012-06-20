@@ -1,6 +1,7 @@
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import db
 import model
 import os
 from defaultitemlist import defaultItemList
@@ -84,6 +85,18 @@ class AdminHandler(webapp.RequestHandler):
         self.updateDefaultLinksConfig()
       elif cmd == 'delete_item':
         self.deleteItem()
+      elif cmd == 'delete_table_spot':
+        self.deleteTableSpot()
+      elif cmd == 'delete_table_bucket':
+        self.deleteTableBucket()
+      elif cmd == 'delete_table_item':
+        self.deleteTableItem()
+      elif cmd == 'delete_table_publishersite':
+        self.deleteTablePublisherSite()
+      elif cmd == 'delete_table_viewer':
+        self.deleteTableViewer()
+      elif cmd == 'delete_tables_all':
+        self.deleteTablesAll()
 
     def updateAlg(self):
       params = model.getOrderingAlgorithmParams()
@@ -118,7 +131,34 @@ class AdminHandler(webapp.RequestHandler):
         item.delete()
         self.redirect('defaultlinks.html?status=updated')
 
-    
+    def deleteTableSpot(self):
+       db.delete(model.Spot.all())
+       self.redirect('deletedbs.html?status=deleted_spot')
+
+    def deleteTableBucket(self):
+       db.delete(model.Bucket.all())
+       self.redirect('deletedbs.html?status=deleted_bucket')
+
+    def deleteTableItem(self):
+       db.delete(model.Item.all())
+       self.redirect('deletedbs.html?status=deleted_item')
+
+    def deleteTablePublisherSite(self):
+       db.delete(model.PublisherSite.all())
+       self.redirect('deletedbs.html?status=deleted_publisherSite')
+
+    def deleteTableViewer(self):
+       db.delete(model.Viewer.all())
+       self.redirect('deletedbs.html?status=deleted_viewer')
+ 
+    def deleteTablesAll(self):
+       db.delete(model.Viewer.all())
+       db.delete(model.Spot.all())
+       db.delete(model.Item.all())
+       db.delete(model.Bucket.all())
+       db.delete(model.PublisherSite.all())
+       self.redirect('deletedbs.html?status=deleted_all')
+
     def updateLigerpediaConfig(self):
       config = model.getLigerpediaConfig()
       config.embedly_request_links_total = int(self.request.get('links_total'))
