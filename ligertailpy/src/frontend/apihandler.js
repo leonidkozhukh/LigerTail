@@ -177,7 +177,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				alert("need to put in fb functionality");
 		});*/
 	}
-	else{ $(".ligertail_widget .ligertail_widget_content").show(); }	
+	else{ jqversion(".ligertail_widget .ligertail_widget_content").show(); }	
 }
 
 ApiHandler.prototype.onGetPaidItems = function(response) {

@@ -367,25 +367,25 @@ function initAll(){
         //width
     if(window.parameter["width"]){
         if(window.parameter["width"] <= 300){ 
-            $(".ligertail_widget").attr("id", "ligertail_widget_small");
+        	jqversion(".ligertail_widget").attr("id", "ligertail_widget_small");
             window.parameter["width"] = 300;     
         }
         else if(window.parameter["width"] > 300 && window.parameter["width"] < 600){ 
-            $(".ligertail_widget").attr("id", "ligertail_widget_large");                                                                        
+        	jqversion(".ligertail_widget").attr("id", "ligertail_widget_large");                                                                        
             window.parameter["width"] = 600; 
         }
         else if(window.parameter["width"] >= 600){ 
-            $(".ligertail_widget").attr("id", "ligertail_widget_large");
+        	jqversion(".ligertail_widget").attr("id", "ligertail_widget_large");
             window.parameter["width"] = 600; 
         }
         else{ 
-             $(".ligertail_widget").attr("id", "ligertail_widget_small");
-             window.parameter["width"] = 300; 
+        	jqversion(".ligertail_widget").attr("id", "ligertail_widget_small");
+            window.parameter["width"] = 300; 
         }
     }
     else{ 
-         $(".ligertail_widget").attr("id", "ligertail_widget_small");
-         window.parameter["width"] = 300; 
+    	jqversion(".ligertail_widget").attr("id", "ligertail_widget_small");
+        window.parameter["width"] = 300; 
     }
         
         //height
@@ -437,34 +437,34 @@ function initAll(){
   
   var wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;height:250px!important;">';
     
-    $(".ligertail_widget").append(wrapper + header + content + footer + '</div>');
-    $(".ligertail_widget .ligertail_widget_content").show();
+    jqversion(".ligertail_widget").append(wrapper + header + content + footer + '</div>');
+    jqversion(".ligertail_widget .ligertail_widget_content").show();
    
     //events...
     //clicking on header logo
     if(window.parameter["width"] == 600)
-         $("#ligertail_widget_footer img:first").click(function(){ window.open(LTVISIBLEDOMAIN); });                                
+    	jqversion("#ligertail_widget_footer img:first").click(function(){ window.open(LTVISIBLEDOMAIN); });                                
     else
-         $("#ligertail_widget_header img:first").click(function(){ window.open(LTVISIBLEDOMAIN); });
+    	jqversion("#ligertail_widget_header img:first").click(function(){ window.open(LTVISIBLEDOMAIN); });
     
     //input box hover
-    $("#ligertail_widget_header input").hover(function(){ 
-        if($(this).val() == "Got a link to add here?")
-            $(this).val("").select();
+    jqversion("#ligertail_widget_header input").hover(function(){ 
+        if(jqversion(this).val() == "Got a link to add here?")
+        	jqversion(this).val("").select();
         else
-            $(this).select();
+        	jqversion(this).select();
     }, 
     function(){
-        if($(this).val() == "")
-            $(this).val("Got a link to add here?").blur();
+        if(jqversion(this).val() == "")
+        	jqversion(this).val("Got a link to add here?").blur();
         else
-            $(this).blur();
+        	jqversion(this).blur();
     });
     
     //submit in lightbox
-    $("#ligertail_widget_header form").submit(function(event){ 
+    jqversion("#ligertail_widget_header form").submit(function(event){ 
         event.preventDefault();
-        var url = $(this).find("input:first").val();
+        var url = jqversion(this).find("input:first").val();
         OpenLightboxSubmission(url);
     });
     
