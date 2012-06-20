@@ -1,7 +1,8 @@
 # set your secret key: remember to change this to your live secret key in production
 # see your keys here https://manage.stripe.com/account
 import stripe
-stripe.api_key = "E7zh7YrJ82qASsn7NKa4fhMvsMxvyQZr"
+# TEST stripe.api_key = "E7zh7YrJ82qASsn7NKa4fhMvsMxvyQZr"
+stripe.api_key = "kXLZr4fOBuiK3afWca8MPp0pnqH4AjRe"
 
 
 
