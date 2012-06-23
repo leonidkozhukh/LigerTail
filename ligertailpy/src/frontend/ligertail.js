@@ -1,7 +1,7 @@
 
 // !!! NOTE: switch the domain for development!
 //var LTDOMAIN = 'http://ligertaildevelopmentbackend.appspot.com';
-var LTDOMAIN = 'http://ligertailbackend.appspot.com';
+var LTDOMAIN = 'http://ligertailpayment.appspot.com';
 var LTVISIBLEDOMAIN = 'http://www.ligertail.com';
 
 var jqversion;

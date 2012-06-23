@@ -4,7 +4,7 @@ function setLigertailDomain() {
     }
     var hostname = window.document.location.hostname;
     if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
-      hostname = 'ligertailbackend.appspot.com';
+      hostname = 'ligertailpayment.appspot.com';
       window.ligertail.visibleDomain = 'ligertail.com';
     }
     var domain = window.document.location.protocol + "//" + hostname;

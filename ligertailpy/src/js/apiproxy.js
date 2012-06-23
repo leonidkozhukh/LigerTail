@@ -291,16 +291,14 @@ assert = function(cond) {
 }
 
 LTApi.getDefaultDomain = function() {
-  //return "http://ligertailbackend.appspot.com/api"; 
   var hostname = window.document.location.hostname;
   if (hostname == 'ligertail.com' || hostname == 'www.ligertail.com') {
-	  hostname = 'ligertailbackend.appspot.com';
+	  hostname = 'ligertailpayment.appspot.com';
   }
   var domain = window.document.location.protocol + "//" + hostname;
   if (window.document.location.port) {
     domain += ":" + window.document.location.port;
   }
-  //var domain = "http://5.latest.ligertailbackend.appspot.com";
   domain += "/api";
   return domain;
 }

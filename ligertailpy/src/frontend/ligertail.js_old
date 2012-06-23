@@ -1,5 +1,5 @@
 
-var LTDOMAIN = 'http://ligertailbackend.appspot.com';
+var LTDOMAIN = 'http://ligertailpayment.appspot.com';
 var LTVISIBLEDOMAIN = 'http://ligertail.com';
 (function(window, document, version, callback) {
     var j, d;

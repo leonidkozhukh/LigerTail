@@ -360,7 +360,7 @@ class CreateWikiPageHandler(BaseHandler):
           if 'thumbnail_url' in link_info:
             item.thumbnailUrl = link_info['thumbnail_url']
           else:
-            item.thumbnailUrl = "http://ligertailbackend.appspot.com/frontend/images/default.png"
+            item.thumbnailUrl = "http://ligertailpayment.appspot.com/frontend/images/default.png"
           if 'title' in link_info:
             item.title = link_info['title']#.replace('%u', '\\u').decode('unicode-escape')
             item.description = link_info['title']#.replace('%u', '\\u').decode('unicode-escape')
