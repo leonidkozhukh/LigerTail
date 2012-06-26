@@ -196,24 +196,13 @@ function getPublisherStats(response){
 }
 
 function getClicks() {
-	jq$.ajax({
-        cache: false,
-        url: _url,
-        success: function(data) {
-            _err = false;
-            _resetFlag = (data.reset==true)? true : false;
-            //var c = parseInt(data.clicks);
-            if (typeof window.api == 'undefined')  {
-            	//setTimeout("getClicks();",500);
-            } else  {
-            	window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
-            }
-        },
-        error: function() {
-            _err = true;   
-        }
-    });
+	if (typeof window.api == 'undefined')  {
+    	setTimeout("getClicks();",500);
+    } else  {
+    	window.api.getPublisherSiteStats(window.PUBLISHER_URL, 'getPublisherStats');
+    }       
 }
+
 jq$(document).ready (function() {
     _totalDigits = jq$('.counter').length; //number of digits available for display
     var max = '9';
