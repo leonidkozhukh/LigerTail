@@ -4,7 +4,7 @@
 var LTDOMAIN = 'http://ligertailpayment.appspot.com';
 var LTVISIBLEDOMAIN = 'http://www.ligertail.com';
 
-var isInIFrame = (window.location != window.parent.location) ? true : false;
+var isInIFrame = true; //(window.location != window.parent.location) ? true : false;
 
 var jqversion;
 
@@ -176,7 +176,7 @@ function dehtml(str) {
 
 function OpenLightboxSubmission(url){
 
-	if(isInIFrame){ console.log("in");
+	if(isInIFrame){ 
 		if(ValidateURL(url)){	
 				var item = {}; 
                 item.publisherUrl = window.PUBLISHER_URL;
