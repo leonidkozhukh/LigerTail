@@ -4,6 +4,8 @@
 var LTDOMAIN = 'http://ligertailpayment.appspot.com';
 var LTVISIBLEDOMAIN = 'http://www.ligertail.com';
 
+var isInIFrame = (window.location != window.parent.location) ? true : false;
+
 var jqversion;
 
 (function(window, document, version, callback) {
@@ -173,6 +175,39 @@ function dehtml(str) {
 //LOAD SUBMISSION LIGHTBOX
 
 function OpenLightboxSubmission(url){
+
+	if(isInIFrame){ console.log("in");
+		if(ValidateURL(url)){	
+				var item = {}; 
+                item.publisherUrl = window.PUBLISHER_URL;
+                item.url = url;                 
+                item.email = 'imgur@ligertail.com';
+
+				jqversion.ajax({
+                       type: "GET",
+                       url: "https://pro.embed.ly/1/oembed?callback=?&format=json&key=863cd350298b11e091d0404058088959&url=" + url,
+                       dataType: "json",
+                       timeout: 2000,
+                       success: function(data){
+                                item.title = dehtml(data.title).substr(0,128);
+               					item.description = dehtml(data.description).substr(0,512);
+               					api.submitItem(item);            
+                       },
+                       error: function(e){ 
+                       		   item.title = "freshest link";
+               				   item.description = "defaulting here.";
+                       		   api.submitItem(item); 
+                       		  }        
+                  });
+                
+                 jqversion("#ligertail_widget_header input").val("Got a link to add here?");
+                               
+         }
+         else
+         	jqversion("#ligertail_widget_header input").val("Got a link to add here?");
+	}
+	else{
+
     jqversion(document).bind('init.facebox', function(){
         if(window.parameter["width"] == 600)                                            
              loadStaticFile(LTDOMAIN + "/frontend/css/submission_large.css", "css");  
@@ -337,6 +372,8 @@ function OpenLightboxSubmission(url){
             jqversion(document).unbind('reveal.facebox');
         });      
     });
+    
+    }
 }
 
 //////////////////////////////////////////////////////////
@@ -356,7 +393,12 @@ function init(publisherUrl) {
 function initAll(){
     var CONTENT_HEIGHT_SMALL = 23; //header=39 footer=20
     var CONTENT_HEIGHT_LARGE = 91;//header=49 footer=35
-    window.PUBLISHER_URL = location.href;
+    
+    if(isInIFrame)
+    	window.PUBLISHER_URL = window.parent.location.href;
+    else
+    	window.PUBLISHER_URL = location.href;
+    	
     window.LIGERTAIL_ITEMS_LOADED = 0; //helps keep track of spot #s, can be used later for loading additional items
     
     //initialize widget parameters

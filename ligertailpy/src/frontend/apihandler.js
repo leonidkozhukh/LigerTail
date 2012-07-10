@@ -45,7 +45,7 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
 														
 													
   // TODO: handle error case
-  if (!window.submitForFree) {
+  if (!window.submitForFree && !isInIFrame) {
 	var domain = "";
 	if (window.document.location.hostname == "localhost") {
 		domain = "http://" + window.document.location.hostname;		
