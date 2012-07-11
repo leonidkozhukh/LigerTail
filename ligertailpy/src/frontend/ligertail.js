@@ -167,7 +167,7 @@ function ValidateEmail(str) {
 }
 
 // REPLACE HTML ENCODED TO CHARS
-function dehtml(str) {
+function dehtml(str) { 
 	  return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
 }
 
@@ -190,7 +190,10 @@ function OpenLightboxSubmission(url){
                        timeout: 2000,
                        success: function(data){
                                 item.title = dehtml(data.title).substr(0,128);
-               					item.description = dehtml(data.description).substr(0,512);
+               					if(data.description)
+               						item.description = dehtml(data.description).substr(0,512);
+               					else
+               						item.description = "none found.";
                					api.submitItem(item);            
                        },
                        error: function(e){ 
