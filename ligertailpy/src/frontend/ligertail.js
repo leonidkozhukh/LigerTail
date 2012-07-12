@@ -207,7 +207,7 @@ function OpenLightboxSubmission(url){
                                
          }
          else
-         	jqversion("#ligertail_widget_header input").val("Got a link to add here?");
+         	jqversion("#ligertail_widget_header input").val("Invalid URL. Please, try again...");
 	}
 	else{
 
