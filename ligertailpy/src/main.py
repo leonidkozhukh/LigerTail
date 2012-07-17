@@ -78,7 +78,7 @@ class SubmitItemHandler(BaseHandler):
           item.description = self.getParam('description').replace('%u', '\\u').decode('unicode-escape')
           item.price = 0
           item.email = self.getParam('email')
-          item.sessionId = self.viewer.sessionId
+          #NO_VIEWER item.sessionId = self.viewer.sessionId
           item.put()
           BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
           #BaseHandler.sendConfirmationEmail(self, item)
@@ -189,7 +189,7 @@ class GetOrderedItemsHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
-                                                   self.viewer.filter)
+                                                   model.getDefaultFilter()) #NO_VIEWER self.viewer.filter)
         if self.client.numItems < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numItems]
         self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
@@ -236,8 +236,8 @@ class SubmitUserInteractionHandler(BaseHandler):
             itemId = int(itemWithUpdate[0])
             statType = int(itemWithUpdate[1])
             spot = int(itemWithUpdate[2])
-            if statType == model.StatType.LIKES or statType == model.StatType.CLOSES:
-              BaseHandler.updateViewer(self, statType=statType, itemId=itemId)
+            #NO_VIEWER if statType == model.StatType.LIKES or statType == model.StatType.CLOSES:
+              #NO_VIEWER BaseHandler.updateViewer(self, statType=statType, itemId=itemId)
               #TODO: handle uniques. This may be challenging since in order to know if the
               # impression is unique we need to have a map itemId->all viewers                    
             BaseHandler.updateItem(self, self.getParam('publisherUrl'),
@@ -258,7 +258,7 @@ class GetFilterHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        self.common_response.setFilter(self.viewer.filter)
+        #NO_VIEWER self.common_response.setFilter(self.viewer.filter)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -267,15 +267,15 @@ class SubmitFilterHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        BaseHandler.updateFilter(self,
-                                 durationId=self.getParam('filter.durationId'),
-                                 popularity=self.getParam('filter.popularity'),
-                                 recency=self.getParam('filter.recency'))
+        #NO_VIEWER BaseHandler.updateFilter(self,
+        #NO_VIEWER                          durationId=self.getParam('filter.durationId'),
+        #NO_VIEWER                          popularity=self.getParam('filter.popularity'),
+        #NO_VIEWER                          recency=self.getParam('filter.recency'))
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
-                                                   self.viewer.filter)
+                                                   model.getDefaultFilter()) #NO_VIEWER self.viewer.filter)
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
-        self.common_response.setFilter(self.viewer.filter)
+        #NO_VIEWER self.common_response.setFilter(self.viewer.filter)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -514,7 +514,7 @@ class CreateWikiPageHandler(BaseHandler):
         #publisherUrl = publisherUrl.lower()
         items = BaseHandler.getOrderedItems(self,
                                             publisherUrl,
-                                            self.viewer.filter)
+                                            model.getDefaultFilter()) #NO_VIEWER self.viewer.filter)
 
         #publisherLinks = model.getItems(publisherUrl)
         if len(items) < 1:

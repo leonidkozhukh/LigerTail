@@ -33,7 +33,7 @@ class BaseHandler(webapp.RequestHandler):
      in response to a web request
   """
   common_response = response.CommonResponse()
-  viewer = None
+  #NO_VIEWER viewer = None
   client = {}
   jsonp_callback = None
 
@@ -47,10 +47,10 @@ class BaseHandler(webapp.RequestHandler):
   
   def initFromRequest(self, req):
     self.common_response.reset()
-    session = Session()
-    sessionKey = str(session.session.session_key)
-    logging.info("%s %s", req.path_url, sessionKey)
-    self.viewer = model.getViewer(sessionKey)
+    #NO_VIEWER session = Session()
+    #NO_VIEWER sessionKey = str(session.session.session_key)
+    #NO_VIEWER logging.info("%s %s", req.path_url, sessionKey)
+    #NO_VIEWER self.viewer = model.getViewer(sessionKey)
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
     self.jsonp_callback = unicode(req.get('callback'))
     
@@ -69,8 +69,8 @@ class BaseHandler(webapp.RequestHandler):
     # use spot = 0 to record publisher site views and uniques
     try:
       itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
-      if self.viewer.isNew:
-        itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
+      #NO_VIEWER if self.viewer.isNew:
+      #NO_VIEWER   itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
     except Exception:
       logging.warning('getOrderedItems.updateItem %s' % sys.exc_info()[1])
 
@@ -101,18 +101,18 @@ class BaseHandler(webapp.RequestHandler):
       return item          
       
       
-  def updateViewer(self, statType=None, itemId=None):
-      if statType and itemId:
-          if statType == model.StatType.CLOSES:
-              self.viewer.closes.append(itemId)
-          elif statType == model.StatType.LIKES:
-              self.viewer.likes.append(itemId)
+#NO_VIEWER   def updateViewer(self, statType=None, itemId=None):
+#NO_VIEWER       if statType and itemId:
+#NO_VIEWER           if statType == model.StatType.CLOSES:
+#NO_VIEWER               self.viewer.closes.append(itemId)
+#NO_VIEWER           elif statType == model.StatType.LIKES:
+#NO_VIEWER               self.viewer.likes.append(itemId)
 
-  def updateFilter(self, durationId=None, popularity=None, recency=None):
-      self.viewer.filter = model.Filter()
-      self.viewer.filter.update(durationId, popularity, recency)
-      if not self.viewer.filter.default:
-        self.viewer.put()          
+#NO_VIEWER   def updateFilter(self, durationId=None, popularity=None, recency=None):
+#NO_VIEWER       self.viewer.filter = model.Filter()
+#NO_VIEWER       self.viewer.filter.update(durationId, popularity, recency)
+#NO_VIEWER       if not self.viewer.filter.default:
+#NO_VIEWER         self.viewer.put()          
       
   def sendConfirmationEmail(self, email, price, item):
       logging.info('sendConfirmationEmail %s', email)
