@@ -236,7 +236,7 @@ function OpenLightboxSubmission(url){
             }
             else{
                  jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header img").attr("src", LTDOMAIN + "/frontend/images/logo_header.png");
-                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_2.png");
+                 jqversion("#ligertail_submission_lightbox_right_column #ligertail_widget_header input:last").attr("src", LTDOMAIN + "/frontend/images/button_submit_4.png");
             }
         
             //form validation
@@ -466,7 +466,7 @@ function initAll(){
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit LigerTail.com"/><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_2.png" value="Submit" align="left"/></form></div>';
+        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit LigerTail.com"/><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_4.png" value="Submit" align="left"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
