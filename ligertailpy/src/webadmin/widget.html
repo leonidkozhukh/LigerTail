@@ -18,7 +18,7 @@
   <script type="text/javascript">
 var isInIFrame = (window.location != window.parent.location) ? true : false;
 if(isInIFrame)
-	console.log("we are in the matrix!");
+	console.log(window.parent.location.href + " :: " + window.location.href);
 </script>
 
 </body>
