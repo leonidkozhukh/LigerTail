@@ -612,18 +612,18 @@ def getSpot(publisherUrl, pos):
       spot.spot = pos
     return spot
 
-def getViewer(sessionId):
-    viewer = db.GqlQuery('SELECT * FROM Viewer WHERE sessionId=:1', sessionId).get()
-    if (viewer):
-        logging.info('Found viewer for session ' + sessionId)
-        if (not viewer.filter):
-            viewer.filter = getDefaultFilter()
-    else:
-        viewer = Viewer()
-        viewer.sessionId = sessionId
-        viewer.isNew = True
-        viewer.put()
-    return viewer
+#NO_VIEWER def getViewer(sessionId):
+#    viewer = db.GqlQuery('SELECT * FROM Viewer WHERE sessionId=:1', sessionId).get()
+#    if (viewer):
+#        logging.info('Found viewer for session ' + sessionId)
+#        if (not viewer.filter):
+#            viewer.filter = getDefaultFilter()
+#    else:
+#        viewer = Viewer()
+#        viewer.sessionId = sessionId
+#        viewer.isNew = True
+#        viewer.put()
+#    return viewer
 
 def getPublisherSite(publisherUrl):
     publisher = db.GqlQuery('SELECT * FROM PublisherSite WHERE publisherUrl=:1', publisherUrl).get()
