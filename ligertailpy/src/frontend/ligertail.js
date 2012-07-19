@@ -4,8 +4,6 @@
 var LTDOMAIN = 'http://ligertailpayment.appspot.com';
 var LTVISIBLEDOMAIN = 'http://www.ligertail.com';
 
-var isInIFrame = (window.location != window.parent.location) ? true : false;
-
 var jqversion;
 
 (function(window, document, version, callback) {

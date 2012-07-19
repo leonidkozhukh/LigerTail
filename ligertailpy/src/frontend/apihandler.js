@@ -54,17 +54,6 @@ ApiHandler.prototype.onItemSubmitted = function(response) {
     else{
           jqversion(".ligertail_widget #ligertail_widget_header").after('<div style="display:block;" class="ligertail_widget_content" id="' + item.id + '"><div class="ligertail_widget_text"><span class="ligertail_widget_source">' + getDomain(item.url) + '</span><span class="ligertail_widget_title"><a target="_blank" href="' + checkLink(item.url) + '">' + item.title + '</a></span></div><div class="ligertail_widget_close"><a target="_blank" href="' + url + '"><img src="' + LTDOMAIN + '/frontend/images/button_close_pay.png" alt="Delete" width="12" height="12" border="0" /></a></div></div>');
     }													
-														
-													
-  // TODO: handle error case
-  if (!window.submitForFree && !isInIFrame) {
-	//window.open(url, 'mywindow');
-    // TODO : make sure it opens in a new window
-	document.location.href = url;
-  }
-  else{
-	//sucks for the advertiser; will include payment url for item in submission email later on...
-  }
 }
 
 ApiHandler.prototype.onPriceUpdated = function(response) {
