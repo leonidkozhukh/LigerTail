@@ -118,7 +118,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		jqversion(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").show();
 		
 		// add events to content
-		jqversion(".ligertail_widget .ligertail_widget_content").bind("show", function(){
+		/*jqversion(".ligertail_widget .ligertail_widget_content").bind("show", function(){
 				jqversion(this).show("fast");
 				var interaction = [];
 				//this is a view
@@ -131,18 +131,25 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
   			    api.submitUserInteraction(
 			      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
 			      interaction);
-		});
+		});*/
 
 		//update db, remove the current content, move stack up, & show more content
 		jqversion(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
 				//this is a close
 				var interaction = [];
 				interaction[0] = {itemId: jqversion(this).parent().attr('id'), statType: StatType.CLOSES, spot: jqversion(this).attr('id')};
-  			    api.submitUserInteraction(
+  			    
+				jqversion(this).parent().remove();
+				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").show("fast");
+				if(jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id') < 0){
+					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").index()};
+				}
+				else{
+					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
+				}
+				api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
   				      interaction);
-				jqversion(this).parent().remove();
-				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});
 	
 		//update db for click
@@ -150,22 +157,19 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				//this is a click
 				var interaction = [];
 				interaction[0] = {itemId: jqversion(this).parent().parent().attr('id'), statType: StatType.CLICKS, spot: jqversion(this).parent().parent().find(".ligertail_widget_close").attr('id')}; 
-  			    api.submitUserInteraction(
+  			    
+				jqversion(this).parent().parent().remove();
+				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").show("fast");
+				if(jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id') < 0){
+					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").index()};
+				}
+				else{
+					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
+				}
+				api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
   				      interaction);
-				jqversion(this).parent().parent().remove();
-				jqversion(".ligertail_widget .ligertail_widget_content:hidden").filter(":first").trigger("show");
 		});
-	
-		//update db for like
-		/*jQuery(".ligertail_widget .ligertail_widget_content .ligertail_widget_share").click(function(){ 
-				//this is a like
-				var interaction = [];
-				interaction[0] = {itemId: jQuery(this).parent().attr('id'), statType: StatType.LIKES, spot: jQuery(this).parent().attr('id').find(".ligertail_widget_close").attr('id')};
-				api.submitUserInteraction(window.PUBLISHER_URL, interaction);
-		
-				alert("need to put in fb functionality");
-		});*/
 	}
 	else{ jqversion(".ligertail_widget .ligertail_widget_content").show(); }	
 }
