@@ -407,34 +407,34 @@ class Bucket(db.Model):
     db.Model.put(self)
 
 
-class Viewer(db.Model):
-    isNew = False
-    creationTime = db.DateTimeProperty(auto_now_add=True)
-    sessionId = db.StringProperty()
-    likes = db.ListProperty(int)
-    closes = db.ListProperty(int)
-    pickled_filter = db.BlobProperty(required = False)
-    filter = {}
-  
-    def __init__(self, *args, **kwargs):
-      super(Viewer, self).__init__(*args, **kwargs)
-      if self.pickled_filter:
-        (self.filter) = pickle.loads(self.pickled_filter)
-      else: 
-        self.filter = getDefaultFilter()
-  
-    def __str__(self):
-      new = ''
-      if self.isNew:
-        new = 'New'
-      return 'session %s %s, likes %s, closes %s, filter %s ' %(self.sessionId, new, self.likes, self.closes, self.filter)
-
-    def put(self):
-      if not self.filter.default:
-        '''Stores the object, making the derived fields consistent.'''
-        # Pickle data
-        self.pickled_filter = pickle.dumps((self.filter), 2)
-      db.Model.put(self)
+#NO_VIEWERclass Viewer(db.Model):
+#    isNew = False
+#    creationTime = db.DateTimeProperty(auto_now_add=True)
+#    sessionId = db.StringProperty()
+#    likes = db.ListProperty(int)
+#    closes = db.ListProperty(int)
+#    pickled_filter = db.BlobProperty(required = False)
+#    filter = {}
+#  
+#    def __init__(self, *args, **kwargs):
+#      super(Viewer, self).__init__(*args, **kwargs)
+#      if self.pickled_filter:
+#        (self.filter) = pickle.loads(self.pickled_filter)
+#      else: 
+#        self.filter = getDefaultFilter()
+#  
+#    def __str__(self):
+#      new = ''
+#      if self.isNew:
+#        new = 'New'
+#      return 'session %s %s, likes %s, closes %s, filter %s ' %(self.sessionId, new, self.likes, self.closes, self.filter)
+#
+#    def put(self):
+#      if not self.filter.default:
+#        '''Stores the object, making the derived fields consistent.'''
+#        # Pickle data
+#        self.pickled_filter = pickle.dumps((self.filter), 2)
+#      db.Model.put(self)
 
 class PaymentConfig(db.Model):
   send_email = db.BooleanProperty(default=False)
