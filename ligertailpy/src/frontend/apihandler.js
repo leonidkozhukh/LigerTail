@@ -109,7 +109,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		});
 	}	
 	if (defaultItemInteractions.length) {
-		api.submitUserInteraction("default", defaultItemInteractions);
+		//api.submitUserInteraction("default", defaultItemInteractions);
 	}
 	
 	if(content != ""){
