@@ -147,9 +147,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				else{
 					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
 				}
-				api.submitUserInteraction(
+				/*api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
-  				      interaction);
+  				      interaction);*/
 		});
 	
 		//update db for click
@@ -166,9 +166,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				else{
 					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
 				}
-				api.submitUserInteraction(
+				/*api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
-  				      interaction);
+  				      interaction);*/
 		});
 	}
 	else{ jqversion(".ligertail_widget .ligertail_widget_content").show(); }	
