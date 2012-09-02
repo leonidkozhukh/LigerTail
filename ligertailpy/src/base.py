@@ -1,21 +1,18 @@
-import cgi
-import os
-import urllib
+from appengine_utilities.sessions import Session
+from django.utils import simplejson as json
+from google.appengine.api import users
+from google.appengine.api import mail
+from google.appengine.ext import webapp
+from itemlist import itemList
+from defaultitemlist import defaultItemList
+from filterstrategy import filterStrategy
 import logging
 import model
+import cgi
 import re
 import response
-import datetime
-#import simplejson as json
-from django.utils import simplejson as json
+import sys
 
-from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from google.appengine.api import memcache
-from appengine_utilities.sessions import Session
 
 # Set the debug level
 _DEBUG = True
@@ -24,6 +21,7 @@ _DEBUG = True
     
 class Client(object):
     numViewableItems = 5
+    numItems = 20
     def __init__(self, numViewableItems):
         if numViewableItems:
             self.numViewableItems = numViewableItems
@@ -35,110 +33,102 @@ class BaseHandler(webapp.RequestHandler):
      in response to a web request
   """
   common_response = response.CommonResponse()
-  viewer = None
+  #NO_VIEWER viewer = None
   client = {}
+  jsonp_callback = None
+
+  def options(self):
+      self.response.headers['Access-Control-Allow-Origin'] = '*'
+      self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+      self.response.headers['Access-Control-Max-Age'] = 1000
+      self.response.headers['Access-Control-Allow-Headers'] = '*'
+      return self.response
+
   
   def initFromRequest(self, req):
     self.common_response.reset()
-    session = Session()
-    sessionKey = str(session.session.session_key)
-    logging.info("%s %s", req.path_url, sessionKey)
-    self.viewer = model.getViewer(sessionKey)
+    #NO_VIEWER session = Session()
+    #NO_VIEWER sessionKey = str(session.session.session_key)
+    #NO_VIEWER logging.info("%s %s", req.path_url, sessionKey)
+    #NO_VIEWER self.viewer = model.getViewer(sessionKey)
     self.client = Client(numViewableItems=req.get('client.numViewableItems'))
-          
-  def updateItem(self, itemId=None, item=None, bNew=False, statType=None):
-      if not item:
-        logging.info('updateItems %d', itemId)
-        item = model.Item.get_by_id(itemId)
-      if statType:
-        logging.info('updating item %s: statType: %d', item.url, statType)
-        item.update(statType)
-      #TODO: postpone operation by putting it into item-hashed buckets
-      item.put()
+    self.jsonp_callback = unicode(req.get('callback'))
+    
+  def getParam(self, name):
+    return cgi.escape(self.request.get(name))
+  
+  def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=0):
+    if publisherUrl == 'default':
+      if defaultItemList.disallowIncoming():
+        return
+      publisherUrl = defaultItemList.getPublisherUrl()
+    itemList.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
  
   def getOrderedItems(self, publisherUrl, filter):
-      logging.info('getOrderedItems')
-      defaultOrderedItems = memcache.get(publisherUrl)
-      if defaultOrderedItems is not None and filter.default:
-        logging.info('return default from memcache for %s', publisherUrl)
-        return defaultOrderedItems
-      elif defaultOrderedItems is not None:
-        logging.info('memcache found, but filter is not default for %s', publisherUrl)
-        return self.applyFilter(defaultOrderedItems, filter)
-      else:
-        items = model.getItems(publisherUrl)
-        defaultOrderedItems = self.applyFilter(items, model.getDefaultFilter())
-        logging.info('repopulating memache for %s', publisherUrl)
-        memcache.add(publisherUrl, defaultOrderedItems)
-        if not filter.default:
-          return self.applyFilter(defaultOrderedItems, filter)
-        return defaultOrderedItems
-  
+    defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
+    # use spot = 0 to record publisher site views and uniques
+    try:
+      itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
+      #NO_VIEWER if self.viewer.isNew:
+      #NO_VIEWER   itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
+    except Exception:
+      logging.warning('getOrderedItems.updateItem %s' % sys.exc_info()[1])
+
+    if filter.default:
+      logging.info('return default from memcache for %s', publisherUrl)
+      return defaultOrderedItems
+    logging.info('filter is not default for %s', publisherUrl)
+    return filterStrategy.applyFilter(defaultOrderedItems, filter)
+      
+      
+  def setDefaultItems(self, num):
+    if defaultItemList.getPublisherUrl() == self.getParam('publisherUrl'):
+      return # Do not sets default links for the url that is hosting it
+    defaultItems = defaultItemList.getOrderedItems()
+    if num < len(defaultItems):
+      defaultItems = defaultItems[0: num]
+    if len(defaultItems):
+      self.common_response.setDefaultItems(defaultItems, response.ItemInfo.SHORT)
+
+    
   def getPaidItems(self, publisherUrl):
       logging.info('getPaidItems')
       items = model.getPaidItems(publisherUrl)
       return items
  
-  def getItemWithStats(self, publisherUrl, itemId):
-      #TODO: retrieve stats
-      return model.Item.get_by_id(int(itemId)) 
-  
-  def updateViewer(self, statType=None, itemId=None):
-      if statType and itemId:
-          if statType == model.StatType.CLOSES:
-              self.viewer.closes.append(itemId)
-          elif statType == model.StatType.LIKES:
-              self.viewer.likes.append(itemId)
+  def getItem(self, itemId):
+      item = model.Item.get_by_id(int(itemId))
+      return item          
+      
+      
+#NO_VIEWER   def updateViewer(self, statType=None, itemId=None):
+#NO_VIEWER       if statType and itemId:
+#NO_VIEWER           if statType == model.StatType.CLOSES:
+#NO_VIEWER               self.viewer.closes.append(itemId)
+#NO_VIEWER           elif statType == model.StatType.LIKES:
+#NO_VIEWER               self.viewer.likes.append(itemId)
 
-  def updateFilter(self, duration=None, popularity=None, recency=None):
-      self.viewer.filter = model.Filter()
-      self.viewer.filter.update(duration, popularity, recency)
-      if not self.viewer.filter.default:
-        self.viewer.put()    
-          
-  def applyFilter(self, items, filter):
-    LIKES_RATE_K = 500.0
-    CLICKS_RATE_K = 100.0
-    CLOSES_RATE_K = -20.0
-    TOTAL_LIKES_K = 1.0
-    TOTAL_CLICKS_K = 1.0
-    TOTAL_CLOSES_K = -1.0
-    TOTAL_VIEWS_K = -0.2
-    
-    RECENCY_K = 1000.0
-    PRICE_K = 1000.0
-    today = datetime.datetime.today()
-    for item in items:
-      likes = float(item.stats[model.StatType.LIKES])
-      closes = float(item.stats[model.StatType.CLOSES])
-      views = float(item.stats[model.StatType.VIEWS])
-      clicks = float(item.stats[model.StatType.CLICKS])
-      likesRate = 0.0
-      clicksRate = 0.0
-      closesRate = 0.0
-      if views:
-        likesRate = likes/views
-        closesRate = closes/views
-        clicksRate = clicks/views
-      popularity = likesRate * LIKES_RATE_K + \
-          clicksRate * CLICKS_RATE_K + \
-          closesRate * CLOSES_RATE_K + \
-          likes * TOTAL_LIKES_K + \
-          clicks * TOTAL_CLICKS_K + \
-          closes * TOTAL_CLOSES_K
-      seconds = float((today - item.creationTime).seconds)
-      recency = RECENCY_K / (seconds+1) 
-      item.v = popularity * filter.popularity + \
-          recency * filter.recency + \
-          views * TOTAL_VIEWS_K + \
-          float(item.price) / seconds * PRICE_K
-    orderedItems = sorted(items, key=lambda item : item.v, reverse=True)
-    return orderedItems  
+#NO_VIEWER   def updateFilter(self, durationId=None, popularity=None, recency=None):
+#NO_VIEWER       self.viewer.filter = model.Filter()
+#NO_VIEWER       self.viewer.filter.update(durationId, popularity, recency)
+#NO_VIEWER       if not self.viewer.filter.default:
+#NO_VIEWER         self.viewer.put()          
       
-  def sendConfirmationEmail(self, item):
-      logging.info('sendConfirmationEmail %s', item.email)
-      #TODO: add email
-      
+  def sendConfirmationEmail(self, email, price, item):
+      logging.info('sendConfirmationEmail %s', email)
+      if not mail.is_email_valid(email):
+        logging.error('email %s is not valid for item %s' % (email, item.key().id()))
+      else:
+        sender_address = "Ligertail.com Support <support@ligertail.com>"
+        subject = "Confirm your payment of $%s.00 dollars" % price
+        body = """
+Hello,
+This is a confirmation that we have received your payment of $%s.00 dollars
+for '%s' <%s> published on %s.
+""" % (price, item.title, item.url, item.publisherUrl)
+
+        mail.send_mail(sender_address, email, subject, body)    
+
   def generate(self, template_name, template_values={}):
     """Generate takes renders and HTML template along with values
        passed to that template
@@ -196,6 +186,10 @@ class BaseHandler(webapp.RequestHandler):
     logging.info("#### WRITING RESOPONSE #####")
     s = json.dumps(self.common_response, cls=response.CommonResponse) #, default=encode_response)
     logging.info(s)
-    self.response.out.write(s)
+    self.response.out.write('%s(%s);' % (self.jsonp_callback, s))
+    self.response.headers["Access-Control-Allow-Origin"] = '*'
 
+  def logException(self):
+    self.common_response.set_error('Internal server error %s' % sys.exc_info()[1])
+    logging.exception("Error")
 

@@ -1,0 +1,72 @@
+application: ligertailpayment
+version: 4
+runtime: python
+api_version: 1
+
+handlers:
+  
+- url: /js
+  static_dir: js
+  secure: optional
+
+- url: /frontend
+  static_dir: frontend
+  secure: optional
+    
+- url: /favicon.ico
+  static_files: web/images/favicon.ico
+  upload: web/images/favicon.ico
+
+- url: /robots.txt
+  static_files: web/robots.txt
+  upload: web/robots.txt
+
+- url: /web/images
+  static_dir: web/images
+    
+- url: /web/styles
+  static_dir: web/styles
+ 
+- url: /web/scripts
+  static_dir: web/scripts
+  
+- url: /web/amline
+  static_dir: web/amline
+  
+- url: /frontend/payment\.html
+  secure: always
+  static_dir: frontend
+
+- url: /tumblr/images
+  static_dir: tumblr/images
+    
+- url: /tumblr/styles
+  static_dir: tumblr/styles
+ 
+- url: /tumblr/scripts
+  static_dir: tumblr/scripts
+
+- url: /payment\.html
+  secure: always
+  script: main.py
+
+- url: /admin
+  script: main.py
+  login: admin
+  
+- url: /admin/.*
+  script: main.py
+  login: admin
+
+- url: /ligertail.js
+  static_files: frontend/ligertail.js
+  upload: frontend/ligertail.js
+      
+- url: /api/.*
+  script: main.py
+
+- url: /.*
+  script: main.py
+  
+
+

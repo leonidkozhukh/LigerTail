@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+  <head>
+<script src = "../js/postrequest_orig.js">
+</script>
+<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+</script>
+<script src = "../js/json2.js">
+</script>
+<script src = "../js/apiproxy.js">
+</script>
+<script src = "../js/baseapihandler.js">
+</script>
+ 
+<script>
+var initialized = false;
+$(document).ready(function(){
+  init();
+});
+
+
+function publisherUrl() {
+	return document.getElementById("publisherUrl").value;
+
+}
+
+function init() {
+  var apiHandler = new BaseApiHandler();
+  var domain = document.getElementById("domain").value;
+  if (!domain.length) {
+	  domain = null;
+  }
+  window.api = new LTApi();
+  api.init(apiHandler, domain);
+}
+
+function submitItem() {
+  var item = {};
+  item.publisherUrl = publisherUrl();
+  item.url = "www.blah.com";
+  item.title = "HELLO & BYEBYE";
+  item.description = "blahblah";
+  item.email = "email@emal.com";
+  api.submitItem(item, 'onMySubmitted');   
+}
+
+function onMySubmitted(o) {
+	alert("Yay!" + o);
+}
+
+function getOrderedItems() {
+    api.getOrderedItems(publisherUrl(), 'BaseApiHandler.prototype.onGetOrderedItems');     
+}
+
+
+function getPaidItems() {
+    api.getPaidItems(publisherUrl(), 'BaseApiHandler.prototype.onGetPaidItems');     
+}
+
+function getItemStats() {
+  var itemId = document.getElementById("itemid").value;
+  api.getItemStats(itemId, InfoType.FULL, 'BaseApiHandler.prototype.onGetItemStats'); // InfoType.SHORT
+}
+
+function openPaymentPage() {
+	  var itemId = document.getElementById("itemid").value - 0;
+	  var domain = "";
+	  if (window.document.location.hostname == "localhost") {
+	    domain = "http://" + window.document.location.hostname;   
+	      if (window.document.location.port) {
+	        domain += ":" + window.document.location.port;
+	    }
+	  } else {
+	    domain = "https://ligertailpayment.appspot.com";
+	  }
+	  var url = domain + "/payment.html?itemId=" + itemId;
+	  window.open(url, "blah");
+	}
+
+function getSpotStats() {
+	var spot = document.getElementById("spot").value;
+	api.getSpotStats(spot, publisherUrl(), 'BaseApiHandler.prototype.onGetSpotStats');
+}
+
+function getPublisherSiteStats() {
+  api.getPublisherSiteStats(publisherUrl(), 'BaseApiHandler.prototype.onGetPublisherSiteStats');
+}
+
+function getFilter() {
+  api.getFilter(publisherUrl(), 'BaseApiHandler.prototype.onGetFilter');
+}
+
+function submitFilter() {
+  filter = {};
+  filter.durationId = Duration.ETERNITY;
+  filter.popularity = 50;
+  filter.recency = 50;
+  api.submitFilter(publisherUrl(), filter);
+}
+
+function submitUserInteraction(itemId) {
+  interactions = [];
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId: itemId , statType: StatType.VIEWS, spot: 1});
+  interactions.push({itemId:itemId, statType: StatType.CLOSES, spot:3 });
+  interactions.push({itemId:itemId, statType: StatType.CLICKS, spot:4});
+  interactions.push({itemId:itemId, statType: StatType.CLICKS, spot: 1});
+  api.submitUserInteraction(publisherUrl(), interactions, 'BaseApiHandler.prototype.onUserInteractionSubmitted');
+}
+
+function updatePrice(itemId, price) {
+    ccinfo = {};
+    ccinfo.itemId = itemId;
+    ccinfo.price = price;
+    ccinfo.first_name = "John";
+    ccinfo.last_name = "Smith";
+    ccinfo.address = "23 main street";
+    ccinfo.city = "Nyork";
+    ccinfo.state = "NY";
+    ccinfo.zip = "10000";
+    ccinfo.cc = "4111111111111111";
+    ccinfo.expiration = "1/1/15";
+    ccinfo.cvs = "123";
+    ccinfo.email = 'email@email.com';
+    
+    api.updatePrice(ccinfo);
+}
+
+function createItems() {
+	var item = {};
+	var num = jQuery("#submit_num").val();
+	for(var i=0; i < num; i++){
+  		item.publisherUrl = publisherUrl();
+  		item.url = "www.blah" + i + ".com";
+  		item.title += "Hi!";
+  		item.description = "blahblah" + i;
+  		item.email = "email@emal.com";
+  		api.submitItem(item); 
+ 	}
+}
+
+function createPaidItems() {
+    api.getOrderedItems(publisherUrl(), submitPayment);
+}
+
+function createInteractions() {
+  	api.getOrderedItems(publisherUrl(), submitInteractions);
+}
+
+submitPayment = function(response) {
+	var num = jQuery("#paid_num").val();
+	jQuery.each(response.items, function(i, item){
+		var item_obj = jQuery.parseJSON(item);
+		updatePrice(item_obj.itemId, num--);
+		
+		if(num <= 0)
+			return;
+	});
+
+}
+
+submitInteractions = function(response) { 
+	var num = jQuery("#interaction_num").val(); console.log(num);
+	jQuery.each(response.items, function(i, item){
+		var item_obj = jQuery.parseJSON(item);
+		submitUserInteraction(item_obj.itemId); console.log(item_obj.itemId);
+		n--;
+		if(num <= 0)
+			return;
+	});
+
+}
+
+function functionWithAssert(arg1, arg2) {
+	  assert(arg1 == arg2);	
+}
+
+function submitError() {
+    functionWithAssert("foo", "bar");
+}
+
+</script>
+</head>
+</HTML>
+<BODY>
+<div>Backend </div><INPUT TYPE="text"  ID="domain" VALUE=""><P>
+<div>PublisherUrl </div><INPUT TYPE="text" ID="publisherUrl" VALUE="www.nytimes3.com"><P>
+<A href="google.com">google.com</A>
+
+<A href="#" onMouseDown="init()"><div>init api</div></A>
+<A href="#" onMouseDown="submitError()"><div>submit error</div></A>
+<A href="#" onMouseDown="getPublisherSiteStats()" ><div> get publisher site stats</div></A>
+<A href="#" onMouseDown="submitItem()" ><div> submit item</div></A>
+<A href="#" onMouseDown="getOrderedItems()" ><div> get ordered items</div></A>
+<A href="#" onMouseDown="getPaidItems()" ><div> get paid items</div></A>
+<A href="#" onMouseDown="getFilter()" ><div> get filter</div></A>
+<A href="#" onMouseDown="submitFilter()" ><div> submit filter</div></A>
+<div>Item id: </div><INPUT TYPE="text"  ID="itemid" VALUE=""><P>
+
+<A href="#" onMouseDown="submitUserInteraction(jQuery('#itemid').val())" ><div> submit user interaction</div></A>
+<A href="#" onMouseDown="getItemStats()" ><div> get item stats</div></A>
+<A href='#' onMouseDown="openPaymentPage()"><div> open payment page</div></A>
+<div>Price $</div><INPUT TYPE="text" ID="price" VALUE="1"><P>
+<A href="#" onMouseDown="updatePrice(jQuery('#itemid').val(), jQuery('#price').val())" ><div> update price</div></A>
+
+<div>Spot: </div><INPUT TYPE="text"  ID="spot" VALUE="1"><P>
+<A href="#" onMouseDown="getSpotStats()" ><div> get spot stats</div></A>
+
+<div><a href="#" onMouseDown="createItems()">create </a><input type="text" id="submit_num" value="8" size="2" /> items</div>
+<div><a href="#" onMouseDown="createInteractions()">create </a><input type="text" id="interaction_num" value="8" size="2" /> interactions</div>
+<div><a href="#" onMouseDown="createPaidItems()">create </a><input type="text" id="paid_num" value="8" size="2" /> paid items</div>
+
+</BODY>

@@ -1,0 +1,41 @@
+<!doctype html> 
+<html> 
+    <head> 
+        <title>easyXDM</title> 
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+        <script type="text/javascript" src="easyxdm.min.js"> 
+        </script> 
+        <script type="text/javascript"> 
+            /**
+             * Request the use of the JSON object
+             */
+            easyXDM.DomHelper.requiresJSON("../js/json2.js");
+        </script> 
+        <script type="text/javascript"> 
+            var remote = new easyXDM.Rpc(/** The channel configuration*/{
+                local: "name.html",
+                swf: "easyxdm.swf"
+            }, /** The configuration */ {
+                remote: {},
+                local: {
+                    postRequest: function(domain, command, type, data, successFn, errorFn) {
+									jQuery.ajax({
+										  url:  domain + "/" + command,
+										  type: type,
+										  data: data,
+										  dataType: "jsonp",
+										  //jsonpCallback: successFn,
+										  contentType: "application/x-www-form-urlencoded",
+										  success: function(d){ successFn(d); }
+									}); 
+					},
+					openFacebox: function(domain, url, successFn, errorFn) {
+					      			jQuery.get(domain + "/" + url, function(d){ successFn(d) });
+					}
+                }
+            });
+        </script> 
+    </head> 
+    <body> 
+    </body> 
+</html>
