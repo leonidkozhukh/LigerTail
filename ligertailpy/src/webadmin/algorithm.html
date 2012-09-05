@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		</head>
+	<body>
+<h1>Algorithm configuration</h1>    
+  Logged in: {{ user }}
+  
+  <!--  TODO process as object key/value pairs  -->
+  
+  <form method="POST" action="update_alg">
+    Tier 1 Engagement threshold (0..1): <input type="text" name="t1_eng" value = {{ alg.tier1_engagement_threshold }} /><br />
+    Tier 2 Engagement threshold (less than above): <input type="text" name="t2_eng" value = {{ alg.tier2_engagement_threshold }} /><br />
+    Number of Views threshold: <input type="text" name="num_views" value = {{ alg.num_views_threshold }} /><br />
+    CTR factor: <input type="text" name="ctr_factor" value = {{ alg.ctr_factor }} /><br />
+    Tier 2 / Tier 3 Ratio (0..1):  <input type="text" name="t2_t3_ratio" value = {{ alg.tier2_tier3_ratio }} /><br /> 
+    <input type="submit" value="Update" />
+
+  </form>
+<p>
+ The ordering algorithm is calculated the following way:
+</p>
+<p>
+ Tier 0 - priced items. All items that are paid for with number of views < num_views_threshold.
+ This gives top priority to the items that are paid for, to acquire   necessary stats
+</p>
+<p>
+ Tier 1 - quality content. These are items whose stats are known (views > num_views_threshold)
+ and whose engagement is high.
+ The engagement is a value 0..1 (1 being the highest, when every view results in
+ a user action)
+ The engagement rate is calculated (ctr - click through rate, clr - close rate):
+<b> ctr * ctr_factor - clr * (1 - ctr_factor) </b>
+</p>
+<p>
+ Tier 2 - better than ads. Disregarding the number of views, just high enough engagement
+ factor. (tier2_engagement_threshold < item engagement < tier1_engagement_threshold)
+</p>
+<p>
+ Tier 3 - questionable pool. All other items who don't have enough stats, with the 
+ priority given to fewer views. This gives a chance to all items to be shown.
+</p>
+<p>
+ Tier 2 and Tier 3 are interleaved with the ratio tier2_tier3_ratio
+</p>
+  </body>
+</html>

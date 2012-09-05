@@ -1,0 +1,95 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<settings> 
+  <font>Georgia</font>                                    
+  <text_color>#FFFFFF</text_color>  
+  <decimals_separator>.</decimals_separator>                        
+  <digits_after_decimal>0</digits_after_decimal>          
+  <data_type>csv</data_type>
+  <csv_separator>;</csv_separator>  
+
+     
+  <plot_area>                                             
+    <margins>                                             
+      <left>0</left>                                      
+      <top>0</top>                                         
+      <right>0</right>                                    
+      <bottom>0</bottom>                                 
+    </margins>
+  </plot_area>
+  
+  <background>
+  	<color>#C9C9C9</color>
+  	<alpha>15</alpha>
+  </background>
+
+
+  <grid>
+    <x> 
+      <enabled>false</enabled>  
+      <approx_count>10</approx_count>                                                         
+    </x>
+    <y_left>
+      <enabled>false</enabled>
+      <approx_count>5</approx_count>
+    </y_left>
+  </grid>
+  
+  
+  <axes>                                 
+    <x>                        
+      <alpha>15</alpha>        
+      <width>1</width>         
+    </x>
+    <y_left>                   
+      <alpha>15</alpha>        
+      <width>1</width>         
+    </y_left>
+  </axes>  
+  
+  <balloon>
+  	<border_width>2</border_width>
+  	<border_color>#000000</border_color>
+  </balloon>
+
+
+ <legend>
+ 	<enabled>false</enabled>
+ </legend>
+  
+ <values>
+ 	<x>
+ 		<color>#C9C9C9</color>
+ 		<inside>true</inside>
+ 	</x>
+ 	<y_left>
+ 		<inside>true</inside>
+ 		<color>#C9C9C9</color>
+ 	</y_left>
+ </values>
+ 
+ <indicator>
+ 	<color>#C9C9C9</color>
+ </indicator>
+  
+  <graphs>  
+            
+    <graph gid="1">    
+                                       
+      <axis>left</axis>                                 
+      <fill_alpha>100</fill_alpha>                           
+      <color>#c64b22</color>                            
+      <color_hover>#000000</color_hover>                
+      <balloon_text_color>#000000</balloon_text_color>  
+      <bullet>round</bullet>
+      <bullet_size>1</bullet_size>                            
+      <balloon_text>
+        <![CDATA[{value}]]>    
+      </balloon_text>
+      <data_labels>
+        <![CDATA[]]>                                                                                                  
+      </data_labels>   
+    </graph>
+    
+  </graphs> 
+</settings>
