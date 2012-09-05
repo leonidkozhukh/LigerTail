@@ -84,7 +84,7 @@ class SubmitItemHandler(BaseHandler):
           #BaseHandler.sendConfirmationEmail(self, item)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
-          self.logException(self)
+          BaseHandler.logException(self)
         BaseHandler.writeResponse(self)
         
 def updatePublisherPrice_(publisherSiteKey, price):
