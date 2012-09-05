@@ -87,7 +87,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		}
 	});
 	if (interactions.length) {
-		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	}
 	// populate default links
 	var defaultItemIds = {};

@@ -84,7 +84,7 @@ class SubmitItemHandler(BaseHandler):
           #BaseHandler.sendConfirmationEmail(self, item)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
-          self.logException(self)
+          BaseHandler.logException(self)
         BaseHandler.writeResponse(self)
         
 def updatePublisherPrice_(publisherSiteKey, price):
@@ -542,31 +542,28 @@ class ProcessItemUpdatesWorker(webapp.RequestHandler):
       itemList.processUpdates(self.request.get('publisherUrl'))
 
 def main():
-    application = webapp.WSGIApplication(
-                                         [
-                                          # apis
-                                          ('/api/submit_item', SubmitItemHandler),
-                                          ('/api/update_price', UpdatePriceHandler),
-                                          ('/api/update_price2', UpdatePrice2Handler),
-                                          ('/api/get_ordered_items', GetOrderedItemsHandler),
-                                          ('/api/get_paid_items', GetPaidItemsHandler),
-                                          ('/api/submit_user_interaction', SubmitUserInteractionHandler),
-                                          ('/api/get_filter', GetFilterHandler),
-                                          ('/api/submit_filter', SubmitFilterHandler),
-                                          ('/api/get_item_stats', GetItemStatsHandler),
-                                          ('/api/get_spot_stats', GetSpotStatsHandler),
-                                          ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
-                                          ('/api/submit_error', SubmitErrorHandler),
-                                          # tasks
-                                          ('/process_item_updates', ProcessItemUpdatesWorker),
-                                          ('/admin', admin.AdminHandler),
-                                          ('/admin/(.*)', admin.AdminHandler),
-                                          ('/wiki/(.*)', CreateWikiPageHandler),
-                                          # everything else
-                                          ('/(.*)', MainHandler),
-                                          
-                                         ],
-                                         debug=True)
+    application = webapp.WSGIApplication([
+        # apis
+        ('/api/submit_item', SubmitItemHandler),
+        ('/api/update_price', UpdatePriceHandler),
+        ('/api/update_price2', UpdatePrice2Handler),
+        ('/api/get_ordered_items', GetOrderedItemsHandler),
+        ('/api/get_paid_items', GetPaidItemsHandler),
+        ('/api/submit_user_interaction', SubmitUserInteractionHandler),
+        ('/api/get_filter', GetFilterHandler),
+        ('/api/submit_filter', SubmitFilterHandler),
+        ('/api/get_item_stats', GetItemStatsHandler),
+        ('/api/get_spot_stats', GetSpotStatsHandler),
+        ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
+        ('/api/submit_error', SubmitErrorHandler),
+        # tasks
+        ('/process_item_updates', ProcessItemUpdatesWorker),
+        ('/admin', admin.AdminHandler),
+        ('/admin/(.*)', admin.AdminHandler),
+        ('/wiki/(.*)', CreateWikiPageHandler),
+        # everything else
+        ('/(.*)', MainHandler),
+      ], debug=True)
     util.run_wsgi_app(application)
     #wsgiref.handlers.CGIHandler().run(application)
 
