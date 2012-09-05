@@ -71,7 +71,8 @@ class BaseHandler(webapp.RequestHandler):
     defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
     # use spot = 0 to record publisher site views and uniques
     try:
-      itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
+      pass
+      #TESTING_CPU_SAVINGS itemList.updateItem(publisherUrl, None, None, False, model.StatType.VIEWS, 0)
       #NO_VIEWER if self.viewer.isNew:
       #NO_VIEWER   itemList.updateItem(publisherUrl, None, None, False, model.StatType.UNIQUES, 0)
     except Exception:
