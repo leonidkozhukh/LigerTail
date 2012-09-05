@@ -57,6 +57,9 @@ class BaseHandler(webapp.RequestHandler):
   def getParam(self, name):
     return cgi.escape(self.request.get(name))
   
+  # TODO item functions are better encapsulated elsewhere, not at the baseHandler level.
+  # TODO move item functions to the listitem module.
+
   def updateItem(self, publisherUrl, itemId=None, item=None, bNew=False, statType=None, spot=0):
     if publisherUrl == 'default':
       if defaultItemList.disallowIncoming():
@@ -80,7 +83,6 @@ class BaseHandler(webapp.RequestHandler):
     logging.info('filter is not default for %s', publisherUrl)
     return filterStrategy.applyFilter(defaultOrderedItems, filter)
       
-      
   def setDefaultItems(self, num):
     if defaultItemList.getPublisherUrl() == self.getParam('publisherUrl'):
       return # Do not sets default links for the url that is hosting it
@@ -90,7 +92,6 @@ class BaseHandler(webapp.RequestHandler):
     if len(defaultItems):
       self.common_response.setDefaultItems(defaultItems, response.ItemInfo.SHORT)
 
-    
   def getPaidItems(self, publisherUrl):
       logging.info('getPaidItems')
       items = model.getPaidItems(publisherUrl)

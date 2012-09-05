@@ -126,6 +126,7 @@ class ItemList(Singleton):
       #TODO: write updates into timed log
       self.refreshCacheForDefaultOrderedItems(publisherUrl)
       newNumBuckets = activityManager.getNumBuckets(publisherUrl)
+      logging.info('%s: newNumBuckets: %d numBuckets %d', publisherUrl, newNumBuckets, numBuckets)
       if newNumBuckets < numBuckets:
         # If the number of buckets was decreased, move items from higher buckets to where the belong now
         # It is safe at this point because item updates go into the smaller buckets.
