@@ -6,7 +6,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext import db
-from itemlist import itemList
+from itemlist2 import itemList2
 from xml.dom import minidom
 import admin 
 import logging
@@ -80,7 +80,8 @@ class SubmitItemHandler(BaseHandler):
           item.email = self.getParam('email')
           #NO_VIEWER item.sessionId = self.viewer.sessionId
           item.put()
-          BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
+          # NOBUCKETS only
+          # BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
           #BaseHandler.sendConfirmationEmail(self, item)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
@@ -108,7 +109,7 @@ class UpdatePrice2Handler(BaseHandler):
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
           db.run_in_transaction(updatePublisherPrice_, publisherSite.key(), price)
-          itemList.refreshCacheForDefaultOrderedItems(item.publisherUrl)
+          itemList2.refreshCacheForDefaultOrderedItems(item.publisherUrl)
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
           if paymentConfig.send_email:
@@ -148,7 +149,7 @@ class UpdatePriceHandler(BaseHandler):
           item.put()
           publisherSite = model.getPublisherSite(item.publisherUrl)
           db.run_in_transaction(updatePublisherPrice_, publisherSite.key(), price)
-          itemList.refreshCacheForDefaultOrderedItems(item.publisherUrl)
+          itemList2.refreshCacheForDefaultOrderedItems(item.publisherUrl)
           logging.info('Number of price updates : %d' % len(item.payments))
           logging.info('Last price update : %s' % str(item.payments[len(item.payments)-1]))
           if paymentConfig.send_email:
@@ -497,7 +498,7 @@ class CreateWikiPageHandler(BaseHandler):
           
         logging.info('successes / errors / exceptions: %d %d %d' % (self.successes, self.errors, self.exceptions))
         if (self.successes > 0):
-            itemList.refreshCacheForDefaultOrderedItems(self.publisherUrl)
+            itemList2.refreshCacheForDefaultOrderedItems(self.publisherUrl)
         
       
     def get(self, url):
@@ -536,7 +537,7 @@ class SubmitErrorHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         logging.error('Client Error for %s \n%s' % (self.getParam('publisherUrl'), self.getParam('stack')));
 
-
+#REMOVE
 class ProcessItemUpdatesWorker(webapp.RequestHandler):
     def post(self):
       itemList.processUpdates(self.request.get('publisherUrl'))
@@ -557,7 +558,7 @@ def main():
         ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
         ('/api/submit_error', SubmitErrorHandler),
         # tasks
-        ('/process_item_updates', ProcessItemUpdatesWorker),
+        ('/process_item_updates', ProcessItemUpdatesWorker), #REMOVE
         ('/admin', admin.AdminHandler),
         ('/admin/(.*)', admin.AdminHandler),
         ('/wiki/(.*)', CreateWikiPageHandler),

@@ -69,4 +69,5 @@ handlers:
   script: main.py
   
 
-
+builtins:
+- deferred: on

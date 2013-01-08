@@ -40,6 +40,22 @@ class AdminHandler(webapp.RequestHandler):
               activities.append(newActivity)
               context['activities'] = activities
               context['timePeriod'] = activityManager.getActivityPeriod()
+            elif url == 'background2.html':
+              activities = model.getActivities2(False)
+              i = 0
+              for activity in activities:
+                activity.index = i
+                i += 1
+              newActivity = model.ActivityParams2()
+              newActivity.name = NEW_ACTIVITY_NAME
+              newActivity.activity_load = 0
+              newActivity.index = i
+              newActivity.enabled = False
+              newActivity.threshold_total[model.ActivityTypes.ITEM] = 0
+              newActivity.threshold_time_sec[model.ActivityTypes.ITEM] = 0
+              activities.append(newActivity)
+              context['activities'] = activities
+              context['timePeriod'] = activityManager.getActivityPeriod()
             elif url =='publishers.html':
               publishers = model.getPublisherSites()
               context['publishers'] = publishers
@@ -77,6 +93,8 @@ class AdminHandler(webapp.RequestHandler):
         self.updateAlg()
       elif cmd == 'update_activities':
         self.updateActivities()
+      elif cmd == 'update_activities2':
+        self.updateActivities2()
       elif cmd == 'update_paymentconfig':
         self.updatePaymentConfig()
       elif cmd == 'update_ligerpediaconfig':
@@ -274,6 +292,68 @@ class AdminHandler(webapp.RequestHandler):
           maxtime = 0
         activity = model.ActivityParams()
         activity.update(int(load), name, int(buckets), int(updates), bool(enabled), int(mintime), int(maxtime))
+        return activity
+      return None
+
+    def updateActivities2(self):
+      errors = []
+      successes = []
+      index = 0
+      activities = []
+      
+      activity = self.retrieveActivity2(index)
+      while activity:
+        if activity and activity.name != NEW_ACTIVITY_NAME:
+          errorMsg = activity.getErrors()
+          if errorMsg != '':
+            errors.append('ERROR %s %s' % (activity.name, errorMsg))
+          else:
+            activities.append(activity)
+        index += 1
+        activity = self.retrieveActivity(index)
+      
+      activityMap = {}
+      existingActivities = model.getActivities2(False)
+      for a in existingActivities:
+        activityMap[a.name] = a
+      
+      for a in activities:
+        if activityMap.has_key(a.name):
+          if activityMap[a.name] and activityMap[a.name].updateFrom(a):
+            successes.append('UPDATED: %s' % a.name)
+            activityMap[a.name].put()
+          activityMap[a.name] = None
+        else:
+          a.put()
+          successes.append('CREATED: %s' % a.name)
+      for a in activityMap.values():
+        if a:
+          successes.append('DELETED: %s' % a.name)
+          a.delete()
+                
+      self.response.out.write(' / '.join(successes) + 
+                                ' / '.join(errors))
+      #else:
+      #  self.redirect('background.html?status=updated')
+  
+    
+    def retrieveActivity2(self, index):
+      postfix = '__' + str(index)
+      name = self.request.get('name' + postfix)
+      if name:
+        enabled = self.request.get('enabled' + postfix)
+        load = self.request.get('load' + postfix)
+        updates = self.request.get('updates' + postfix)
+        total = self.request.get('total' + postfix)
+        timeSec = self.request.get('time_sec' + postfix)
+        if not load:
+          load = 0
+        if not updates:
+          updates = 0
+        threshold_total = [total, total, total, total]
+        threshold_time_sec = [timeSec, timeSec, timeSec, timeSec]        
+        activity = model.ActivityParams2()
+        activity.update(int(load), name, bool(enabled), threshold_total, threshold_time_sec)
         return activity
       return None
   

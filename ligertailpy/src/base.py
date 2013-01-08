@@ -3,7 +3,7 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import webapp
-from itemlist import itemList
+from itemlist2 import itemList2
 from defaultitemlist import defaultItemList
 from filterstrategy import filterStrategy
 import logging
@@ -65,10 +65,10 @@ class BaseHandler(webapp.RequestHandler):
       if defaultItemList.disallowIncoming():
         return
       publisherUrl = defaultItemList.getPublisherUrl()
-    itemList.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
+    itemList2.updateItem(publisherUrl, itemId, item, bNew, statType, int(spot))
  
   def getOrderedItems(self, publisherUrl, filter):
-    defaultOrderedItems = itemList.getDefaultOrderedItems(publisherUrl)
+    defaultOrderedItems = itemList2.getDefaultOrderedItems(publisherUrl)
     # use spot = 0 to record publisher site views and uniques
     try:
       pass

@@ -1,6 +1,7 @@
 from google.appengine.api import memcache, users
 from google.appengine.ext import db
 from time import mktime
+import time
 import datetime
 import logging
 import pickle
@@ -91,7 +92,7 @@ class PaymentInfo:
   def __str__(self):
     return '%s $%d %s' %(self.creationTime, self.price, self.email)
 
-
+  
 class StatContainer(db.Model):
   pickled_stats = db.BlobProperty(required=False)
   pickled_timedstats = db.BlobProperty(required=False)
@@ -143,6 +144,11 @@ class StatContainer(db.Model):
     else:
       self.stats[statType] += 1
     self.timedStats.update(statType) #, creationTime)
+    
+  def updateStats2(self, itemUpdate):
+    for statType in itemUpdate.stats:
+      self.stats[statType] += itemUpdate.stats[statType]
+    self.timedStats.update2(itemUpdate)
   
 
 class Item(StatContainer):
@@ -229,6 +235,9 @@ class PublisherSite(StatContainer):
     StatContainer.updateStats(self, statType, creationTime)
     self.views = self.stats[StatType.VIEWS]
   
+  def updateStats2(self, itemUpdate):
+    StatContainer.updateStats2(self, itemUpdate)
+    self.views = self.stats[StatType.VIEWS]
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
@@ -321,7 +330,25 @@ class TimedStats(object):
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
-  def update(self, statType = StatType.UNKNOWN):
+  def update(self, statType = StatType.UNKNOWN, newUpdateTime = datetime.datetime.utcnow()):
+    prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
+    
+    if self.updateTime:
+      prevYear = self.getPrevYearIdx_(newUpdateTime);
+      prevMonth = self.getPrevMonthIdx_(newUpdateTime);
+      prevDay = self.getPrevDayIdx_(newUpdateTime);
+      prevHour = self.getPrevHourIdx_(newUpdateTime);
+      prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
+            
+    self.updateStats_(YEARLY, statType, prevYear, 1)
+    self.updateStats_(MONTHLY, statType, prevMonth, 1)
+    self.updateStats_(DAILY, statType, prevDay, 1)
+    self.updateStats_(HOURLY, statType, prevHour, 1)
+    self.updateStats_(MINUTELY, statType, prevMinute, 1)
+    self.updateTime = newUpdateTime
+    return self.getCompressed()
+
+  def update2(self, itemUpdate):
     newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
@@ -332,15 +359,16 @@ class TimedStats(object):
       prevHour = self.getPrevHourIdx_(newUpdateTime);
       prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
             
-    self.updateStats_(YEARLY, statType, prevYear)
-    self.updateStats_(MONTHLY, statType, prevMonth)
-    self.updateStats_(DAILY, statType, prevDay)
-    self.updateStats_(HOURLY, statType, prevHour)
-    self.updateStats_(MINUTELY, statType, prevMinute)
+    for statType in itemUpdate.stats:
+      self.updateStats_(YEARLY, statType, prevYear, itemUpdate.stats[statType])
+      self.updateStats_(MONTHLY, statType, prevMonth, itemUpdate.stats[statType])
+      self.updateStats_(DAILY, statType, prevDay, itemUpdate.stats[statType])
+      self.updateStats_(HOURLY, statType, prevHour, itemUpdate.stats[statType])
+      self.updateStats_(MINUTELY, statType, prevMinute, itemUpdate.stats[statType])
     self.updateTime = newUpdateTime
     return self.getCompressed()
 
-  def updateStats_(self, duration, statType, previousTimeBucket):  
+  def updateStats_(self, duration, statType, previousTimeBucket, inc):  
     recordedStats = self.durations[duration.id]
     statArray = []
     i = 0
@@ -358,12 +386,87 @@ class TimedStats(object):
         i += 1
         j += 1
       if statType != StatType.UNKNOWN:
-        statArray[0][statType] = statArray[0][statType] + 1
+        statArray[0][statType] = statArray[0][statType] + inc
       self.durations[duration.id] = statArray
     elif statType != StatType.UNKNOWN: 
-      recordedStats[0][statType] = recordedStats[0][statType] + 1
+      recordedStats[0][statType] = recordedStats[0][statType] + inc
         
+
+class StatsUpdate(object):
+  totalUpdates = 0
+  firstUpdateTime = 0
+  stats = {}
+
+  def __init__(self):
+    self.reset()
+
+  def __str__(self):
+    return 'totalUpdates %d, firstUpdateTime %f stats %s' %(self.totalUpdates, self.firstUpdateTime, self.stats)
+
+  def update(self, statType):
+    self.stats[statType] = self.stats[statType] + 1
+    self.totalUpdates = self.totalUpdates + 1
+    if not self.firstUpdateTime:
+      self.firstUpdateTime = time.time()
+
+
+  def clone(self, newStats):
+    newStats.stats = self.stats
+    newStats.totalUpdates = self.totalUpdates
+    newStats.firstUpdateTime = self.firstUpdateTime
+
+  def reset(self):
+    self.stats = {
+              StatType.CLICKS : 0,
+              StatType.CLOSES : 0,
+              StatType.LIKES : 0,
+              StatType.UNIQUES : 0,
+              StatType.VIEWS : 0
+            }
+    self.totalUpdates = 0
+    self.firstUpdateTime = 0
+
+class ItemUpdate(StatsUpdate):
+  itemId = None
+
+  def __init__(self, itemId):
+    super(ItemUpdate, self).__init__()
+    self.itemId = itemId
   
+  def clone(self):
+    newUpdate = ItemUpdate(self.itemId)
+    super(ItemUpdate, self).clone(newUpdate)
+    return newUpdate
+
+
+class SpotUpdate(StatsUpdate):
+  spot = None
+  publisherUrl = None
+
+  def __init__(self, publisherUrl, spot):
+    super(SpotUpdate, self).__init__()
+    self.publisherUrl = publisherUrl
+    self.spot = spot
+  
+  def clone(self):
+    newUpdate = SpotUpdate(self.publisherUrl, self.spot)
+    super(SpotUpdate, self).clone(newUpdate)
+    return newUpdate
+
+class PublisherSiteUpdate(StatsUpdate):
+  publisherUrl = None
+
+  def __init__(self, publisherUrl):
+    super(PublisherSiteUpdate, self).__init__()
+    self.publisherUrl = publisherUrl
+    
+  def clone(self):
+    newUpdate = PublisherSiteUpdate(self.publisherUrl)
+    super(PublisherSiteUpdate, self).clone(newUpdate)
+    return newUpdate
+
+ 
+# TODO: remove  
 class ItemUpdateEntity(object):  
   itemId = None
   bNew = False
@@ -594,6 +697,67 @@ class ActivityParams(db.Model):
         self.max_time_sec_before_triggering = other.max_time_sec_before_triggering
     return updated    
 
+class ActivityTypes:
+   ITEM = 0
+   SPOT = 1
+   PUBLISHER_SITE = 2
+   REFRESH_DEFAULT_ITEMS = 3
+   NUM_ACTIVITIES = 4
+
+class ActivityParams2(db.Model):
+  activity_load = db.IntegerProperty(default = 10000000) # number of interactions per time unit
+  name = db.StringProperty(default = u'default')
+  enabled = db.BooleanProperty(default = True)
+  index = db.IntegerProperty() #used for templates
+  threshold_time_sec = db.ListProperty(int, default = [0,0,0,0])
+  threshold_total = db.ListProperty(int, default = [0,0,0,0])
+  
+  def __str__(self):
+    enabled = 'DISABLED'
+    if self.enabled:
+      enabled = 'enabled'
+    types = ('item', 'spot', 'publisherSite', 'default_items_refresh')
+    out = '''
+      name %s, activity_load: %d %s
+      ''' % (self.name, self.activity_load, enabled)
+    for type in range(0, ActivityTypes.NUM_ACTIVITIES):
+      out += '%s %d sec, %d max ' % (types[type], self.threshold_time_sec[type], self.threshold_total[type])
+    return out
+
+  def update(self, activity, name, enabled, threshold_total, threshold_time_sec):
+    self.activity_load = activity
+    self.name = name
+    self.enabled = enabled
+    for t in range(0, ActivityTypes.NUM_ACTIVITIES):
+      self.threshold_time_sec[t] = int(threshold_time_sec[t])
+      self.threshold_total[t] = int(threshold_total[t])
+   
+  def getErrors(self):
+    er = ''
+    if not self.name:
+      er += '|name empty'
+    if self.activity_load <= 0:
+      er += '|load <= 0'
+    for t in range(0, ActivityTypes.NUM_ACTIVITIES):
+      if self.threshold_time_sec[t] <= 0 or self.threshold_total[t] <= 0:
+         er += '|invalid threshold ' + t
+    return er
+  
+  def updateFrom(self, other):
+    updated = False
+    if other.getErrors() == '' and self.name == other.name:
+      if self.activity_load != other.activity_load:
+        updated = True
+        self.activity_load = other.activity_load
+      if self.enabled != other.enabled:
+        updated = True
+        self.enabled = other.enabled
+      for t in range(0, ActivityTypes.NUM_ACTIVITIES):
+        if self.threshold_time_sec[t] != other.threshold_time_sec[t]:
+          self.threshold_time_sec[t] = other.threshold_time_sec[t]
+        if self.threshold_total[t] != other.threshold_total[t]:
+          self.threshold_total[t] = other.threshold_total[t]
+    return updated    
 
      
 def getItems(publisherUrl):
@@ -694,6 +858,20 @@ def getActivities(enabled):
   activities = db.GqlQuery(query).fetch(100);
   if not len(activities):
       activity = ActivityParams() #default
+      activity.put()
+      activities = [activity]
+  return activities
+
+def getActivities2(enabled):
+  query = ''
+  if enabled:
+    query = 'SELECT * FROM ActivityParams2 WHERE enabled=TRUE ORDER BY activity_load'
+  else:
+    query = 'SELECT * FROM ActivityParams2 ORDER BY activity_load'
+  
+  activities = db.GqlQuery(query).fetch(100);
+  if not len(activities):
+      activity = ActivityParams2() #default
       activity.put()
       activities = [activity]
   return activities
