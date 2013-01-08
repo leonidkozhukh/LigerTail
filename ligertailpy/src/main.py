@@ -26,15 +26,6 @@ import simplejson as json
 import string
 import math
 import traceback
-#import google.appengine.webapp.template
-##from google.appengine.ext.webapp import template
-#import appengine_django.auth.templatetags
-
-import os
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'settingsdj' 
-
-#from google.appengine.dist import use_library
-#use_library('django', '1.2')
 from google.appengine.ext.webapp import template
 
 
@@ -78,11 +69,7 @@ class SubmitItemHandler(BaseHandler):
           item.description = self.getParam('description').replace('%u', '\\u').decode('unicode-escape')
           item.price = 0
           item.email = self.getParam('email')
-          #NO_VIEWER item.sessionId = self.viewer.sessionId
           item.put()
-          # NOBUCKETS only
-          # BaseHandler.updateItem(self, item.publisherUrl, item=item, bNew=True)
-          #BaseHandler.sendConfirmationEmail(self, item)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
           BaseHandler.logException(self)
@@ -190,24 +177,12 @@ class GetOrderedItemsHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
-                                                   model.getDefaultFilter()) #NO_VIEWER self.viewer.filter)
+                                                   model.getDefaultFilter()) 
         if self.client.numItems < len(orderedItems):
           orderedItems = orderedItems[0: self.client.numItems]
         self.common_response.setItems(orderedItems, response.ItemInfo.WITH_PRICE)
         if self.client.numItems - len(orderedItems) > 0:
           BaseHandler.setDefaultItems(self, self.client.numItems - len(orderedItems))
-        ''' 
-        TODO: consider submitting user interactions in this API if there is a performance cost
-        numViewed = 0
-        spot = 1
-        for item in orderedItems:
-            if numViewed >= self.client.numViewableItems:
-                break
-            BaseHandler.updateItem(self, item.publisherUrl, item=item, statType=model.StatType.VIEWS, spot=spot)
-            spot += 1
-            #if self.viewer.isNew:
-            #    BaseHandler.updateItems(self, item, model.StatType.UNIQUES)
-         '''
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -237,20 +212,8 @@ class SubmitUserInteractionHandler(BaseHandler):
             itemId = int(itemWithUpdate[0])
             statType = int(itemWithUpdate[1])
             spot = int(itemWithUpdate[2])
-            #NO_VIEWER if statType == model.StatType.LIKES or statType == model.StatType.CLOSES:
-              #NO_VIEWER BaseHandler.updateViewer(self, statType=statType, itemId=itemId)
-              #TODO: handle uniques. This may be challenging since in order to know if the
-              # impression is unique we need to have a map itemId->all viewers                    
             BaseHandler.updateItem(self, self.getParam('publisherUrl'),
                                    itemId=itemId, statType=statType, spot=spot)
-            
-        # Let client take care of immediate update
-        # orderedItems = BaseHandler.getOrderedItems(self,
-        #                                           self.getParam('publisherUrl'),
-        #                                           self.viewer.filter)
-        #self.common_response.setItems(orderedItems)
-
-        #TODO: it's up to the client to update the ordered items
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -259,7 +222,6 @@ class GetFilterHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        #NO_VIEWER self.common_response.setFilter(self.viewer.filter)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -268,15 +230,10 @@ class SubmitFilterHandler(BaseHandler):
     def post(self):
       try:
         BaseHandler.initFromRequest(self, self.request)
-        #NO_VIEWER BaseHandler.updateFilter(self,
-        #NO_VIEWER                          durationId=self.getParam('filter.durationId'),
-        #NO_VIEWER                          popularity=self.getParam('filter.popularity'),
-        #NO_VIEWER                          recency=self.getParam('filter.recency'))
         orderedItems = BaseHandler.getOrderedItems(self,
                                                    self.getParam('publisherUrl'),
-                                                   model.getDefaultFilter()) #NO_VIEWER self.viewer.filter)
+                                                   model.getDefaultFilter())
         self.common_response.setItems(orderedItems, response.ItemInfo.SHORT)
-        #NO_VIEWER self.common_response.setFilter(self.viewer.filter)
       except Exception:
         BaseHandler.logException(self)
       BaseHandler.writeResponse(self)
@@ -537,10 +494,6 @@ class SubmitErrorHandler(BaseHandler):
         BaseHandler.initFromRequest(self, self.request)
         logging.error('Client Error for %s \n%s' % (self.getParam('publisherUrl'), self.getParam('stack')));
 
-#REMOVE
-class ProcessItemUpdatesWorker(webapp.RequestHandler):
-    def post(self):
-      itemList.processUpdates(self.request.get('publisherUrl'))
 
 def main():
     application = webapp.WSGIApplication([
@@ -558,7 +511,6 @@ def main():
         ('/api/get_publisher_site_stats', GetPublisherSiteStatsHandler),
         ('/api/submit_error', SubmitErrorHandler),
         # tasks
-        ('/process_item_updates', ProcessItemUpdatesWorker), #REMOVE
         ('/admin', admin.AdminHandler),
         ('/admin/(.*)', admin.AdminHandler),
         ('/wiki/(.*)', CreateWikiPageHandler),

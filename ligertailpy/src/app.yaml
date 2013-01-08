@@ -70,4 +70,5 @@ handlers:
   
 
 builtins:
+- appstats: on
 - deferred: on
