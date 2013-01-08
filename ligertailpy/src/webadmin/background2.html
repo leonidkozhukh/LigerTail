@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		</head>
+	<body>
+  Logged in: {{ user }}
+<h1>Background processing configuration</h1>
+  <div>Activity Time Period: {{timePeriod}} </div>
+  <form method="POST" action="update_activities2">
+  <table>
+    <tr>
+      <td>Enabled</td>
+      <td>Load</td>
+      <td>min # of updates to trigger"</td>
+      <td>min # of sec to trigger"</td>
+      <td>Name</td>
+    </tr>
+  {% for activity in activities %}
+    <tr>
+      <td>
+        {% if activity.enabled %}
+        <INPUT TYPE=CHECKBOX NAME="enabled__{{activity.index}}" CHECKED value=true />
+        {% else %}
+        <INPUT TYPE=CHECKBOX NAME="enabled__{{activity.index}}" value=true/>
+        {% endif %}
+      </td>
+      <td>
+        <input type="text" name="load__{{activity.index}}" value={{ activity.activity_load }} />
+      </td>
+      <td>
+        <input type="text" name="total__{{activity.index}}" value={{ activity.threshold_total.0 }} />
+      </td>
+      <td>
+        <input type="text" name="time_sec__{{activity.index}}" value={{ activity.threshold_time_sec.0 }} />
+      </td>
+      <td>
+        {% ifequal activity.name "add_new_activity_here" %}
+        <input type="text" name="name__{{activity.index}}" value = {{ activity.name}} />
+        {% else %}
+        <i>{{ activity.name }}</i>
+        <input type="hidden" name="name__{{activity.index}}" value={{ activity.name }} hidden=true />
+        {% endifequal %}
+      </td>
+    </tr>
+{% endfor %}
+   </table>
+    <input type="submit" value="Update" />
+
+  </form>
+  </body>
+</html>

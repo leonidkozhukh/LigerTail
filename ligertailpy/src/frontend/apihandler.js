@@ -87,7 +87,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		}
 	});
 	if (interactions.length) {
-		//api.submitUserInteraction(window.PUBLISHER_URL, interactions);
+		api.submitUserInteraction(window.PUBLISHER_URL, interactions);
 	}
 	// populate default links
 	var defaultItemIds = {};
@@ -109,7 +109,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		});
 	}	
 	if (defaultItemInteractions.length) {
-		//api.submitUserInteraction("default", defaultItemInteractions);
+		api.submitUserInteraction("default", defaultItemInteractions);
 	}
 	
 	if(content != ""){
@@ -118,7 +118,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 		jqversion(".ligertail_widget .ligertail_widget_content:lt(" + window.numItems + ")").show();
 		
 		// add events to content
-		/*jqversion(".ligertail_widget .ligertail_widget_content").bind("show", function(){
+		jqversion(".ligertail_widget .ligertail_widget_content").bind("show", function(){
 				jqversion(this).show("fast");
 				var interaction = [];
 				//this is a view
@@ -131,7 +131,7 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
   			    api.submitUserInteraction(
 			      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
 			      interaction);
-		});*/
+		});
 
 		//update db, remove the current content, move stack up, & show more content
 		jqversion(".ligertail_widget .ligertail_widget_content .ligertail_widget_close").click(function(){
@@ -147,9 +147,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				else{
 					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
 				}
-				/*api.submitUserInteraction(
+				api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
-  				      interaction);*/
+  				      interaction);
 		});
 	
 		//update db for click
@@ -166,9 +166,9 @@ ApiHandler.prototype.onGetOrderedItems = function(response) {
 				else{
 					interaction[1] = {itemId: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").attr('id'), statType: StatType.VIEWS, spot: jqversion(".ligertail_widget .ligertail_widget_content:visible").filter(":last").find(".ligertail_widget_close").attr('id')};
 				}
-				/*api.submitUserInteraction(
+				api.submitUserInteraction(
   				      defaultItemIds[interaction[0].itemId] ? "default" : window.PUBLISHER_URL, 
-  				      interaction);*/
+  				      interaction);
 		});
 	}
 	else{ jqversion(".ligertail_widget .ligertail_widget_content").show(); }	
