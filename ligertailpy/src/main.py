@@ -70,6 +70,7 @@ class SubmitItemHandler(BaseHandler):
           item.price = 0
           item.email = self.getParam('email')
           item.put()
+          itemList2.refreshCacheForDefaultOrderedItems(item.publisherUrl)
           self.common_response.setItems([item], response.ItemInfo.SHORT)
         except Exception:
           BaseHandler.logException(self)
@@ -201,7 +202,7 @@ class GetPaidItemsHandler(BaseHandler):
 class SubmitUserInteractionHandler(BaseHandler):
     """ 
     publisherUrl
-    interactions: a list of pairs <itemId>:<statType>, e.g. '23:1, 34:2'
+    interactions: a list of triplets <itemId>:<statType>:<spot>, e.g. '23:1:1, 34:2:2'
     """
     def post(self):
       try:

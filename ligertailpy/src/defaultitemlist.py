@@ -2,7 +2,7 @@ import model
 import logging
 import time
 import random
-from itemlist import itemList
+from itemlist2 import itemList2
 from activitymanager import Singleton
  
 
@@ -29,7 +29,7 @@ class DefaultItemList(Singleton):
   def getOrderedItems(self):
     self.lazyLoad()
     if self.config.enable and len(self.config.default_links_url) and not self.disallowOutgoing():
-      return itemList.getDefaultOrderedItems(self.config.default_links_url);
+      return itemList2.getDefaultOrderedItems(self.config.default_links_url);
     return []
 
   def getPublisherUrl(self):

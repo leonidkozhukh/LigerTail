@@ -755,8 +755,10 @@ class ActivityParams2(db.Model):
       for t in range(0, ActivityTypes.NUM_ACTIVITIES):
         if self.threshold_time_sec[t] != other.threshold_time_sec[t]:
           self.threshold_time_sec[t] = other.threshold_time_sec[t]
+          updated = True
         if self.threshold_total[t] != other.threshold_total[t]:
           self.threshold_total[t] = other.threshold_total[t]
+          updated = True
     return updated    
 
      

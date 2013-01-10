@@ -56,15 +56,15 @@ class ItemList2(Singleton):
   
   @classmethod
   def getItemKey_(cls, itemId):
-      return re.sub(r'[^a-zA-Z\d\s:]', '', '_'.join(['itemUpdate', str(itemId)]))
+      return re.sub(r'[^a-zA-Z\d]', '', '_'.join(['itemUpdate', str(itemId)]))
 
   @classmethod
   def getSpotKey_(cls, publisherUrl, spot):
-      return re.sub(r'[^a-zA-Z\d\s:]', '', '_'.join(['spotUpdate', publisherUrl, str(spot)]))
+      return re.sub(r'[^a-zA-Z\d]', '', '_'.join(['spotUpdate', publisherUrl, str(spot)]))
 
   @classmethod
   def getPublisherSiteKey_(cls, publisherUrl):
-      return re.sub(r'[^a-zA-Z\d\s:]', '', '_'.join(['publisherSiteUpdate', publisherUrl]))
+      return re.sub(r'[^a-zA-Z\d]', '', '_'.join(['publisherSiteUpdate', publisherUrl]))
     
   #TODO: remove bNew
   def updateItem(self, publisherUrl, itemId, item, bNew, statType, spot):
