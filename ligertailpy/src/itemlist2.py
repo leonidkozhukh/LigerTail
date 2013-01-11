@@ -79,7 +79,7 @@ class ItemList2(Singleton):
     if updated:
       item = model.Item.get_by_id(itemId)
       clone = updated.clone()
-      updated.reset()
+      updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
       item.updateStats2(clone)

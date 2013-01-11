@@ -415,16 +415,14 @@ class StatsUpdate(object):
     newStats.totalUpdates = self.totalUpdates
     newStats.firstUpdateTime = self.firstUpdateTime
 
-  def reset(self):
-    self.stats = {
-              StatType.CLICKS : 0,
-              StatType.CLOSES : 0,
-              StatType.LIKES : 0,
-              StatType.UNIQUES : 0,
-              StatType.VIEWS : 0
-            }
-    self.totalUpdates = 0
-    self.firstUpdateTime = 0
+  def reset(self, clone):
+    self.stats[StatType.CLICKS] -= clone.newStats.stats[StatType.CLICKS]
+    self.stats[StatType.CLOSES] -= clone.newStats.stats[StatType.CLOSES]
+    self.stats[StatType.LIKES] -= clone.newStats.stats[StatType.LIKES]
+    self.stats[StatType.UNIQUES] -= clone.newStats.stats[StatType.UNIQUES]
+    self.stats[StatType.VIEWS] -= clone.newStats.stats[StatType.VIEWS]
+    self.totalUpdates -= clone.newStats.totalUpdates 
+    self.firstUpdateTime -= clone.newStats.firstUpdateTime
 
 class ItemUpdate(StatsUpdate):
   itemId = None
