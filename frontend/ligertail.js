@@ -304,7 +304,13 @@ function initAll(){
         }
     }
   
-  var wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;height:250px!important;">';
+  var wrapper = "";
+    if(window.parameter["width"] == 600){
+        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:600px!important;height:250px!important;">';
+    }
+    else{
+        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;height:250px!important;">';
+    }
     
     jqversion(".ligertail_widget").append(wrapper + header + content + footer + '</div>');
     jqversion(".ligertail_widget .ligertail_widget_content").show();

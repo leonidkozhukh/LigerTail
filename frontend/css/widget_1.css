@@ -150,7 +150,8 @@ input {
     float:left;
     width: 290px;
     line-height: 14px;
-    padding-top: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     padding-right: 5px;
     padding-left: 5px;
     display: none;
@@ -236,8 +237,8 @@ input {
 }
 
 #ligertail_widget_small #ligertail_widget_footer {
-	height:20px;
-	background-image:url("../images/bg_footer_2.png");
+	height:19px;
+	background-image:url("../images/footer_15.png");
 	background-repeat:repeat-x;
 	clear:both;
 	background-position:right;
