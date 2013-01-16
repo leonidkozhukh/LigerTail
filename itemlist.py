@@ -68,7 +68,8 @@ class ItemList(Singleton):
     
   #TODO: remove bNew
   def updateItem(self, publisherUrl, itemId, item, bNew, statType, spot):
-    self.doUpdateItem_(publisherUrl, itemId, statType)
+    if itemId > 0:
+      self.doUpdateItem_(publisherUrl, itemId, statType)
     self.doUpdateSpot_(publisherUrl, spot, statType)
     self.doUpdatePublisherSite_(publisherUrl, statType)
 
@@ -92,7 +93,7 @@ class ItemList(Singleton):
     if updated:
       spot = model.getSpot(publisherUrl, spotPosition)
       clone = updated.clone()
-      updated.reset()
+      updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
       spot.updateStats(clone)
@@ -105,7 +106,7 @@ class ItemList(Singleton):
     if updated:
       publisherSite = model.getPublisherSite(publisherUrl)
       clone = updated.clone()
-      updated.reset()
+      updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
       publisherSite.updateStats(clone)
