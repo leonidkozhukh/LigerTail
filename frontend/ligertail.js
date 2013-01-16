@@ -117,7 +117,7 @@ function SetupParameters(){
         var i, j, src, parts, basePath, options = {};
         LTnode = document.createElement("div");
         LTnode.setAttribute("class", "ligertail_widget");
-        LTnode.setAttribute("style","width:300px!important;height:250px!important;float:none!important");
+        LTnode.setAttribute("style","float:none!important");
         
     for (i = 0; i < scripts.length; i++) { 
           src = scripts[i].src;
@@ -260,8 +260,8 @@ function initAll(){
         //height
     if(window.parameter["height"]){
         if(window.parameter["width"] == 300 && window.parameter["height"] > 0){
-            window.parameter["height"] = window.parameter["height"] - ((window.parameter["height"] - 59) % CONTENT_HEIGHT_SMALL);
-            window.numItems = Math.floor((window.parameter["height"] - 59) / CONTENT_HEIGHT_SMALL);
+            window.parameter["height"] = window.parameter["height"] - ((window.parameter["height"] - 58) % CONTENT_HEIGHT_SMALL);
+            window.numItems = Math.floor((window.parameter["height"] - 58) / CONTENT_HEIGHT_SMALL);
         }
         else if(window.parameter["width"] == 600 && window.parameter["height"] > 0){
             window.parameter["height"] = window.parameter["height"] - ((window.parameter["height"] - 84) % CONTENT_HEIGHT_LARGE);
@@ -271,10 +271,10 @@ function initAll(){
     else{
          if(window.parameter["width"] == 300){
             window.parameter["height"] = 250;
-            window.numItems = Math.floor((window.parameter["height"] - 59) / CONTENT_HEIGHT_SMALL);
+            window.numItems = Math.floor((window.parameter["height"] - 58) / CONTENT_HEIGHT_SMALL);
         }
         else if(window.parameter["width"] == 600){
-            window.parameter["height"] = 450;
+            window.parameter["height"] = 539;
             window.numItems = Math.floor((window.parameter["height"] - 84)/ CONTENT_HEIGHT_LARGE);
         }
     }
@@ -306,10 +306,10 @@ function initAll(){
   
   var wrapper = "";
     if(window.parameter["width"] == 600){
-        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:600px!important;height:250px!important;">';
+        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:600px!important;">';
     }
     else{
-        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;height:250px!important;">';
+        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;">';
     }
     
     jqversion(".ligertail_widget").append(wrapper + header + content + footer + '</div>');

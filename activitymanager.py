@@ -75,6 +75,15 @@ class ActivityManager(Singleton):
       self.updatePublisherActivityLoad_(publisherSite)
     return self.publisherActivityLoadMap[publisherUrl]
 
+  def updatePublisherActivityLoad_(self, publisherSite):        
+    activityLoad = 0
+    for i in range(0, self.averageOf):
+      activityLoad += publisherSite.timedStats.durations[self.activityDelta.id][self.numDeltasInThePast - i][model.StatType.VIEWS]
+    activityLoad /= self.averageOf
+    logging.info('current activity load %d' % activityLoad)
+    self.publisherActivityLoadMap[publisherSite.publisherUrl] = activityLoad
+    self.publisherActivityLoadUpdateMap[publisherSite.publisherUrl] = time.time()
+
   def getActivityParamsForPublisherUrl_(self, publisherUrl):
     publisherActivityLoad = self.getPublisherActivityLoad_(publisherUrl)
     for activity in self.activities:
