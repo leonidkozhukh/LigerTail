@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>{block:TagPage}Tagged "{Tag}" | {/block:TagPage}{block:SearchPage}Searched "{SearchQuery}" | {/block:SearchPage}{block:PostSummary}{PostSummary} | {/block:PostSummary}{Title}</title>
+<link rel="stylesheet" type="text/css" href="http://static.tumblr.com/tokpufl/ogJltb612/grey.matters.css">
+<style type="text/css">
+@media screen and (max-device-width: 480px) { 
+
+    .layout-decor-top-center,.layout-decor-bottom-center {
+        width:922px;
+        left:-1px;
+        top:0px;
+    }
+    .layout-decor-top-center {
+        height:12px;
+        background-color:#fff;
+    }
+    .layout-content {
+        border-bottom:1px solid #fff;
+    }
+}
+</style>
+<!--[if lt IE 8]>
+<style type="text/css">
+.layout-content {
+    zoom:1;
+}
+.header .heading {
+    line-height:30px;
+}
+</style>
+<![endif]-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $('#searchItem').click(function() {
+        	$("#searchInputWrapper").show(200);
+	});
+	
+//display current time in header  
+
+    function showTime() { 
+      var t = new Date();
+	  var h = t.getHours() + '';
+	  if (h.length == 1) h = "0" + h;
+	  var m = t.getMinutes() + '';
+      if (m.length == 1) m = "0" + m;
+	  var time = h + ':' + m;
+	  $('#clockTime').html(time);
+	}
+	showTime();
+  	window.setInterval(showTime, 30000);//update every 30 secs
+});
+</script>
+    <meta name="text:CityName" content="Moscow" /> 
+    <meta name="image:BlogPicture120x120" content="http://static.tumblr.com/tokpufl/CDxlt3v18/theme-pic.png" />
+    <meta name="text:BlogDescription" content="By far<br>the finest tumblr<br>theme ever<br>created<br>by a crazy man<br>in Russia" />   
+</head>
+<body>
+<div class="layout-bg">
+    <div class="layout" id="layout">
+        <div class="layout-decor layout-decor-top layout-decor-top-right">
+            <div class="layout-decor layout-decor-top layout-decor-top-center"></div>
+            <div class="layout-decor layout-decor-top layout-decor-top-left"></div>
+        </div>
+
+        <!-- .header -->
+        <div class="header">
+            <img src="http://static.tumblr.com/tokpufl/lpdlt3v1v/logo.png" class="logo" alt="Ligertail">
+            <span class="heading"><a href="/" title="{Title}">{Title}</a></span>
+            <span class="clock">{text:CityName} <span id="clockTime"></span></span>
+            <div class="veneer"></div>
+        </div>
+        <!--/ .header -->
+
+        <!-- .layout-content -->
+        <div class="layout-content">
+
+            <!-- .right-column-emulator -->
+            <div class="right-column-emulator">
+                <div class="right-column-footer" id="rightColumnFooter">
+                    "Greymatters" theme by <a href="http://www.firemanifest.com/blog">J.E.Jones</a> / <a href="http://ligertail.com">Ligertail</a>
+                </div>
+            </div>
+            <!--/ .right-column-emulator -->
+
+            <!-- .content-area -->
+            <div class="content-area">
+
+                <!-- .post -->
+                {block:Posts}
+                <div class="post">
+
+                    {block:Text}
+                    <div class="post-body post-type-text">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-top r-top-right"><div class="r-top r-top-center"></div><div class="r-top r-top-left"></div></div>
+                                <div class="r-content">
+                                    {block:Title}
+                                        <h3 class="post-header"><span class="separator separator-first">//</span> <a href="{Permalink}">{Title}</a><span class="separator separator-last">//</span></h3>
+                                    {/block:Title}
+                                    {Body}
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {/block:Text}
+
+                    {block:Link}
+                    <div class="post-body post-type-link">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-top r-top-right"><div class="r-top r-top-center"></div><div class="r-top r-top-left"></div></div>
+                                <div class="r-content">
+                                    <a title="{Name}" href="{URL}" {Target}>{Name}</a>
+                                    {block:Description}
+                                        <h3 class="post-header">{Description}</h3>
+                                    {/block:Description}
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {/block:Link}
+
+                    {block:Video}
+                    <div class="post-body post-type-video">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-content">
+                                    <div class="video-player">
+                                        <div class="video-player-inner">
+                                            {Video-500}
+                                        </div>
+                                    </div>
+                                    <div class="video-info">
+                                        {block:Caption}<div class="video-title"><span class="decor decor-first">—</span> {Caption} <span class="decor decor-last">—</span></div>{/block:Caption}
+                                    </div>
+
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {/block:Video}
+
+
+                    {block:Quote}
+                    <div class="post-body post-type-quote">
+                        <div class="post-content">
+                            <div class="post-type-quote-wrap">
+                                <div class="post-type-quote-inner">
+                                    <blockquote>{Quote}</blockquote>
+                                    <div class="quote-author">{Source}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/block:Quote}
+
+
+                    {block:Photo}
+                    <div class="post-body post-type-image">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-content">
+                                    <div class="post-image"><a href="{Permalink}"><img src="{PhotoURL-500}" alt="{PhotoAlt}" /></a></div>
+                                    <div class="image-info">
+                                        {block:Caption}<div class="image-description">{Caption}</div>{/block:Caption}
+                                    </div>
+
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {/block:Photo}
+
+
+                    {block:Audio}
+                    <div class="post-body post-type-audio">
+                        <div class="post-content">
+                            <div class="audio-player-container">
+                                <div class="track-area">
+                                    {block:Artist}<span class="track-artist"><span class="track-artist-inner"><span class="text">{Artist}</span></span></span>{/block:Artist}
+                                    {block:TrackName}<span class="track-title"><span class="track-title-inner">{TrackName}</span></span>{/block:TrackName}
+                                    <span class="player-control-play"></span>
+                                </div>
+                                <div class="player-area"><div class="player-area-inner">                                
+									<script type="text/javascript" language="javascript" src="http://assets.tumblr.com/javascript/tumblelog.js?7"></script>
+									<span id="audio_player_{PostID}" class="audio_player">[<a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" target="_blank">Flash 9</a> is required to listen to audio.]</span>
+									<script type="text/javascript" src="/api/read/json?id={PostID}"></script>
+									<script type="text/javascript">
+									    var color = "f15a24";
+									    var player = tumblr_api_read['posts'][0]['audio-player'].replace("color=FFFFFF", "color=" + color);
+									    replaceIfFlash(9, "audio_player_{PostID}", player);
+									</script>
+                                </div></div>
+<a class="post-notes notes-button">{PlayCount}&nbsp;Plays</a>
+                            </div>
+                        </div>
+                    </div>
+                    {/block:Audio}
+
+
+                    {block:Chat}
+                    <div class="post-body post-type-chat">
+                        <div class="post-content">
+
+                            <!-- .r-entry -->
+                            <div class="r-object r-entry">
+                                <div class="r-top r-top-right"><div class="r-top r-top-center"></div><div class="r-top r-top-left"></div></div>
+                                <div class="r-content">
+
+                                    <div class="chatlog">
+                                        <ul class="conversation_lines">
+                                            {block:Lines}
+                                            <li class="chat-line">
+                                                <strong>{block:Label}{Label}{/block:Label}</strong>
+                                                <p>{Line}</p>
+                                            </li>
+                                            {/block:Lines}
+                                        </ul>
+                                    </div>
+
+                                    <div class="r-content-border r-content-border-left"></div>
+                                    <div class="r-content-border r-content-border-right"></div>
+                                </div>
+                                <div class="r-bottom r-bottom-right"><div class="r-bottom r-bottom-center"></div><div class="r-bottom r-bottom-left"></div></div>
+                            </div>
+                            <!--/ .r-entry -->
+
+                        </div>
+                    </div>
+                    {block:Chat}
+
+
+                    <!-- .post-meta -->
+                    <div class="post-meta">
+                        {block:Date}<span class="post-date">{DayOfMonthWithZero} <span class="separator">/</span> {MonthNumberWithZero}</span>{/block:Date}
+                        <div class="notes-wrapper">                                                      
+							
+							<a class="post-notes notes-button" {block:NoteCount} href="{Permalink}#notes"{/block:NoteCount}>{NoteCountWithLabel}</a>
+                        </div>
+                        <!-- tags -->
+                        {block:HasTags}
+                            <ul class="tags">
+                                {block:Tags}
+                                <li><a href="{TagURL}" class="tag"><span class="tail"></span>{Tag}</a></li>
+                                {/block:Tags}
+                            </ul>
+                        {/block:HasTags}
+                        <!--/ tags -->
+                        <div class="veneer"></div>
+
+                        {block:PostNotes}
+                        <div class="post-notes-block" id="postNotesBlock">
+     					<a name="notes"></a>
+                            <h4>Notes</h4>
+                            {PostNotes}
+                        </div>
+                        {/block:PostNotes}
+
+
+                    </div>
+                    <!--/ .post-meta -->
+
+                </div>
+                <!--/ .post -->
+                {/block:Posts}
+
+                <!-- .posts-nav -->
+                <div class="posts-nav">
+                    <div class="posts-nav-inner">
+                        <ul class="nav">
+				            {block:NextPage}
+				                 <li><a class='next' href='{NextPage}'>{lang:Older posts} &rarr;</a></li>
+				            {/block:NextPage}
+				
+				            {block:PreviousPage}
+				                 <li><a class='prev' href='{PreviousPage}'>&larr; {lang:Newer}</a></li>
+				            {/block:PreviousPage}
+                        </ul>
+                    </div>
+                </div>
+                <!--/ .posts-nav -->
+
+            </div>
+            <!--/ .content-area -->
+
+            <!-- .right-column -->
+            
+            <div class="right-column">
+
+                <!-- .ligertail-widget -->
+            <script type="text/javascript" src="http://ligertail.com/ligertail.js"></script> 
+                <!--/ .ligertail-widget -->
+
+
+                <!-- .menu -->
+                <div class="menu">
+                 
+                    <ul>
+                        <li><a href="http://www.tumblr.com/follow/{Name}">Subscribe</a></li>
+                        <li><a href="/mobile">Mobile</a></li>
+                        <li><a href="/archive">Archives</a></li>
+                        <li>
+                            <span id="searchItem">Search</span>
+                            <div id="searchInputWrapper">
+                                <form action="/search" method="get">
+                                    <input type="text" class="input" name="q" value="{SearchQuery}"/><input class="button" type="submit" value="Search" />
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!--/ .menu -->
+
+
+                <!-- .theme-block -->
+                <div class="theme-block" id="themeBlock">
+                 
+                    <img src="{image:BlogPicture120x120}" alt="{text:BlogDescription}">
+                    <span class="caption">
+                        <span class="caption-inner">{text:BlogDescription}
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+            <!--/ .right-column -->
+
+            <div class="veneer"></div>
+        </div>
+        <!--/ .layout-content -->
+
+        <div class="layout-veneer"></div>
+
+        <!-- .layout-decor -->
+        <div class="layout-decor layout-decor-bottom layout-decor-bottom-right">
+            <div class="layout-decor layout-decor-bottom layout-decor-bottom-center"></div>
+            <div class="layout-decor layout-decor-bottom layout-decor-bottom-left"></div>
+
+        </div>
+        <!--/ .layout-decor -->
+    </div>
+        <!--/ .layout-bg -->
+    </div>
+</body>
+</html>

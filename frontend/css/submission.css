@@ -1,0 +1,57 @@
+#ligertail_submission_lightbox_left_column table, #ligertail_submission_lightbox_left_column input, #ligertail_submission_lightbox_left_column th {
+    font-family: Tahoma,Geneva,sans-serif;
+    font-weight: normal;
+}
+#ligertail_submission_lightbox {
+    border: 1px solid #CCCCCC;
+    float: left;
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    width: 691px;
+}
+#ligertail_submission_lightbox_left_column {
+    border-right: 1px solid #CCCCCC;
+    float: left;
+    line-height: 22px;
+    padding: 10px;
+    width: 350px;
+}
+#ligertail_submission_lightbox_right_column {
+    float: left;
+    padding: 10px;
+    width: 300px;
+}
+#ligertail_submission_lightbox_form {
+    color: #000000;
+}
+.ligertail_submission_lightbox_input_form {
+    border: 1px solid #CCCCCC;
+    line-height: 16px;
+    margin-bottom: 5px;
+    padding: 4px 0;
+    width: 300px;
+}
+#ligertail_submission_lightbox_button_pay, #ligertail_submission_lightbox_button_free {
+    padding-top: 5px;
+}
+#ligertail_submission_lightbox_button_pay {
+    margin-left: 52px;
+}
+#ligertail_submission_lightbox .ligertail_widget_content {
+    display: block;
+}
+#ligertail_submission_lightbox_left_column input[type="text"] {
+    color: #000000;
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 12px;
+    margin: 2px 0 5px !important;
+    padding: 4px 0 !important;
+}
+
+#ligertail_submission_lightbox_left_column input[type="text"] {
+    border:1px solid #ccc;
+}
+
