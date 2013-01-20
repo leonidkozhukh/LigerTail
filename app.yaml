@@ -1,5 +1,5 @@
 application: ligertailpayment
-version: 5
+version: 5-stats-fix
 runtime: python
 api_version: 1
 

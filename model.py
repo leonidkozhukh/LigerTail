@@ -430,14 +430,7 @@ class ItemUpdate(StatsUpdate):
   def __init__(self, itemId):
     super(ItemUpdate, self).__init__()
     self.itemId = itemId
-    self.initStatsUpdate()
   
-  def clone(self):
-    newUpdate = ItemUpdate(self.itemId)
-    super(ItemUpdate, self).clone(newUpdate)
-    return newUpdate
-
-
 class SpotUpdate(StatsUpdate):
   spot = None
   publisherUrl = None
@@ -446,11 +439,6 @@ class SpotUpdate(StatsUpdate):
     super(SpotUpdate, self).__init__()
     self.publisherUrl = publisherUrl
     self.spot = spot
-  
-  def clone(self):
-    newUpdate = SpotUpdate(self.publisherUrl, self.spot)
-    super(SpotUpdate, self).clone(newUpdate)
-    return newUpdate
 
 class PublisherSiteUpdate(StatsUpdate):
   publisherUrl = None
@@ -458,11 +446,6 @@ class PublisherSiteUpdate(StatsUpdate):
   def __init__(self, publisherUrl):
     super(PublisherSiteUpdate, self).__init__()
     self.publisherUrl = publisherUrl
-    
-  def clone(self):
-    newUpdate = PublisherSiteUpdate(self.publisherUrl)
-    super(PublisherSiteUpdate, self).clone(newUpdate)
-    return newUpdate
 
 class PaymentConfig(db.Model):
   send_email = db.BooleanProperty(default=False)
