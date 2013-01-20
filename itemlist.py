@@ -130,7 +130,7 @@ class ItemList(Singleton):
   @classmethod
   def refreshCacheForDefaultOrderedItems(self, publisherUrl):   
     items = model.getItems(publisherUrl)
-    defaultOrderedItems = filterStrategy.applyFilter(items, model.getDefaultFilter())
+    defaultOrderedItems = filterStrategy.applyFilter(items.run(batch_size=1000), model.getDefaultFilter())
     logging.info('repopulating memache for %s', publisherUrl)
     memcache.set('def_list_%s' % publisherUrl, defaultOrderedItems[0:50])
     return defaultOrderedItems
