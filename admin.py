@@ -183,7 +183,7 @@ class AdminHandler(webapp.RequestHandler):
       try:
         while i <= 4:
           i+=1
-          entries = query.fetch(500)
+          entries = query.run(batch_size=500)
           db.delete(entries)
         return i*500
       except StopIteration:

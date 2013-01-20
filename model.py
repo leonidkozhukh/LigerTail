@@ -600,10 +600,10 @@ class ActivityParams(db.Model):
 
      
 def getItems(publisherUrl):
-    return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).fetch(1000);
+    return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl).run(batch_size=1000);
 
 def getPaidItems(publisherUrl):
-    return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).fetch(1000);
+    return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).run(batch_size=1000);
 
 def getSpot(publisherUrl, pos):
     spot = None
@@ -624,7 +624,7 @@ def getPublisherSite(publisherUrl):
     return publisher
 
 def getPublisherSites():
-    publishers = db.GqlQuery('SELECT * FROM PublisherSite ORDER BY views DESC').fetch(100)
+    publishers = db.GqlQuery('SELECT * FROM PublisherSite ORDER BY views DESC').run(limit=100)
     return publishers
 
 def getBucket(bucketId):
@@ -680,7 +680,7 @@ def getActivities(enabled):
   else:
     query = 'SELECT * FROM ActivityParams ORDER BY activity_load'
   
-  activities = db.GqlQuery(query).fetch(100);
+  activities = db.GqlQuery(query).run(limit=100);
   if not len(activities):
       activity = ActivityParams() #default
       activity.put()
