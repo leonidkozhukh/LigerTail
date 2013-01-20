@@ -22,7 +22,7 @@ class ResponseStats(json.JSONEncoder):
     for i in range (model.StatType.BEGIN, model.StatType.END):
       total[i] = self.stats[i]
     ret['totalStats'] = total
-    ret['timedStats'] = self.timedStats.update()
+    ret['timedStats'] = self.timedStats.updateUnknown()
     d = self.timedStats.updateTime
     ret['updateTime'] = {'year' : d.year,
                          'month' : d.month,

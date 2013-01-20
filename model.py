@@ -319,6 +319,24 @@ class TimedStats(object):
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
+  def updateUnknown(self, statType = StatType.UNKNOWN, newUpdateTime = datetime.datetime.utcnow()):
+    prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
+    
+    if self.updateTime:
+      prevYear = self.getPrevYearIdx_(newUpdateTime);
+      prevMonth = self.getPrevMonthIdx_(newUpdateTime);
+      prevDay = self.getPrevDayIdx_(newUpdateTime);
+      prevHour = self.getPrevHourIdx_(newUpdateTime);
+      prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
+            
+    self.updateStats_(YEARLY, statType, prevYear, 1)
+    self.updateStats_(MONTHLY, statType, prevMonth, 1)
+    self.updateStats_(DAILY, statType, prevDay, 1)
+    self.updateStats_(HOURLY, statType, prevHour, 1)
+    self.updateStats_(MINUTELY, statType, prevMinute, 1)
+    self.updateTime = newUpdateTime
+    return self.getCompressed()
+
   def update(self, itemUpdate):
     newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
@@ -369,12 +387,23 @@ class StatsUpdate(object):
   stats = {}
 
   def __init__(self):
-    self.reset()
+    self.initStatsUpdate()
 
   def __str__(self):
     return 'totalUpdates %d, firstUpdateTime %f stats %s' %(self.totalUpdates, self.firstUpdateTime, self.stats)
 
+  def initStatsUpdate(self):
+    self.stats = {
+            StatType.CLICKS : 0,
+            StatType.CLOSES : 0,
+            StatType.LIKES : 0,
+            StatType.UNIQUES : 0,
+            StatType.VIEWS : 0
+        }
+
   def update(self, statType):
+    if not self.stats:
+      self.initStatsUpdate()
     self.stats[statType] = self.stats[statType] + 1
     self.totalUpdates = self.totalUpdates + 1
     if not self.firstUpdateTime:
@@ -401,6 +430,7 @@ class ItemUpdate(StatsUpdate):
   def __init__(self, itemId):
     super(ItemUpdate, self).__init__()
     self.itemId = itemId
+    self.initStatsUpdate()
   
   def clone(self):
     newUpdate = ItemUpdate(self.itemId)

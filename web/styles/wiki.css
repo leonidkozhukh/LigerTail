@@ -1,0 +1,13 @@
+body{
+   background: white url('../images/bg/wiki_bg_tile.png') repeat 0px 0px; 
+   width: 960px;
+   margin: 0 auto;
+   position: relative;
+   padding-top: 100px;
+}
+
+.grid_3{
+   margin-left: auto;
+   margin-right: auto;
+   width: 66%;
+}
