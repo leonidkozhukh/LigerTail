@@ -8,6 +8,8 @@ from google.appengine.api import taskqueue
 from activitymanager import activityManager
 from activitymanager import Singleton
 from google.appengine.ext import deferred
+import copy
+import time
   
 class ItemList(Singleton):
   
@@ -20,8 +22,9 @@ class ItemList(Singleton):
     memcache.set(key, itemUpdate)
 
     if activityManager.itemNeedsNewJob(publisherUrl, itemUpdate):
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
       try:
-        deferred.defer(self.flushItemUpdate, itemId, _name=key)
+        deferred.defer(self.flushItemUpdate, itemId, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
         pass
 
@@ -34,8 +37,9 @@ class ItemList(Singleton):
     memcache.set(key, spotUpdate)
 
     if activityManager.spotNeedsNewJob(spotUpdate):
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
       try:
-        deferred.defer(self.flushSpotUpdate, publisherUrl, spot, _name=key)
+        deferred.defer(self.flushSpotUpdate, publisherUrl, spot, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
         pass
 
@@ -48,8 +52,9 @@ class ItemList(Singleton):
     memcache.set(key, publisherSiteUpdate)
 
     if activityManager.publisherSiteNeedsNewJob(publisherSiteUpdate):
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
       try:
-        deferred.defer(self.flushPublisherSiteUpdate, publisherUrl, _name=key)
+        deferred.defer(self.flushPublisherSiteUpdate, publisherUrl, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
         pass
 
@@ -79,7 +84,7 @@ class ItemList(Singleton):
     updated = memcache.get(key)
     if updated:
       item = model.Item.get_by_id(itemId)
-      clone = updated.clone()
+      clone = copy.deepcopy(updated)
       updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
@@ -92,7 +97,7 @@ class ItemList(Singleton):
     updated = memcache.get(key)
     if updated:
       spot = model.getSpot(publisherUrl, spotPosition)
-      clone = updated.clone()
+      clone = copy.deepcopy(updated)
       updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
@@ -105,7 +110,7 @@ class ItemList(Singleton):
     updated = memcache.get(key)
     if updated:
       publisherSite = model.getPublisherSite(publisherUrl)
-      clone = updated.clone()
+      clone = copy.deepcopy(updated)
       updated.reset(clone)
       # reset counters as soon as possible and write into memcache
       memcache.set(key, updated)
