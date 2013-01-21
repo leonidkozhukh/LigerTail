@@ -131,6 +131,7 @@ input {
 
 #ligertail_widget_small {
 	width:300px;
+        height: 250px;
 /*	float:left;*/
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:12px;
