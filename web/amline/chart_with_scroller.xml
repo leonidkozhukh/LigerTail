@@ -9,18 +9,19 @@
   <csv_separator>;</csv_separator>  
 
      
-  <plot_area>                                             
+  <plot_area>
+    <color>#C9C9C9</color>
+    <alpha>15</alpha>                                             
     <margins>                                             
       <left>0</left>                                      
       <top>0</top>                                         
       <right>0</right>                                    
-      <bottom>0</bottom>                                 
+      <bottom>50</bottom>                                 
     </margins>
   </plot_area>
   
   <background>
-  	<color>#C9C9C9</color>
-  	<alpha>15</alpha>
+  	<color>#000000</color>
   </background>
 
 
@@ -60,7 +61,7 @@
  <values>
  	<x>
  		<color>#C9C9C9</color>
- 		<inside>true</inside>
+ 		<inside>false</inside>
  	</x>
  	<y_left>
  		<inside>true</inside>
