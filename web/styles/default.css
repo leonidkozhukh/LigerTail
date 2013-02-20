@@ -202,7 +202,7 @@ input {outline:0;}
 
 
 /* @rates */
-.rates {font-family: 'Helvetica Neue', Helvetica, sans-serif; margin: 0 0 10px; width: 100%;}
+.rates {font-family: 'Helvetica Neue', Helvetica, sans-serif; margin: 25px 0 10px; width: 100%;}
 .rates .row {position: relative; zoom: 1;}
 .rates .cell {float: left;}
 .rates .cell .r-indent {margin-right: 0;}
@@ -242,6 +242,7 @@ input {outline:0;}
         .col-holder-engagement {left: 857px;}
 
     /* @rhead */
+    .rates .rhead {margin-top: 10px; font-weight: bold; font-size: 14px;}
     .rates .rhead .data-entry {font-size: 12px; color: #000;}
 
     /* @rbody */
@@ -262,14 +263,14 @@ input {outline:0;}
         .data-price .s-input-text-rate input {text-align: center;}
 
         .rates .note {
-            font-size: 13px;
+            font-size: 16px;
             color: #C1272D;
-            text-decoration: underline;
             text-align: left;
-            min-width: 500px;
+            min-width: 550px;
             top: 9px;
             left: 0;
             position: absolute;
+            font-weight: bold;
         }
 
         /* col-holher */

@@ -184,7 +184,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
-									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+									'<div class="interact-show"><span class="note">TO LIST YOUR LINK: click "Submit Payment" above and enter your info.</span> </div>' +
 								'</div></div>' +
 								'<div class="cell col-views"><div class="data-entry"></div></div>' +
                                 '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
@@ -254,7 +254,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c"><input type="text" value="$1" /></div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
-									'<div class="interact-show"><span class="note">Please enter the amount you would like to pay for placement and then press Return</span> </div>' +
+									'<div class="interact-show"><span class="note">TO LIST YOUR LINK: click "Submit Payment" above and enter your info.</span> </div>' +
 								'</div></div>' +
 								'<div class="cell col-views"><div class="data-entry"></div></div>' +
                                 '<div class="cell col-clicks"><div class="data-entry"></div></div>' +
