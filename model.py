@@ -422,7 +422,7 @@ class StatsUpdate(object):
     self.stats[StatType.UNIQUES] -= clone.stats[StatType.UNIQUES]
     self.stats[StatType.VIEWS] -= clone.stats[StatType.VIEWS]
     self.totalUpdates -= clone.totalUpdates 
-    self.firstUpdateTime -= 0
+    self.firstUpdateTime = 0
 
 class ItemUpdate(StatsUpdate):
   itemId = None
