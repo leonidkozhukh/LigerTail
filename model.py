@@ -319,15 +319,16 @@ class TimedStats(object):
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
-  def updateUnknown(self, statType = StatType.UNKNOWN, newUpdateTime = datetime.datetime.utcnow()):
+  def updateUnknown(self, statType = StatType.UNKNOWN):
+    newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
     if self.updateTime:
-      prevYear = self.getPrevYearIdx_(newUpdateTime);
-      prevMonth = self.getPrevMonthIdx_(newUpdateTime);
-      prevDay = self.getPrevDayIdx_(newUpdateTime);
-      prevHour = self.getPrevHourIdx_(newUpdateTime);
-      prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
+      prevYear = self.getPrevYearIdx_(newUpdateTime)
+      prevMonth = self.getPrevMonthIdx_(newUpdateTime)
+      prevDay = self.getPrevDayIdx_(newUpdateTime)
+      prevHour = self.getPrevHourIdx_(newUpdateTime)
+      prevMinute = self.getPrevMinuteIdx_(newUpdateTime)
             
     self.updateStats_(YEARLY, statType, prevYear, 1)
     self.updateStats_(MONTHLY, statType, prevMonth, 1)
@@ -342,11 +343,11 @@ class TimedStats(object):
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
     if self.updateTime:
-      prevYear = self.getPrevYearIdx_(newUpdateTime);
-      prevMonth = self.getPrevMonthIdx_(newUpdateTime);
-      prevDay = self.getPrevDayIdx_(newUpdateTime);
-      prevHour = self.getPrevHourIdx_(newUpdateTime);
-      prevMinute = self.getPrevMinuteIdx_(newUpdateTime);
+      prevYear = self.getPrevYearIdx_(newUpdateTime)
+      prevMonth = self.getPrevMonthIdx_(newUpdateTime)
+      prevDay = self.getPrevDayIdx_(newUpdateTime)
+      prevHour = self.getPrevHourIdx_(newUpdateTime)
+      prevMinute = self.getPrevMinuteIdx_(newUpdateTime)
             
     for statType in itemUpdate.stats:
       self.updateStats_(YEARLY, statType, prevYear, itemUpdate.stats[statType])
