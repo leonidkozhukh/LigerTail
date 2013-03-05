@@ -319,7 +319,8 @@ class TimedStats(object):
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
-  def updateUnknown(self, statType = StatType.UNKNOWN):
+  def updateUnknown(self):
+    statType = StatType.UNKNOWN
     newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
@@ -423,7 +424,7 @@ class StatsUpdate(object):
     self.stats[StatType.UNIQUES] -= clone.stats[StatType.UNIQUES]
     self.stats[StatType.VIEWS] -= clone.stats[StatType.VIEWS]
     self.totalUpdates -= clone.totalUpdates 
-    self.firstUpdateTime = 0
+    self.firstUpdateTime = time.time()
 
 class ItemUpdate(StatsUpdate):
   itemId = None
