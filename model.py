@@ -319,8 +319,7 @@ class TimedStats(object):
       prevMinute = updateTime.minute + 60 - self.updateTime.minute
     return prevMinute
 
-  def updateUnknown(self):
-    statType = StatType.UNKNOWN
+  def updateUnknown(self, statType = StatType.UNKNOWN):
     newUpdateTime = datetime.datetime.utcnow()
     prevYear = prevMonth = prevDay = prevHour = prevMinute = -1
     
@@ -351,11 +350,12 @@ class TimedStats(object):
       prevMinute = self.getPrevMinuteIdx_(newUpdateTime)
             
     for statType in itemUpdate.stats:
-      self.updateStats_(YEARLY, statType, prevYear, itemUpdate.stats[statType])
-      self.updateStats_(MONTHLY, statType, prevMonth, itemUpdate.stats[statType])
-      self.updateStats_(DAILY, statType, prevDay, itemUpdate.stats[statType])
-      self.updateStats_(HOURLY, statType, prevHour, itemUpdate.stats[statType])
-      self.updateStats_(MINUTELY, statType, prevMinute, itemUpdate.stats[statType])
+        if itemUpdate.stats[statType] > 0:
+            self.updateStats_(YEARLY, statType, prevYear, itemUpdate.stats[statType])
+            self.updateStats_(MONTHLY, statType, prevMonth, itemUpdate.stats[statType])
+            self.updateStats_(DAILY, statType, prevDay, itemUpdate.stats[statType])
+            self.updateStats_(HOURLY, statType, prevHour, itemUpdate.stats[statType])
+            self.updateStats_(MINUTELY, statType, prevMinute, itemUpdate.stats[statType])
     self.updateTime = newUpdateTime
     return self.getCompressed()
 
