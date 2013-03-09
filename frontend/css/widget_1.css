@@ -157,6 +157,10 @@ input {
     padding-left: 5px;
     display: none;
 }
+#ligertail_widget_small .ligertail_widget_content img {
+	float: left;
+	margin-right: 5px;
+}
 
 #ligertail_widget_small .ligertail_widget_close {
 	float:right;
@@ -164,10 +168,14 @@ input {
 	padding-top: 2px;
 }
 	
+#ligertail_widget_small .ligertail_widget_close img {
+	float:right;
+	margin-right: 0px;
+}
 
 #ligertail_widget_small .ligertail_widget_text {
 	float:left;
-	width:268px; height: 12px; overflow: hidden;
+	width:247px; height: 12px; overflow: hidden;
 	padding-top:2px;
 	padding-bottom:4px;
 	margin-right: 4px;
