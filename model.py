@@ -139,10 +139,10 @@ class StatContainer(db.Model):
     self.pickled_timedstats = pickle.dumps((self.timedStats), 2)
 
   def updateStats(self, itemUpdate):
-    for statType in itemUpdate.stats:
-      self.stats[statType] += itemUpdate.stats[statType]
     if itemUpdate.totalUpdates > 0:
-      self.timedStats.update(itemUpdate)
+        for statType in itemUpdate.stats:
+            self.stats[statType] += itemUpdate.stats[statType]
+        self.timedStats.update(itemUpdate)
   
 
 class Item(StatContainer):
@@ -226,8 +226,9 @@ class PublisherSite(StatContainer):
     return 'publisherUrl %s, stats %s' %(self.publisherUrl, self.stats)
 
   def updateStats(self, itemUpdate):
-    StatContainer.updateStats(self, itemUpdate)
-    self.views = self.stats[StatType.VIEWS]
+    if itemUpdate.totalUpdates > 0:
+        StatContainer.updateStats(self, itemUpdate)
+        self.views = self.stats[StatType.VIEWS]
     
   def put(self):
     '''Stores the object, making the derived fields consistent.'''
