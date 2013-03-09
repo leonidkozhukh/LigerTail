@@ -141,7 +141,8 @@ class StatContainer(db.Model):
   def updateStats(self, itemUpdate):
     for statType in itemUpdate.stats:
       self.stats[statType] += itemUpdate.stats[statType]
-    self.timedStats.update(itemUpdate)
+    if itemUpdate.totalUpdates > 0:
+      self.timedStats.update(itemUpdate)
   
 
 class Item(StatContainer):
