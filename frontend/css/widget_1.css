@@ -160,6 +160,7 @@ input {
 #ligertail_widget_small .ligertail_widget_content img {
 	float: left;
 	margin-right: 10px;
+	margin-top: 2px;
 }
 
 #ligertail_widget_small .ligertail_widget_close {
