@@ -209,6 +209,7 @@ input {outline:0;}
 .rates .data-entry {padding: 8px 5px; position: relative; text-align: center;}
     .rates .cell .data-entry {text-align: center;}
     .rates .col-link .data-entry {text-align: left; padding-left: 0;}
+    .rates .col-link .data-entry img {float: left; margin-right: 5px;}
     .rates .rbody .col-link .data-entry {padding-left: 12px; white-space:nowrap;}
     .rates .rbody .col-link .data-entry .text {overflow:hidden;}
     .rates .rbody .row .col-link .data-entry .cell-limiter {width: 60px; height: 35px; right: 0; top: 0; background:url(../images/bg/datatable-dataEntry-limiter.png) no-repeat; position: absolute;}

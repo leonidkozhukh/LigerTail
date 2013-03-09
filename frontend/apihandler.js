@@ -180,7 +180,7 @@ ApiHandler.prototype.onGetPaidItems = function(response) {
 		var item_obj = jqversion.parseJSON(item);
 				//console.log(item_obj);
 		content +=			'<div class="row" id="' + item_obj.id + '">' +
-                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num">' + (i+1) + '</span><img src="http://g.etfv.co/' + encodeURIComponent(item_obj.url) + '?defaulticon=lightpng" width="16" height="16" border="0" alt="favicon" /><div class="text">' + item_obj.title + '</div><a class="close"></a></div></div>' +
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c">$' + item_obj.price  + '</div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
@@ -250,7 +250,7 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 		var item_obj = jqversion.parseJSON(item);
 		
 		content =			'<div class="row row-first row-active">' +
-                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num"></span><div class="text">' + getDomain(item_obj.url) + '/ ' + item_obj.title + '</div><a class="close"></a></div></div>' +
+                                '<div class="cell col-link s-control"><div class="data-entry r-indent"><span class="num"></span><img src="http://g.etfv.co/' + encodeURIComponent(item_obj.url) + '?defaulticon=lightpng" width="16" height="16" border="0" alt="favicon" /><div class="text">' + item_obj.title + '</div><a class="close"></a></div></div>' +
                                 '<div class="cell col-price"><div class="data-entry data-price r-indent"><div class="bulb s-input-text-rate"><div class="c"><input type="text" value="$1" /></div><div class="l"></div></div></div></div>' +
                                 '<div class="cell col-startDate"><div class="data-entry">' +
 									'<div class="interact-hide"></div>' +
