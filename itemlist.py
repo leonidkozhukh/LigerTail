@@ -22,7 +22,7 @@ class ItemList(Singleton):
     memcache.set(key, itemUpdate)
 
     if activityManager.itemNeedsNewJob(publisherUrl, itemUpdate):
-      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M", time.gmtime())])
       try:
         deferred.defer(self.flushItemUpdate, itemId, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
@@ -37,7 +37,7 @@ class ItemList(Singleton):
     memcache.set(key, spotUpdate)
 
     if activityManager.spotNeedsNewJob(spotUpdate):
-      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M", time.gmtime())])
       try:
         deferred.defer(self.flushSpotUpdate, publisherUrl, spot, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
@@ -52,7 +52,7 @@ class ItemList(Singleton):
     memcache.set(key, publisherSiteUpdate)
 
     if activityManager.publisherSiteNeedsNewJob(publisherSiteUpdate):
-      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M-%S", time.gmtime())])
+      task_name = '-'.join([key, time.strftime("%W-%w-%H-%M", time.gmtime())])
       try:
         deferred.defer(self.flushPublisherSiteUpdate, publisherUrl, _name=task_name)
       except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
