@@ -189,8 +189,16 @@ function getPublisherStats(response){
 		if (c>=0 && c<=_maxNum) {
             setClicks(c);
         } else {
-            _err = true;
+            //_err = true;
             //setTimeout("getClicks();",9000);//wait 10 secs
+            
+            for(var i = 2; i < 31 && isNaN(c); i++) {
+                clicks = parseInt(site_obj.timedStats[Duration.WEEKLY][i][2]);
+                closes = parseInt(site_obj.timedStats[Duration.WEEKLY][i][4]);
+                c = clicks + closes;
+            }
+            if (c >= 0 && c <= _maxNum)
+                setClicks(c);
         }
     });
 }
