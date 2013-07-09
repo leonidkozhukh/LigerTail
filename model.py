@@ -604,7 +604,7 @@ class ActivityParams(db.Model):
 
      
 def getItems(publisherUrl):
-    return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1", publisherUrl)
+    return db.GqlQuery("SELECT * FROM Item WHERE publisherUrl=:1 ORDER BY creationTime DESC LIMIT 300", publisherUrl)
 
 def getPaidItems(publisherUrl):
     return db.GqlQuery('SELECT * FROM Item WHERE publisherUrl=:1 AND price > 0 ORDER BY price DESC', publisherUrl).fetch(1000)
