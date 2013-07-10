@@ -35,3 +35,9 @@ indexes:
   - name: publisherUrl
   - name: price
     direction: desc
+ 
+- kind: Item
+  properties:
+  - name: publisherUrl
+  - name: creationTime
+    direction: desc
