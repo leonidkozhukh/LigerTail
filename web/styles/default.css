@@ -150,7 +150,7 @@ input {outline:0;}
 .counter img {visibility: hidden}
 
 /* @promo-block */
-.promo-block {background-color: #E6E6E6; padding: 24px 0; }
+.promo-block {background-color: #E6E6E6; padding: 24px 0; display: none; }
 .promo-block-inner {position: relative; min-height: 100px;}
 .promo-block .logo {margin-top: 4px; float:left;}
 .promo-block .logo img {/*top: -45px; position: relative;*/}

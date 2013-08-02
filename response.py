@@ -2,6 +2,7 @@ from appengine_utilities.sessions import Session
 from django.utils import simplejson as json
 from google.appengine.api import memcache, users
 import datetime
+import time
 import model
 
 # Set the debug level
@@ -40,6 +41,7 @@ class ResponseItem(ResponseStats):
         self.itemInfo = itemInfo
         self.price = item.price
         self.publisherUrl = item.publisherUrl
+        self.creationTime = item.creationTime
         if hasattr(item, 'engagement'):
           self.engagement = item.engagement
         if hasattr(item, 'tier'):
@@ -55,7 +57,8 @@ class ResponseItem(ResponseStats):
               'title' : o.title,
               'description' : o.description,
               'id' : o.id,
-              'thumbnailUrl' : o.thumbnailUrl
+              'thumbnailUrl' : o.thumbnailUrl,
+              'creationTime' : time.mktime(o.creationTime.timetuple())
           }
           if o.itemInfo == ItemInfo.WITH_PRICE or o.itemInfo == ItemInfo.FULL:
               ret['price'] = o.price
