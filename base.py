@@ -21,7 +21,7 @@ _DEBUG = True
     
 class Client(object):
     numViewableItems = 5
-    numItems = 30
+    numItems = 50
     def __init__(self, numViewableItems):
         if numViewableItems:
             self.numViewableItems = numViewableItems
