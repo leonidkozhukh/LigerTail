@@ -37,6 +37,9 @@ handlers:
   secure: always
   static_dir: frontend
 
+- url: /tumblr/concrete
+  static_dir: tumblr/concrete
+
 - url: /tumblr/images
   static_dir: tumblr/images
     

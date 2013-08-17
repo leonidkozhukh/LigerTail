@@ -156,6 +156,8 @@ input {
     padding-right: 5px;
     padding-left: 5px;
     display: none;
+    -moz-box-sizing: content-box; 
+    box-sizing: content-box;
 }
 #ligertail_widget_small .ligertail_widget_content img {
 	float: left;
@@ -185,6 +187,8 @@ input {
 	text-align: left;
 	color: #000000;
 	text-transform: none;
+	-moz-box-sizing: content-box; 
+	box-sizing: content-box;
 }
 
 #ligertail_widget_small .ligertail_widget_text .ligertail_widget_source {
