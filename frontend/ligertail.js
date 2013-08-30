@@ -290,7 +290,12 @@ function initAll(){
         var content = '';
     }
     else{
-        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header.png" width="70" height="39" alt="Ligertail" align="left" title="Visit LigerTail.com"/><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit_4.png" value="Submit" align="left"/></form></div>';
+        if(window.parameter["style"] == "orange")
+            var suffix = "_orange";
+        else
+            var suffix = "";
+         
+        var header = '<div id="ligertail_widget_header"><form><img src="' + LTDOMAIN + '/frontend/images/logo_header' + suffix + '.png" width="70" height="39" alt="Ligertail" align="left" title="Visit LigerTail.com"/><input type="text" class="ligertail_widget_form" value="Got a link to add here?" /><input type="image" src="' + LTDOMAIN + '/frontend/images/button_submit' + suffix + '.png" value="Submit" align="left" id="submit_link"/></form></div>';
         var footer = '<div id="ligertail_widget_footer"></div>';
         var content = '';
     }
@@ -309,7 +314,10 @@ function initAll(){
         wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:600px!important;">';
     }
     else{
-        wrapper = '<div style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;">';
+        if(!window.parameter["style"])
+            window.parameter["style"] = "original";
+        
+        wrapper = '<div class="' + window.parameter["style"] + '" style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;">';
     }
     
     jqversion(".ligertail_widget").append(wrapper + header + content + footer + '</div>');

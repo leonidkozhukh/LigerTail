@@ -142,7 +142,7 @@ input {outline:0;}
 .code-inner .select-code {margin-left:69px;width:450px;}
 
 /* @presentation-pic */
-.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; background:url(../images/bg/presentation-pic-shadow.png) no-repeat left top; z-index:4}
+.presentation-pic {width: 322px; height: 272px; padding: 4px 0 0 4px; position: absolute; top: 0; left: 0; overflow: hidden; text-align: left; z-index:4}
 .info-block .presentation-pic-placeholder {width: 318px; height: 250px; top: -16px; left: -5px; position: relative; margin-left: auto; margin-right: auto;}
 
 .counter-container {position:absolute;top:0px;left:181px;height:30px;width:115px;padding-left:12px;}
