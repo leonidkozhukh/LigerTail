@@ -221,12 +221,13 @@ input {
 
 .orange .ligertail_widget_content {
 	background-image: none;
+	background-color: #fff;
 	border-top: 0px;
 	border-left: 1px;
 	border-bottom: 1px;
 	border-right: 0px;
 	border-style: dashed;
-	color: #e1e1e1;
+	border-color: #e1e1e1;
 	padding-bottom: 2px;
 }
 
@@ -245,8 +246,8 @@ input {
 	background-image: url("../images/bg_header_orange.png");
 }
 
-.orange .ligertail_widget_text {
-	color: #443e3b;
+.orange .ligertail_widget_text a {
+	color: #000;
 	font-weight: bold;
 	font-size: 11px;
 	line-height: 16px;
@@ -261,7 +262,8 @@ input {
 }
 
 .orange #ligertail_widget_header #submit_link {
-	margin-left: -20px;
+	margin-left: -21px;
+	margin-top: 13px;
 }
 
 .original #ligertail_widget_footer {	
