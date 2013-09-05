@@ -78,7 +78,7 @@ input {outline:0;}
 
 .root {position: relative; width: 100%; height: 100%; display: table;}
 .layout-wrap {padding-top: 42px; padding-bottom: 42px; display: table-cell; vertical-align: middle; overflow: hidden;}
-.layout {background-color: #fff; position: relative;}
+.layout {background-image: url(../images/crosshatch_bg.png); position: relative;}
 .content {height:420px;}
     /* shadow */
     .layout-shadow {height: 42px; width: 100%; left: 0; position: absolute; background-repeat: repeat-x; background-position: 0 0;}

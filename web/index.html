@@ -66,7 +66,7 @@
 
                                     <div class="presentation-pic-placeholder">
                                         <div class="presentation-pic g-png" id="presentationPic">
-                                            <script type="text/javascript" src="../frontend/ligertail.js?block_default_links=1"></script>
+                                            <script type="text/javascript" src="../frontend/ligertail.js?block_default_links=1&style=orange"></script>
                                         </div>
                                     </div>
 
@@ -187,8 +187,16 @@
     </div>
 </div>
 <script type='text/javascript'>
-$(".layout-shadow-b").click(function() {
-	$(".promo-block").show();
+$(document).ready(function(){
+    $(".layout-shadow-b").click(function() {
+	   $(".promo-block").show();
+    });
+    
+    $(".tip").click(function() {
+        $(".orange").removeClass("orange").addClass("original");
+        $("form img:first").attr("src", "http://localhost:8080/frontend/images/logo_header.png");
+        $("#submit_link").attr("src", "http://localhost:8080/frontend/images/button_submit.png");
+    });
 });
 </script>
 </body>
