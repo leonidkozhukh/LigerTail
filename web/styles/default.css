@@ -80,6 +80,7 @@ input {outline:0;}
 .layout-wrap {padding-top: 42px; padding-bottom: 42px; display: table-cell; vertical-align: middle; overflow: hidden;}
 .layout {background-image: url(../images/crosshatch_bg.png); position: relative;}
 .content {height:420px;}
+#box-info {height: 500px; background-color: #fff;}
     /* shadow */
     .layout-shadow {height: 42px; width: 100%; left: 0; position: absolute; background-repeat: repeat-x; background-position: 0 0;}
     .layout-shadow-t {top: -42px; background-image: url(../images/bg/layout-shadow-t.png);}
