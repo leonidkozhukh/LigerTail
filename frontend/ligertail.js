@@ -315,7 +315,7 @@ function initAll(){
     }
     else{
         if(!window.parameter["style"])
-            window.parameter["style"] = "original";
+            window.parameter["style"] = "orange";
         
         wrapper = '<div class="' + window.parameter["style"] + '" style="position:absolute!important;background:none!important;border:none!important;margin:0!important;padding:0!important;line-height:1em!important;font-size:100%!important;width:300px!important;">';
     }
