@@ -194,7 +194,7 @@ input {outline:0;}
 
 /* @chart */
 .chart {}
-.chart-panel {margin-top: -65px; padding-bottom: 5px; position: relative; zoom: 1;}
+.chart-panel {margin-top: 0px; padding-bottom: 5px; position: relative; zoom: 1;}
 .chart-panel select {font-size: 11px; }
     /* @params */
     .chart-panel .params {padding-top: 10px;}
@@ -251,6 +251,7 @@ input {outline:0;}
     .rates .rbody .data-entry {font-size: 14px;}
     .data-entry {color: #C9C9C9;}
     .rates .rbody .cell {position: relative; z-index: 2;}
+    .rbody {height: 185px; overflow-y: scroll; overflow-x: hidden;}
 
         /* @s-control */
         .s-control {}
