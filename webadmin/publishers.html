@@ -9,25 +9,20 @@
     <tr>
       <td>url</td>
       <td>$</td>
-      <td>uniques</td>
       <td>views</td>
       <td>clicks</td>
-      <td>likes</td>
       <td>closes</td>
-      <td>more</td>
     </tr>
   {% for publisher in publishers %}
     <tr>
       <td>
-        <b>{{publisher.publisherUrl}}</b>
+        <a href="http://{{publisher.publisherUrl}}" target="_blank"><b>{{publisher.publisherUrl}}</b></a>
       </td>
       <td> ${{ publisher.amount }}</td>
-      <td> {{ publisher.stats.0 }}</td>
       <td> {{ publisher.stats.1 }}</td>
       <td> {{ publisher.stats.2 }}</td>
-      <td> {{ publisher.stats.3 }}</td>
       <td> {{ publisher.stats.4 }}</td>
-      <td><a href="itemstats.html?publisherUrl={{publisher.publisherUrl}}">See details</a></td>
+      <td style="display: none;"><a href="itemstats.html?publisherUrl={{publisher.publisherUrl}}" target="_blank">See details</a></td>
     </tr>
 {% endfor %}
    </table>

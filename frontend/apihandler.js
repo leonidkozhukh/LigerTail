@@ -319,13 +319,16 @@ ApiHandler.prototype.onGetItemInfo = function(response) {
 
 ApiHandler.prototype.onGetItemStats = function(response) {
 	//console.log(response);
+    var utc_time;
+    var d = new Date(0);
 
 	jqversion.each(response.items, function(i, item){ 
 		var item_obj = jqversion.parseJSON(item);
 		//console.log(item_obj);
 		window.analytics_data['items'][item_obj.id] = ApiHandler.parseStats_(item_obj);
-		
-		jqversion(".rbody #" + item_obj.id+ " .interact-hide").html(item_obj.updateTime['year'] + '-' + item_obj.updateTime['month'] + '-' + item_obj.updateTime['day']);
+		utc_time = item_obj.creationTime;
+        d.setUTCSeconds(utc_time);
+		jqversion(".rbody #" + item_obj.id+ " .interact-hide").html(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate());
 		jqversion(".rbody #" + item_obj.id+ " .col-views .data-entry").html(item_obj.totalStats[1]);
 		jqversion(".rbody #" + item_obj.id+ " .col-clicks .data-entry").html(item_obj.totalStats[2]);
 		jqversion(".rbody #" + item_obj.id+ " .col-closes .data-entry").html(item_obj.totalStats[4]);

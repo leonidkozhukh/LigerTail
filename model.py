@@ -628,7 +628,7 @@ def getPublisherSite(publisherUrl):
     return publisher
 
 def getPublisherSites():
-    publishers = db.GqlQuery('SELECT * FROM PublisherSite ORDER BY views DESC').fetch(100)
+    publishers = db.GqlQuery('SELECT * FROM PublisherSite ORDER BY views DESC').fetch(300)
     return publishers
 
 def getBucket(bucketId):
