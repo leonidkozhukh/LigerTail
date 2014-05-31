@@ -111,7 +111,6 @@ input {outline:0;}
 .info-block-small {height: 403px;}
 .inner-wrap {display: table-cell; padding: 0 1px; text-align: center; vertical-align: middle; position: relative; background:url(../images/bg/info-block-pad.png) no-repeat left top;}
 .info-block-small .inner-wrap {background: url(../images/bg/info-block-pad-small.png) no-repeat left top;}
-.info-block-presentation .inner-wrap {background-image: url(../images/bg/info-block-pad-presentation.png);}
 .inner-content {position: relative; margin-left: auto; margin-right: auto;}
 .info-block .wrapped-content {}
 .info-block-outer {position: relative;}
